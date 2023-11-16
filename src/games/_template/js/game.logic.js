@@ -1,3 +1,8 @@
+/**
+ * Nazwa katalogu gry, potrzebne do wczytywanie skryptów.
+ */
+const gameId = "template";
+
 const logicOfGame = {
     /**
      * Generuje stan początkowy gry.

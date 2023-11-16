@@ -39,6 +39,7 @@ let currentMove = null;
 let currentTurn = null;
 let statesHistory = [];
 let movesHistory = [];
+let alphaBetaTextTree = "";
 
 /**
  * Uchwyty do struktur HTML związanych z grą.
@@ -116,6 +117,23 @@ function startCurrentTurn() {
             setTimeout(() => makeMove(simplyBestMove), 30);
             break;
         case PlayerTypes.ALPHABETA:
+            workers[currentPlayer] = new Worker("js/" + gameId + "/alphabeta.js");
+            workers[currentPlayer].addEventListener(
+                "message",
+                function (e) {
+                    const [score, move, textTree] = e.data;
+                    workers[currentPlayer].terminate();
+                    workers[currentPlayer] = null;
+                    alphaBetaTextTree = textTree;
+                    makeMove(move);
+                },
+                false
+            );
+            workers[currentPlayer].postMessage({
+                state: currentState,
+                player: currentPlayer,
+                maxDepth: allPlayers[playerIndex].maxDepth,
+            });
             break;
         case PlayerTypes.MCS:
             break;
@@ -159,6 +177,7 @@ const gameHistoryNavigationEl = document.querySelector("#gameHistoryNavigation")
 const tabHistoryEl = document.querySelector("#tabHistory");
 const gameOverNotificationEl = document.querySelector("#gameOverNotification");
 const winnerNameEl = document.querySelector("#winnerName");
+const alphaBetaTextTreeEl = document.querySelector("#alphaBetaTextTree");
 
 /**
  * Aktualizacja interfejsu.
@@ -169,6 +188,7 @@ function updateUserInterface() {
     currentTurnEl.innerText = statesHistory.length + 1;
     gameHistoryNavigationEl.classList.add("d-none");
     tabHistoryEl.innerHTML = "";
+    alphaBetaTextTreeEl.innerText = alphaBetaTextTree;
 }
 
 /**
@@ -179,6 +199,7 @@ function hideUserInterface() {
     gameOverNotificationEl.classList.add("d-none");
     gameHistoryNavigationEl.classList.add("d-none");
     tabHistoryEl.innerHTML = "";
+    alphaBetaTextTreeEl.innerText = "";
 }
 
 /**
@@ -208,11 +229,11 @@ function updateUserInterfaceAfterGame(forceHistoryTab = false, forceWinnerUpdate
             movesHistory[turn]
         );
         if (currentTurn === turn) {
-            historyLinks += `<a href="#" onclick="restoreTurn(${turn})"><b>[${
+            historyLinks += `<a href="javascript:void(0);" onclick="restoreTurn(${turn})"><b>[${
                 turn + 1
             }. ${readableMoveDescription}]</b></a> `;
         } else {
-            historyLinks += `<a href="#" onclick="restoreTurn(${turn})">${turn + 1}. ${readableMoveDescription}</a> `;
+            historyLinks += `<a href="javascript:void(0);" onclick="restoreTurn(${turn})">${turn + 1}. ${readableMoveDescription}</a> `;
         }
     }
     tabHistoryEl.innerHTML = historyLinks;

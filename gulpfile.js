@@ -3,6 +3,7 @@ const { Eta } = require("eta");
 const { watch, series } = require("gulp");
 const { Marked } = require("marked");
 const concat = require("concat-files");
+const server = require("node-http-server");
 
 const eta = new Eta({
     views: __dirname + "/src",
@@ -92,6 +93,14 @@ function concatScripts(cb) {
             ]),
             outputDir + "/js/" + game.name + "/game.js"
         );
+        concat(
+            [
+                sourceDir + "/game.pre.js",
+                gamesDir + "/" + game.name + "/js/game.logic.js",
+                sourceDir + "/alphabeta.js",
+            ],
+            outputDir + "/js/" + game.name + "/alphabeta.js"
+        );
     }
 
     // Gulp.
@@ -111,4 +120,13 @@ exports.default = function () {
     watch(["src/games/*/css/**/*.*"], copyAssets);
     watch(["src/**/*.js"], concatScripts);
     watch(["src/games/*/js/**/*.js"], concatScripts);
+    server.deploy(
+        {
+            port: 8000,
+            root: 'dist/'
+        },
+        () => {
+            console.log("Platforma została uruchomiona pod adresem http://localhost:8000");
+        }
+    );
 };

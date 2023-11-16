@@ -1,16 +1,36 @@
 const boardWidth = 8;
 const boardHeight = 8;
 
+const gameId = "joust";
+
 const logicOfGame = {
     generateInitialState() {
         return {
             player1: [Math.floor(Math.random() * boardWidth), 0],
-            player2: [Math.floor(Math.random() * boardWidth), 7],
+            player2: [Math.floor(Math.random() * boardWidth), boardHeight - 1],
             removed: [],
         };
     },
     evaluateState(state, player) {
-        return 1;
+        let totalMoves = {
+            player1: 0,
+            player2: 0
+        };
+        for (let playerX of ["player1", "player2"]) {
+            const moves = this.generateMoves(state, playerX);
+            for (let move of moves) {
+                let afterState = this.generateStateAfterMove(state, playerX, move);
+                const afterMoves = this.generateMoves(afterState, playerX);
+                totalMoves[playerX] += 1 + afterMoves.length;
+            }
+        }
+		const moves = {
+			player1: this.generateMoves(state, "player1"),
+			player2: this.generateMoves(state, "player2")
+		};
+		const opponent = player === "player1" ? "player2" : "player1";
+		const score = totalMoves[player] - totalMoves[opponent];
+        return score;
     },
     generateMoves(state, player) {
         const offsets = [
@@ -53,4 +73,6 @@ const logicOfGame = {
     generateUniqueKey: undefined,
 };
 
-const players = [];
+const players = [
+    { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (łatwy)", maxDepth: 3 }
+];
