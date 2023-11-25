@@ -1,0 +1,84 @@
+/* Game board */
+.mancala-board {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 720px;
+    height: 720px;
+    background-color: #f2f2f2;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+}
+  
+  /* Individual pits */
+  .pit {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 80px;
+    height: 80px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 50%;
+    margin: 5px;
+  }  
+  .pit.selected {
+    background-color: rgb(255, 153, 0); /* Change this to your preferred highlight color */
+}
+
+/* Player 1 Store */
+.player1-store {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100px;
+    height: 200px;
+    background-color: #ddd;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin: 5px;
+    position: relative;
+    padding: 20px;
+}
+
+.player1-store::before {
+    content: "Player 1";
+    position: absolute;
+    top: -20px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-weight: bold;
+}
+
+/* Player 2 Store */
+.player2-store {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100px;
+    height: 200px;
+    background-color: #ddd;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin: 5px;
+    position: relative;
+}
+
+.player2-store::before {
+    content: "Player 2";
+    position: absolute;
+    top: -20px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-weight: bold;
+}
+
+.pits-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
