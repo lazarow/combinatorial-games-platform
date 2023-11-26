@@ -1,33 +1,39 @@
 ### _Opis:_
+Mankala jest grą dla dwóch graczy.
 
-Gra dla dwóch graczy rozgrywana na planszy 2x6 dołków (pól), z których każdy zawiera początkowo po 4 kamyki.
+Mankala (Kalah) to gra strategiczna wymagająca planowania ruchów, przewidywania działań przeciwnika i podejmowania decyzji mających wpływ na całą rozgrywkę.
 
-Jeden rząd dołków jest jednego gracza, drugi - drugiego.
+Gra jest rozgrywana na specjalnej planszy z dwoma rzędami pól, zwykle zbudowanymi z 12 wgłębień, nazywanych "jamami". 
 
-Celem gry jest zbicie więcej kamyków od przeciwnika.
+Celem gry jest zdobycie jak największej liczby nasion (kamyków) i umieszczenie ich w swojej "kali" (dużej jamie na końcu planszy). 
 
 ### _Zasady:_
 
-***Sianie Kamyków:***
+***Rozpoczęcie Gry:***
 
-Gracze wykonują ruchy na zmianę.
+Na początku gry, każda jama na planszy zawiera określoną liczbę nasion. Najczęściej są to 3 lub 4 nasiona umieszczone w każdej z 12 jam.
 
-Ruch polega na wzięciu kamyków z jednego dołka własnego rzędu i "posianiu" ich po jednym po kolejnych dołkach wokół planszy przeciwnie do ruchu wskazówek zegara.
+Każdy z graczy kontroluje jeden rząd pól i jedną kalę na końcu tego rzędu.
 
-_Przykład siania kamyków. Z pozycji d bierzemy 6 kamyków i rozprowadzamy je w następne miejsca względem ruchu wskazówek zegara:_
-![Sianie kamyków po planszy](../../images/mankala/przyk1.png "Przykład siania kamyków po planszy")
+***Ruchy:***
+Gracze wykonują ruchy na przemian.
 
-***Zbijanie Kamyków:***
+W swoim ruchu gracz wybiera jedną z jam w swoim rzędzie, zabierając wszystkie nasiona z tej jamy.
 
-Jeśli ostatni posiany kamyk znajdzie się w dołku przeciwnika i razem z nim będzie ich tam dwa lub trzy, **to są zbijane**.
+Nasiona są rozkładane po jednym w każdej jamie, zaczynając od jamy, z której nasiona zostały zabrane, w kierunku przeciwnym do ruchu wskazówek zegara.
 
-Jeśli poprzednie dołki przed ostatnim też zawierają dwa lub trzy kamyki, to one również są zbijane **ALE** wszystkie dołki które zawierają mniej niż dwa lub więcej niż trzy - zostają.
+Jeśli ostatnie nasiono trafi do kaly gracza, który wykonuje ruch, ten gracz ma prawo do dodatkowego ruchu.
 
-_Przykład zbijania kamyków przeciwnika. Z pozycji f bierzemy 5 kamyków, kończymy na pozycji k w której będą znajdować się końcowo dwa kamyki - więc zbijamy kamyki z pozycji k **ORAZ** z poprzednich dołków w których będzie znajdować się 2 lub 3 kamyki, czyli również w pozycjach j oraz i_
-![Zbijanie kamyków](../../images/mankala/przyk1.png "Przykład zbijania kamyków")
+
+***Zdobywanie Punktów:***
+
+Jeśli ostatnie nasiono trafi do jednej z jam w rzędzie przeciwnika, a ta jama jest pusta po zabraniu nasion, gracz zabiera to ostatnie nasiono oraz wszystkie nasiona z jamy przeciwnika na przeciwko niej, umieszczając wszystko w swojej kalie.
+
+Punkty zdobywane są tylko w kalach. Gracz, który zdobędzie więcej punktów, wygrywa grę.
+
 
 ***Zakończenie gry:***
 
-Zbicie przez któregoś z graczy więcej niż połowy kamyków automatycznie kończy grę i oznacza zwycięstwo.
+Gra kończy się, gdy wszystkie jamy w jednym z rzędów są puste.
 
-Jeśli gracze zdobędą jednakową liczbę kamyków, następuje remis.
+Gracz, który posiada więcej nasion w swojej kalie, wygrywa grę.

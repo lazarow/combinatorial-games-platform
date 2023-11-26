@@ -1,7 +1,7 @@
 /* Game board */
 .mancala-board {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     justify-content: center;
     align-items: center;
     width: 720px;
@@ -11,21 +11,38 @@
     border-radius: 5px;
     padding: 10px;
 }
-  
-  /* Individual pits */
-  .pit {
+
+/* Individual pits */
+.pit {
     display: flex;
     justify-content: center;
     align-items: center;
     width: 80px;
-    height: 80px;
+    height: 100px;
     background-color: #fff;
     border: 1px solid #ccc;
     border-radius: 50%;
     margin: 5px;
-  }  
-  .pit.selected {
-    background-color: rgb(255, 153, 0); /* Change this to your preferred highlight color */
+}
+
+.pits-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+}
+
+.pits-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row;
+    width: 100%;
+}
+
+.pit:hover {
+    background-color: #c5c5c5;
 }
 
 /* Player 1 Store */
@@ -33,14 +50,13 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 100px;
+    width: 200px;
     height: 200px;
     background-color: #ddd;
     border: 1px solid #ccc;
     border-radius: 5px;
-    margin: 5px;
+    margin: 20px;
     position: relative;
-    padding: 20px;
 }
 
 .player1-store::before {
@@ -58,7 +74,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 100px;
+    width: 200px;
     height: 200px;
     background-color: #ddd;
     border: 1px solid #ccc;
@@ -77,8 +93,3 @@
     font-weight: bold;
 }
 
-.pits-row {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
