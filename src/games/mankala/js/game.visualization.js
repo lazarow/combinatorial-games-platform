@@ -9,40 +9,51 @@ const visualizationOfGame = {
          * The board is layed out in this specific way to emulate the physical board as closely as possible,
          * with the store for player 2 on the left and the store for player 1 on the right, and all of the pits in between.
          */
-        
+
         // Extract the board and store for each player from the state
         const player1Board = state["player1"].pits;
         const player2Board = state["player2"].pits;
         const player1Store = state["player1"].store;
         const player2Store = state["player2"].store;
-    
+
         // Initialize the board HTML
         let board = '<div class="mancala-board">';
-    
+
         // Add the store for player 2
         board += `<div class="player2-store">${player2Store}</div>`;
-    
+
         // Add the pits for each player
-        board += '<div class= "pit-container">'
+        board += '<div class="pit-container">';
         board += '<div class="pits-row">';
         for (let i = 0; i < 6; i++) {
-            board += `<div class="pit player2-pit">${player2Board[5 - i]}</div>`;
+            board += `<div class="pit player2-pit">`;
+            board += `<div class="stone-count">${player2Board[5 - i]}</div>`;
+            for (let j = 0; j < player2Board[5 - i]; j++) {
+                board += `<div class="stone"></div>`;
+            }
+            board += `</div>`;
         }
         board += '</div>';
         board += '<div class="pits-row">';
         for (let i = 0; i < 6; i++) {
-            board += `<div class="pit player1-pit">${player1Board[i]}</div>`;
+            board += `<div class="pit player1-pit">`;
+            board += `<div class="stone-count">${player1Board[i]}</div>`;
+            for (let j = 0; j < player1Board[i]; j++) {
+                board += `<div class="stone"></div>`;
+            }
+            board += `</div>`;
         }
         board += '</div>';
         board += "</div>";
-    
+
         // Add the store for player 1
         board += `<div class="player1-store">${player1Store}</div>`;
-    
+
         board += "</div>";
-    
+
         // Draw the board in the container
         container.innerHTML = board;
+
         cb();
     },
 
@@ -54,13 +65,13 @@ const visualizationOfGame = {
     handleHumanTurn(state, player, cb) {
         // Get all the pits for the current player
         const playerPits = document.querySelectorAll(`.${player}-pit`);
-    
+
         // Add a click event listener to each pit
         playerPits.forEach((pit, i) => {
             pit.addEventListener("click", () => {
                 // Calculate the index of the pit in the state (We need to reverse the index for player 2)
                 const index = player === 'player2' ? 5 - i : i;
-    
+
                 // If the pit is not empty, execute the callback function with the index of the pit
                 if (state[player].pits[index] !== 0) {
                     cb(index);
@@ -93,6 +104,6 @@ const visualizationOfGame = {
             return "Player 2";
         } else {
             return "Nikt! Remis!";
-        }        
+        }
     },
 };

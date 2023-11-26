@@ -47,58 +47,53 @@ const logicOfGame = {
     generateStateAfterMove(previousState, player, move) {
         // Copy the previous state
         const state = JSON.parse(JSON.stringify(previousState));
-
+    
         // Set up initial variables
         let currentPlayer = player;
-        let currentBoard = state[currentPlayer].pits;
+        let currentPits = state[currentPlayer].pits;
         let currentStore = state[currentPlayer].store;
-
+    
         // Identify the opponent
         const opponent = currentPlayer === "player1" ? "player2" : "player1";
-        const opponentBoard = state[opponent].pits;
-
+        let opponentPits = state[opponent].pits;
+    
         // Get the stones from the selected pit
-        let stones = currentBoard[move];
-        currentBoard[move] = 0;
-
+        let stones = currentPits[move];
+        currentPits[move] = 0;
+    
         // Begin sowing the stones
         let i = move + 1;
-
+    
         // Sow stones until none are left
         while (stones > 0) {
-            // If at the store, increment if it's the current player's turn
-            if (i % 7 === 6 && currentPlayer === player) {
-                currentStore++;
+            if (i === 6) {
+                if (currentPlayer === player) {
+                    currentStore++;
+                    stones--;
+                }
+                i = (i + 1) % 14;
+            } else if (i === 13) {
+                if (currentPlayer !== player) {
+                    opponentPits[6]++;
+                    stones--;
+                }
+                i = (i + 1) % 14;
+            } else {
+                if (i < 6) {
+                    currentPits[i]++;
+                } else {
+                    opponentPits[i - 7]++;
+                }
                 stones--;
-            } else if (i % 7 !== 6) { // If not at the store, sow a stone
-                currentBoard[i % 7]++;
-                stones--;
-            }
-
-            // Move to the next pit or switch to the opponent's board if at the end
-            i++;
-            if (i > 6) {
-                i = 0;
-                currentBoard = opponentBoard;
-                currentPlayer = opponent;
+                i = (i + 1) % 14;
             }
         }
-
-        // After sowing, check for capture condition and perform capture if condition is met
-        const lastPitIndex = (i - 1) % 7;
-        const lastPit = currentBoard[lastPitIndex];
-        const oppositePit = opponentBoard[5 - lastPitIndex];
-        if (currentPlayer === player && lastPit === 1 && oppositePit > 0) {
-            currentStore += 1 + oppositePit;
-            currentBoard[lastPitIndex] = 0;
-            opponentBoard[5 - lastPitIndex] = 0;
-        }
-
+    
         // Update the state
-        state[player].pits = state[player].pits;
-        state[player].store = currentStore;
-        state[opponent].pits = opponentBoard;
-
+        state[currentPlayer].pits = currentPits;
+        state[currentPlayer].store = currentStore;
+        state[opponent].pits = opponentPits;
+    
         return state;
     },
 
@@ -116,12 +111,6 @@ const logicOfGame = {
         if (allPitsEmpty(state[player].pits)) {
             state[opponent].store += state[opponent].pits.reduce((a, b) => a + b);
             state[opponent].pits = state[opponent].pits.map(() => 0);
-            return true;
-        }
-
-        // If the game has exceeded a maximum number of turns, end the game
-        if (state.turns >= 500) {
-            console.log("Too many turns");
             return true;
         }
 
