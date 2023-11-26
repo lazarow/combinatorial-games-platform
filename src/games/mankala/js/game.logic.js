@@ -112,9 +112,9 @@ const logicOfGame = {
         // Check if all pits are empty
         const allPitsEmpty = (pits) => pits.every(pit => pit === 0);
 
-        // If all of the current player's pits are empty, add all remaining stones to their store and end the game
+        // If all of the current player's pits are empty, add all remaining stones to the opponent's store and end the game
         if (allPitsEmpty(state[player].pits)) {
-            state[player].store += state[opponent].pits.reduce((a, b) => a + b);
+            state[opponent].store += state[opponent].pits.reduce((a, b) => a + b);
             state[opponent].pits = state[opponent].pits.map(() => 0);
             return true;
         }
@@ -128,11 +128,13 @@ const logicOfGame = {
         // If neither are met, the game is not in a terminal state
         return false;
     },
-    
+
     /**
      * Funkcja generująca unikalny klucz dla wskazanego stanu.
      */
     generateUniqueKey: undefined,
 };
 
-const players = [];
+const players = [
+    { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (łatwy)", maxDepth: 3 }
+];

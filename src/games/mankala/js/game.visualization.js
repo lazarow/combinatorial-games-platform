@@ -87,6 +87,12 @@ const visualizationOfGame = {
      * Funkcja zwraca czytelny dla człowieka opis wygranego gracza.
      */
     getReadableWinnerName(state, player) {
-        return `Player ${player === "player1" ? "1" : "2"}!`;
+        if (state.player1.store > state.player2.store) {
+            return "Player 1";
+        } else if (state.player1.store < state.player2.store) {
+            return "Player 2";
+        } else {
+            return "Nikt! Remis!";
+        }        
     },
 };

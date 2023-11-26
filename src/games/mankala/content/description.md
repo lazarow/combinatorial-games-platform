@@ -9,6 +9,7 @@ Celem gry jest zdobycie jak największej liczby nasion (kamyków) i umieszczenie
 
 ### _Zasady:_
 
+
 ***Rozpoczęcie Gry:***
 
 Na początku gry, każda jama na planszy zawiera określoną liczbę nasion. Najczęściej są to 3 lub 4 nasiona umieszczone w każdej z 12 jam.
@@ -22,8 +23,6 @@ W swoim ruchu gracz wybiera jedną z jam w swoim rzędzie, zabierając wszystkie
 
 Nasiona są rozkładane po jednym w każdej jamie, zaczynając od jamy, z której nasiona zostały zabrane, w kierunku przeciwnym do ruchu wskazówek zegara.
 
-Jeśli ostatnie nasiono trafi do kaly gracza, który wykonuje ruch, ten gracz ma prawo do dodatkowego ruchu.
-
 
 ***Zdobywanie Punktów:***
 
@@ -35,5 +34,7 @@ Punkty zdobywane są tylko w kalach. Gracz, który zdobędzie więcej punktów, 
 ***Zakończenie gry:***
 
 Gra kończy się, gdy wszystkie jamy w jednym z rzędów są puste.
+
+Jeśli na planszy są jakieś nasiona to wszystkie idą do przeciwnika gracza który skończył grę.
 
 Gracz, który posiada więcej nasion w swojej kalie, wygrywa grę.
