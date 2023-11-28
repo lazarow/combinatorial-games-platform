@@ -36,32 +36,33 @@ const visualizationOfGame = {
         for (let y = boardHeight - 1; y >= 0; --y) {
             // Oznaczenia tylko dla wierszy parzystych (kwadratów)
             if (y % 2 == 0) {
-                board += "<tr><td><label>" + (y/2) + "</label></td>";
+                board += "<tr><td><label>" + (y/2+1) + "</label></td>";
                 
             
-
+            //wiersze z polami pionków na przemiennie z płotkami wertykalnymi
             for (let x = 0; x < boardWidth-1; ++x) {
                 if (x % 2 == 0) {
-                    board +=  '<td class="square"> <div class= "square" data-x ="' + x +'" data-y="' + y + '">';
+                    const isRemoved = state.removed.some(([removedX, removedY]) => x === removedX && y === removedY);
+                    board +=  '<td class="square"> <div class= "square" data-x ="' + x +'" data-y="' + y +'" data-available="' +(isRemoved ? "false" : "true") + '">';
                 } else {
                     board += '<td class="fenceCol"><div class="fenceCol" data-x ="' + x +'" data-y="' + y +  '">';
                 }
-
-                //Dodanie pionów graczy - póki co zakomentowane, żeby nie przeszkadzało.
-                 if (state.player1[0] === x && state.player1[1] === y) {
+                //dodanie pionków
+                 if (state.player1[0] === x && state.player1[1] === y) 
                      board += '<div id="white-pawn"></div>';
-                 }
-                 if (state.player2[0] === x && state.player2[1] === y) {
+                 
+                 if (state.player2[0] === x && state.player2[1] === y) 
                      board += '<div id="black-pawn"></div>';
-                 }
+                 
 
                 board += "</div></td>";
             }
+            //wstawienie płotków horyzontalnych pomiędzy wierszami
             } else if(!(y === boardHeight - 1)){
                 board += "<tr class = 'fenceRow'<td></td>";
                 for (x = 0; x <= boardHeight/2-1; ++x) {
                     board += "<td></td>";
-                    board += '<td class="fenceRow"><div class="fenceRow" data-x ="' + x +'" data-y="' + y +  '">';
+                    board += '<td class="fenceRow"><div class="fenceRow" data-x="' + x +'" data-y="' + y +  '">';
                 }
                 board += "</tr>";
             }
@@ -94,23 +95,28 @@ const visualizationOfGame = {
      * Funkcja włącza tryb interaktywny dla gracza. Po wykonaniu ruchu należy wykonać funkcję `cb` a na jej
      * wejście podać wybrany ruch.
      */
-    handleHumanTurn(state, player, cb) {
+handleHumanTurn(state, player, cb) {
+        // Pobranie referencji do pionka gracza
         const pawn = $("#" + (player === "player1" ? "white" : "black") + "-pawn");
         const pawnX = state[player][0];
         const pawnY = state[player][1];
+        // Wygenerowanie możliwych ruchów
         const moves = logicOfGame.generateMoves(state, player);
         let fieldsList = "";
-        console.log(moves)
+        // Utworzenie listy pól, na które można przesunąć pionek
         for (let i = 0; i < moves.length; ++i) {
-            const field = $(".square-placeholder[data-x=" + moves[i][0] + "][data-y=" + moves[i][1] + "]");
-            console.log(field)
-            if (field.length > 0 ) {
-                fieldsList += (fieldsList.length > 0 ? ", " : "") + ".square-placeholder[data-x=" + moves[i][0] + "][data-y=" + moves[i][1] + "]";
-            console.log(fieldsList)
+            const field = $(".square[data-x=" + moves[i][0] + "][data-y=" + moves[i][1] + "]");
+            if (field.length > 0 && field.attr("data-available") === "true" && field.is(":empty")) {
+                fieldsList += 
+                (fieldsList.length > 0 ? ", " : "") + 
+                ".square[data-x=" + moves[i][0] + 
+                      "][data-y=" + moves[i][1] + "]";
             }
+
         }
+        // Pobranie referencji do pól, na które można przesunąć pionek
         const fields = $(fieldsList);
-        console.log(fields)
+        // Ustawienie pionka jako przesuwalnego
         pawn.draggable({
             scope: "fields",
             revert: "invalid",
@@ -123,13 +129,14 @@ const visualizationOfGame = {
                 fields.removeClass("highlighted2");
             },
         });
+
+        // Ustawienie pól jako miejsca, na które można przesunąć pionek
         fields.droppable({
             accept: "#white-pawn, #black-pawn",
             scope: "fields",
             drop(event, ui) {
-                ui.draggable.draggable("destroy");
                 ui.draggable.appendTo(this);
-                fields.droppable("destroy");
+                ui.draggable.css("left", 0);
                 cb([parseInt(ui.draggable.parent().attr("data-x")), parseInt(ui.draggable.parent().attr("data-y"))]);
             },
             over() {
@@ -157,6 +164,6 @@ const visualizationOfGame = {
      * Funkcja zwraca czytelny dla człowieka opis wygranego gracza.
      */
     getReadableWinnerName(state, player) {
-        return player === "player1" ? "Czarny" : "Biały";
+        return player === "player1" ? "Biały":"Czarny";
     },
 };

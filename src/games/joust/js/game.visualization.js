@@ -40,6 +40,8 @@ const visualizationOfGame = {
         const moves = logicOfGame.generateMoves(state, player);
         let fieldsList = "";
         for (let i = 0; i < moves.length; ++i) {
+            
+            console.log($(".square-placeholder[data-x=" + moves[i][0] + "][data-y=" + moves[i][1] + "]"))
             const field = $(".square-placeholder[data-x=" + moves[i][0] + "][data-y=" + moves[i][1] + "]");
             if (field.length > 0 && field.attr("data-available") === "true" && field.is(":empty")) {
                 fieldsList +=
