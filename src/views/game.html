@@ -9,10 +9,10 @@
         <div class="col p-3">
             <div class="game-container p-3"><div id="game"></div></div>
             <div id="gameHistoryNavigation" class="mt-3 text-center d-none">
-                <a href="#" onclick="restoreFirstTurn()" class="btn btn-dark"><i class="ri-rewind-fill"></i></a>
-                <a href="#" onclick="restorePreviousTurn()" class="btn btn-dark"><i class="ri-skip-back-fill"></i></a>
-                <a href="#" onclick="restoreNextTurn()" class="btn btn-dark"><i class="ri-skip-forward-fill"></i></a>
-                <a href="#" onclick="restoreLastTurn()" class="btn btn-dark"><i class="ri-speed-fill"></i></a>
+                <a href="javascript:void(0);" onclick="restoreFirstTurn()" class="btn btn-dark"><i class="ri-rewind-fill"></i></a>
+                <a href="javascript:void(0);" onclick="restorePreviousTurn()" class="btn btn-dark"><i class="ri-skip-back-fill"></i></a>
+                <a href="javascript:void(0);" onclick="restoreNextTurn()" class="btn btn-dark"><i class="ri-skip-forward-fill"></i></a>
+                <a href="javascript:void(0);" onclick="restoreLastTurn()" class="btn btn-dark"><i class="ri-speed-fill"></i></a>
             </div>
         </div>
         <div class="col p-3 ps-0">
@@ -54,11 +54,18 @@
         >
             Przebieg gry
         </button>
+        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tabAlphaBetaTextTree" type="button" role="tab">
+            Drzewo tekstowe AlphaBeta
+        </button>
     </div>
 </nav>
 <div class="tab-content">
     <div class="tab-pane active" id="tabDescription"><%~ it.description %></div>
     <div class="tab-pane" id="tabHistory"></div>
+    <div class="tab-pane" id="tabAlphaBetaTextTree">
+        <p>Do wygenerowania drzewa można użyć <a href="https://jimblackler.net/treefun/index.html" target="_blank">tej strony</a>.</p>
+        <pre id="alphaBetaTextTree"></pre>
+    </div>
 </div>
 
 <script src="js/<%= it.name %>/game.js"></script>

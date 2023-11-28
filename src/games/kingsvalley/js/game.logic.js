@@ -1,7 +1,5 @@
-/**
- * Nazwa katalogu gry, potrzebne do wczytywanie skryptów.
- */
-const gameId = "template";
+const boardWidth = 5;
+const boardHeight = 5;
 
 const logicOfGame = {
     /**
