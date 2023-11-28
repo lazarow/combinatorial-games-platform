@@ -4,6 +4,8 @@ const visualizationOfGame = {
      * Po zakończeniu rysowania należy wykonać funkcję `cb`.
      */
     drawState(state, player, move, container, cb) {
+
+        
         let board = "<table>"
         for (let y=0; y<19; y++)
         {
@@ -62,7 +64,10 @@ const visualizationOfGame = {
     /**
      * Funkcja zwraca czytelny dla człowieka opis ruchu.
      */
-    getReadableMoveDescription(state, player, move) {},
+    getReadableMoveDescription(state, player, move) {
+        return (player === "player1" ? "B" : "C") +  "(" + move[0]+"," + move[1]+ ")";
+
+    },
     /**
      * Funkcja zwraca czytelny dla człowieka opis wygranego gracza.
      */
