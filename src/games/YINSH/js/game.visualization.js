@@ -12,7 +12,18 @@ const visualizationOfGame = {
             {
                 if (state.positions.some(pos => pos[0] === x && pos[1] === y))
                 {
-                    board += "<td class='dot'></td>"
+                    if (state.player1.rings.some(pos => pos[0] === x && pos[1] === y))
+                    {
+                        board += "<td class='white-ring'></td>"
+                    }
+                    else if (state.player2.rings.some(pos => pos[0] === x && pos[1] === y))
+                    {
+                        board += "<td class='black-ring'></td>"
+                    }
+                    else
+                    {
+                        board += "<td class='dot' data-x=" + x + " data-y=" + y +"></td>"
+                    }
                 }
                 else
                 {
@@ -30,12 +41,24 @@ const visualizationOfGame = {
      * wejście podać wybrany ruch.
      */
     handleHumanTurn(state, player, cb) {
+        if (state.placement_done)
+        {
 
+        }
+        else
+        {
+            $(".dot").on("click", function() {
+                cb([parseInt($(this).attr("data-x")), parseInt($(this).attr("data-y"))])
+            })
+        }
     },
     /**
      * Funkcja zwraca nazwę gracza zgodną z zasadami.
      */
-    getTruePlayerName(player) {},
+    getTruePlayerName(player) {
+        if (player === "player1") return "Biały";
+        if (player === "player2") return "Czarny";
+    },
     /**
      * Funkcja zwraca czytelny dla człowieka opis ruchu.
      */
@@ -43,5 +66,8 @@ const visualizationOfGame = {
     /**
      * Funkcja zwraca czytelny dla człowieka opis wygranego gracza.
      */
-    getReadableWinnerName(state, player) {},
+    getReadableWinnerName(state, player) {
+        if (player === "player1") return "Biały";
+        if (player === "player2") return "Czarny";
+    },
 };

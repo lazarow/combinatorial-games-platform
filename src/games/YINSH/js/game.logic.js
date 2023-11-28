@@ -45,17 +45,46 @@ const logicOfGame = {
      * Funkcja generująca możliwe ruchy z wskazanego stanu dla gracza.
      */
     generateMoves(state, player) {
+        const moves = []
 
+        if (state.placement_done)
+        {
+
+        }
+        else
+        {
+            state.positions.forEach(pos => {
+                const unavailable = [...state.player1.rings, ...state.player2.rings]
+                if (unavailable.some(ring => ring[0] === pos[0] && ring[1] === pos[1]) === false)
+                {
+                    moves.push(pos)
+                }
+            })
+        }
+
+        return moves
     },
     /**
      * Funkcja generuje stan po wykonaniu wskazanego ruchu.
      */
-    generateStateAfterMove(previousState, player, move) {},
+    generateStateAfterMove(previousState, player, move) {
+        const state = structuredClone(previousState)
+        if (move !== undefined)
+        {
+            state[player].rings.push(move)
+        }
+
+        if (state.player1.rings.length === 5 && state.player2.rings.length === 5)
+        {
+            state.placement_done = true
+        }
+        return state
+    },
     /**
      * Funkcja sprawdza czy stan jest terminalny, tzn. koniec gry.
      */
     isStateTerminal(state, player) {
-        return state[player].points === 3;
+        return state[player].points === 3 || state.placement_done;
     },
     /**
      * Funkcja generująca unikalny klucz dla wskazanego stanu.

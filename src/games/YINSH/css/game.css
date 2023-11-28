@@ -1,3 +1,7 @@
+table {
+    background-color: gray;
+}
+
 td {
     width: 55px;
     height: 35px;
@@ -5,4 +9,12 @@ td {
 
 .dot {
     background: url(../../images/YINSH/dot.png) no-repeat center center transparent;
+}
+
+.white-ring {
+    background: url(../../images/YINSH/white_ring.png) no-repeat center center transparent;
+}
+
+.black-ring {
+    background: url(../../images/YINSH/black_ring.png) no-repeat center center transparent;
 }
