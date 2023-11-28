@@ -3,43 +3,56 @@
     margin: 0 auto;
     border-spacing: 0;
 }
+
 .board label {
-    width: 60px;
-    height: 60px;
+    width: 50px;
+    height: 50px;
     margin: 0;
     line-height: 60px;
     font-size: 24px;
     text-align: center;
     font-weight: normal;
 }
+
 .board tr td {
     padding: 10;
     margin: 0;
     border: 0;
     border-spacing: 0;
 }
-.board tr td.square {
-    width: 60px;
-    height: 60px;
-    background-color: #ffffff;
-}
+
 .board tr td.square div {
     width: 50px;
     height: 50px;
     background-color: #ae9ffb;
 }
+
 .board tr td.square div.highlighted {
     background-color: rgba(207, 207, 207, 0.445);
 }
+
 .board tr td.square div.highlighted2 {
     background-color: rgba(234, 234, 234, 0.849);
 }
 
+.board td.fenceCol div {
+    width: 10px;
+    height: 50px;
+    background-color: #ffc400;
+}
+
+.board tr.fenceRow div {
+    width: 50px;
+    height: 10px;
+    background-color: #ffc400;
+}
+
 #white-pawn {
     width: 50px;
-    height: 50px;;
+    height: 50px;
     background: url(../../images/quorridor/white_pawn.png) no-repeat center center transparent;
 }
+
 #black-pawn {
     width: 50px;
     height: 50px;

@@ -11,14 +11,7 @@ const visualizationOfGame = {
             board += "<tr><td><label>" + (y + 1) + "</label></td>";
             for (x = 0; x < boardWidth; ++x) {
                 const isRemoved = state.removed.some(([removedX, removedY]) => x === removedX && y === removedY);
-                board +=
-                    '<td class="square"><div class="square-placeholder" data-x="' +
-                    x +
-                    '" data-y="' +
-                    y +
-                    '" data-available="' +
-                    (isRemoved ? "false" : "true") +
-                    '">';
+                board +='<td class="square"><div class="square-placeholder" data-x="' +x +'" data-y="' + y +'" data-available="' +(isRemoved ? "false" : "true") +'">';
                 if (state.player1[0] === x && state.player1[1] === y) {
                     board += '<div id="white-pawn"></div>';
                 }
@@ -59,6 +52,8 @@ const visualizationOfGame = {
             }
         }
         const fields = $(fieldsList);
+        
+        console.log(fields)
         pawn.draggable({
             scope: "fields",
             revert: "invalid",

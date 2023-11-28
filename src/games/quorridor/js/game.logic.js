@@ -1,5 +1,5 @@
-const boardWidth = 9;
-const boardHeight = 9;
+const boardWidth = 9*2;
+const boardHeight = 9*2;
 
 const logicOfGame = {
     /**
@@ -7,8 +7,8 @@ const logicOfGame = {
      */
     generateInitialState() { 
         return {
-        player1: [4, 0],
-        player2: [4, 8],
+        player1: [8, 0],
+        player2: [8, 16],
         removed: [],
         };
     },
@@ -23,17 +23,17 @@ const logicOfGame = {
      */
     generateMoves(state, player) {
         const offsets = [
-            [ 0,  1],
-            [ 0, -1],
-            [ 1,  0],
-            [-1,  0],
+            [ 0,  2],
+            [ 0, -2],
+            [ 2,  0],
+            [-2,  0],
         ];
         const moves = [];
         for (let i = 0; i < offsets.length; ++i) {
             const x = state[player][0] + offsets[i][0];
             const y = state[player][1] + offsets[i][1];
             if (x >= 0 && x < boardWidth && y >= 0 && y < boardHeight) {
-                     moves.push([x, y]);
+                moves.push([x, y]);
 
             }
         }
