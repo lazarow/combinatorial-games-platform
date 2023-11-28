@@ -1,0 +1,8 @@
+td {
+    width: 55px;
+    height: 35px;
+}
+
+.dot {
+    background: url(../../images/YINSH/dot.png) no-repeat center center transparent;
+}
