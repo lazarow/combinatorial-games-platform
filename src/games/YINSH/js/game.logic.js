@@ -69,15 +69,24 @@ const logicOfGame = {
      */
     generateStateAfterMove(previousState, player, move) {
         const state = structuredClone(previousState)
-        if (move !== undefined)
+
+        if (state.placement_done)
         {
-            state[player].rings.push(move)
+
+        }
+        else
+        {
+            if (move !== undefined)
+            {
+                state[player].rings.push(move)
+            }
+
+            if (state.player1.rings.length === 5 && state.player2.rings.length === 5)
+            {
+                state.placement_done = true
+            }
         }
 
-        if (state.player1.rings.length === 5 && state.player2.rings.length === 5)
-        {
-            state.placement_done = true
-        }
         return state
     },
     /**
