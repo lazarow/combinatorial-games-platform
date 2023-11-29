@@ -14,15 +14,14 @@ const visualizationOfGame = {
         /* NOTATKA O NUMEROWANIU KOLUMN
            Nieparzyste numery kolumn są numerowane od początku alfabetu (począwszy od 'a' i idące wzwyż np. a b c d ...), 
            natomiast parzyste od końca (począwszy od 'z' i idące wstecz np. z y x w v ...),
-           gracz powinien móc poruszać się po polach parzystych, natomiast pola o kolumnach nieparzystych oznaczają pola, gdzie może zostać postawiony płotek i
+           gracz powinien móc poruszać się po polach parzystych, natomiast pola o kolumnach i wierszach nieparzystych oznaczają pola, gdzie może zostać postawiony płotek i
            gracz nie może się na takim polu znaleźć 
         */
-
 
         // Oznaczenia kolumn (górne)
         for (let x = 0; x < boardWidth; ++x) {
             if (x % 2 === 0) {
-                board += "<td><label>" + String.fromCharCode(97 + x/2) + "</label></td>";
+                board += "<td><label>" + String.fromCharCode(97 + x / 2) + "</label></td>";
             } else {
                 board += "<td></td>";
             }
@@ -31,38 +30,36 @@ const visualizationOfGame = {
         // Zamknięcie wiersza z oznaczeniami pól
         board += "</tr>";
 
-        
         // Numerowanie wierszy z lewej strony
         for (let y = boardHeight - 1; y >= 0; --y) {
             // Oznaczenia tylko dla wierszy parzystych (kwadratów)
             if (y % 2 == 0) {
-                board += "<tr><td><label>" + (y/2+1) + "</label></td>";
-                
-            
-            //wiersze z polami pionków na przemiennie z płotkami wertykalnymi
-            for (let x = 0; x < boardWidth-1; ++x) {
-                if (x % 2 == 0) {
-                    const isRemoved = state.removed.some(([removedX, removedY]) => x === removedX && y === removedY);
-                    board +=  '<td class="square"> <div class= "square" data-x ="' + x +'" data-y="' + y +'" data-available="' +(isRemoved ? "false" : "true") + '">';
-                } else {
-                    board += '<td class="fenceCol"><div class="fenceCol" data-x ="' + x +'" data-y="' + y +  '">';
-                }
-                //dodanie pionków
-                 if (state.player1[0] === x && state.player1[1] === y) 
-                     board += '<div id="white-pawn"></div>';
-                 
-                 if (state.player2[0] === x && state.player2[1] === y) 
-                     board += '<div id="black-pawn"></div>';
-                 
+                board += "<tr><td><label>" + (y / 2 + 1) + "</label></td>";
 
-                board += "</div></td>";
-            }
-            //wstawienie płotków horyzontalnych pomiędzy wierszami
-            } else if(!(y === boardHeight - 1)){
+                // Wiersze z polami pionków na przemiennie z płotkami wertykalnymi
+                for (let x = 0; x < boardWidth - 1; ++x) {
+                    if (x % 2 == 0) {
+                        const isRemoved = state.removed.some(([removedX, removedY]) => x === removedX && y === removedY);
+                        board += '<td class="square"> <div class= "square" data-x ="' + x + '" data-y="' + y + '" data-available="' + (isRemoved ? "false" : "true") + '">';
+                    } else {
+                        // W wierszu poniżej dodałem "data-available = true", ponieważ w pewnym momenc
+                        board += '<td class="fenceCol"><div class="fenceCol" data-x ="' + x + '" data-y="' + y + '">';
+                    }
+                    //dodanie pionków
+                    if (state.player1[0] === x && state.player1[1] === y)
+                        board += '<div id="white-pawn"></div>';
+
+                    if (state.player2[0] === x && state.player2[1] === y)
+                        board += '<div id="black-pawn"></div>';
+
+                    board += "</div></td>";
+                }
+                // Wstawienie płotków horyzontalnych pomiędzy wierszami
+            } else if (!(y === boardHeight - 1)) {
                 board += "<tr class = 'fenceRow'<td></td>";
-                for (x = 0; x <= boardHeight/2-1; ++x) {
+                for (x = 0; x <= boardHeight / 2 - 1; ++x) {
                     board += "<td></td>";
-                    board += '<td class="fenceRow"><div class="fenceRow" data-x="' + x +'" data-y="' + y +  '">';
+                    board += '<td class="fenceRow"><div class="fenceRow" data-x="' + x + '" data-y="' + y + '">';
                 }
                 board += "</tr>";
             }
@@ -73,7 +70,7 @@ const visualizationOfGame = {
 
         // Numerowanie kolumn z dołu
         //for (let x = 0; x < boardWidth; ++x) {
-            // Ustawienie oznaczeń tylko dla pól parzystych (kwadratów)
+        // Ustawienie oznaczeń tylko dla pól parzystych (kwadratów)
         //    if (x % 2 === 0) {
         //        board += "<td><label>" + String.fromCharCode(97 + x/2) + "</label></td>";
         //    } else {
@@ -95,7 +92,7 @@ const visualizationOfGame = {
      * Funkcja włącza tryb interaktywny dla gracza. Po wykonaniu ruchu należy wykonać funkcję `cb` a na jej
      * wejście podać wybrany ruch.
      */
-handleHumanTurn(state, player, cb) {
+    handleHumanTurn(state, player, cb) {
         // Pobranie referencji do pionka gracza
         const pawn = $("#" + (player === "player1" ? "white" : "black") + "-pawn");
         const pawnX = state[player][0];
@@ -107,10 +104,10 @@ handleHumanTurn(state, player, cb) {
         for (let i = 0; i < moves.length; ++i) {
             const field = $(".square[data-x=" + moves[i][0] + "][data-y=" + moves[i][1] + "]");
             if (field.length > 0 && field.attr("data-available") === "true" && field.is(":empty")) {
-                fieldsList += 
-                (fieldsList.length > 0 ? ", " : "") + 
-                ".square[data-x=" + moves[i][0] + 
-                      "][data-y=" + moves[i][1] + "]";
+                fieldsList +=
+                    (fieldsList.length > 0 ? ", " : "") +
+                    ".square[data-x=" + moves[i][0] +
+                    "][data-y=" + moves[i][1] + "]";
             }
 
         }
@@ -164,6 +161,6 @@ handleHumanTurn(state, player, cb) {
      * Funkcja zwraca czytelny dla człowieka opis wygranego gracza.
      */
     getReadableWinnerName(state, player) {
-        return player === "player1" ? "Biały":"Czarny";
+        return player === "player1" ? "Biały" : "Czarny";
     },
 };
