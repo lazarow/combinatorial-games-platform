@@ -63,7 +63,10 @@ const visualizationOfGame = {
     /**
      * Funkcja zwraca czytelny dla człowieka opis ruchu.
      */
-    getReadableMoveDescription(state, player, move) {},
+    getReadableMoveDescription(state, player, move) {
+        return (player === "player1" ? "B" : "C") +  "(" + move[0]+"," + move[1]+ ")";
+
+    },
     /**
      * Funkcja zwraca czytelny dla człowieka opis wygranego gracza.
      */
