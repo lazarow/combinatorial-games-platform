@@ -15,6 +15,7 @@ const logicOfGame = {
                 pawns: [],
                 points: 0
             },
+            highlightedPositions: [],
             positions: [
                 [4, 0], [6, 0], [3, 1], [5, 1], [7, 1],
                 [2, 2], [4, 2], [6, 2], [8, 2], [1, 3],
@@ -50,7 +51,11 @@ const logicOfGame = {
         if (state.placement_done)
         {
             state[player].rings.forEach((ring, ringIndex) => {
-                
+                const movesForRing = this.getAllAlignedPositionsToPosition(ring, state)
+
+                movesForRing.forEach(pos => {
+                    moves.push([ringIndex, pos])
+                })
             })
         }
         else
@@ -74,7 +79,9 @@ const logicOfGame = {
 
         if (state.placement_done)
         {
-
+            state[player].pawns.push(state[player].rings[move[0]])
+            state[player].rings.splice(move[0], 1)
+            state[player].rings.push(move[1])
         }
         else
         {
@@ -95,13 +102,40 @@ const logicOfGame = {
      * Funkcja sprawdza czy stan jest terminalny, tzn. koniec gry.
      */
     isStateTerminal(state, player) {
-        return state[player].points === 3 || state.placement_done;
+        return state[player].points === 3;
     },
     /**
      * Funkcja generująca unikalny klucz dla wskazanego stanu.
      */
     isVectorOnList(vector, list) {
         return list.some(otherVector => otherVector[0] === vector[0] && otherVector[1] === vector[1])
+    },
+    getAllAlignedPositionsToPosition(position, state) {
+        const boardStart = [0, 0]
+        const boardEnd = [10, 18]
+        let result = []
+
+        if (position[0] < boardStart[0] || position[1] < boardStart[1] || position[0] > boardEnd[0] || position[1] > boardEnd[1])
+        {
+            return []
+        }
+
+        for (let i=0; i<boardEnd[1]; i++)
+        {
+            if (i === position[1])
+            {
+                continue
+            }
+            result.push([position[0], i])
+        }
+
+        let allowedPositions = [...state.positions]
+        const badPositions = [...state.player1.rings, ...state.player1.pawns, ...state.player2.rings, ...state.player2.pawns]
+        allowedPositions = allowedPositions.filter(pos => !this.isVectorOnList(pos, badPositions))
+
+        result = result.filter(pos => this.isVectorOnList(pos, allowedPositions))
+
+        return result
     },
     generateUniqueKey: undefined,
 };

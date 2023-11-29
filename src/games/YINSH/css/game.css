@@ -9,7 +9,15 @@ td {
 }
 
 .dot {
-    background-color:transparent;
+    background: url(../../images/YINSH/dot.png) no-repeat center center transparent;
+}
+
+.highlight {
+    background: url(../../images/YINSH/highlight_dot.png) no-repeat center center transparent;
+}
+
+.white-pawn {
+    background: url(../../images/YINSH/white_pawn.png) no-repeat center center transparent;
 }
 
 .white-ring {
@@ -18,5 +26,9 @@ td {
 
 .black-ring {
     background: url(../../images/YINSH/black_ring.png) no-repeat center center transparent;
+}
+
+.black-pawn {
+    background: url(../../images/YINSH/black_pawn.png) no-repeat center center transparent;
 }
 

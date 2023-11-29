@@ -3,6 +3,8 @@ const visualizationOfGame = {
      * Funkcja rysuje planszę do gry w wskazanym kontenerze (720 pikseli szerokości).
      * Po zakończeniu rysowania należy wykonać funkcję `cb`.
      */
+    selectedRingId: -1,
+    possibleMovesForRing: [],
     drawState(state, player, move, container, cb) {
         let board = "<table>"
         for (let y=0; y<19; y++)
@@ -13,18 +15,28 @@ const visualizationOfGame = {
                 const currentPos = [x, y]
                 if (logicOfGame.isVectorOnList(currentPos, state.positions))
                 {
+                    board += "<td class="
                     if (logicOfGame.isVectorOnList(currentPos, state.player1.rings))
                     {
-                        board += "<td class='white-ring'></td>"
+                        board += "'white-ring'"
+                    }
+                    else if (logicOfGame.isVectorOnList(currentPos, state.player1.pawns))
+                    {
+                        board += "'white-pawn'"
                     }
                     else if (logicOfGame.isVectorOnList(currentPos, state.player2.rings))
                     {
-                        board += "<td class='black-ring'></td>"
+                        board += "'black-ring'"
+                    }
+                    else if (logicOfGame.isVectorOnList(currentPos, state.player2.pawns))
+                    {
+                        board += "'black-pawn'"
                     }
                     else
                     {
-                        board += "<td class='dot' data-x=" + x + " data-y=" + y +"></td>"
+                        board += "'dot'"
                     }
+                    board += " data-x=" + x + " data-y=" + y +"></td>"
                 }
                 else
                 {
@@ -44,7 +56,29 @@ const visualizationOfGame = {
     handleHumanTurn(state, player, cb) {
         if (state.placement_done)
         {
+            $("." + (player === "player1" ? "white" : "black") + "-ring").on("click", function () {
+                const ringPos = [parseInt($(this).attr("data-x")), parseInt($(this).attr("data-y"))]
+                state[player].rings.forEach((otherRingPos, ringIndex) => {
+                    if (ringPos[0] === otherRingPos[0] && ringPos[1] === otherRingPos[1])
+                    {
+                        self.selectedRingId = ringIndex
+                        self.possibleMovesForRing = []
+                        self.possibleMovesForRing.push(...logicOfGame.getAllAlignedPositionsToPosition(ringPos, state))
+                    }
+                })
+            })
 
+            $(".dot").on("click", function() {
+                if (self.selectedRingId !== -1)
+                {
+                    const currentPosition = [parseInt($(this).attr("data-x")), parseInt($(this).attr("data-y"))]
+                    if (logicOfGame.isVectorOnList(currentPosition, self.possibleMovesForRing))
+                    {
+                        cb([self.selectedRingId, currentPosition])
+                        self.selectedRingId = -1
+                    }
+                }
+            })
         }
         else
         {
