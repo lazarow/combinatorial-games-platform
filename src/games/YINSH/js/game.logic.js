@@ -121,60 +121,46 @@ const logicOfGame = {
             return []
         }
 
-        for (let i=0; i<boardEnd[1]; i++)
-        {
-            if (i === position[1])
+        [[0, 1], [0, -1], [1, 1], [-1, 1], [1, -1], [-1, -1]].forEach(direction => {
+            const allRings = [...state.player1.rings, ...state.player2.rings]
+            const allPawns = [...state.player1.pawns, ...state.player2.pawns]
+            let pawnInLastField = false
+            let pos = [...position]
+            while (true)
             {
-                continue
+                pos[0] += direction[0]
+                pos[1] += direction[1]
+
+                if (!isPositionOnBoard(pos))
+                {
+                    break
+                }
+
+                if (!this.isVectorOnList(pos, state.positions))
+                {
+                    continue
+                }
+
+                if (this.isVectorOnList(pos, allRings))
+                {
+                    break
+                }
+
+                if (this.isVectorOnList(pos, allPawns))
+                {
+                    pawnInLastField = true
+                }
+                else
+                {
+                    result.push([...pos])
+
+                    if (pawnInLastField)
+                    {
+                        break
+                    }
+                }
             }
-            result.push([position[0], i])
-        }
-
-        let newPosition = [...position]
-        newPosition[0] += 1
-        newPosition[1] += 1
-        while (isPositionOnBoard(newPosition))
-        {
-            result.push([...newPosition])
-            newPosition[0] += 1
-            newPosition[1] += 1
-        }
-
-        newPosition = [...position]
-        newPosition[0] += -1
-        newPosition[1] += 1
-        while (isPositionOnBoard(newPosition))
-        {
-            result.push([...newPosition])
-            newPosition[0] += -1
-            newPosition[1] += 1
-        }
-
-        newPosition = [...position]
-        newPosition[0] += -1
-        newPosition[1] += -1
-        while (isPositionOnBoard(newPosition))
-        {
-            result.push([...newPosition])
-            newPosition[0] += -1
-            newPosition[1] += -1
-        }
-
-        newPosition = [...position]
-        newPosition[0] += 1
-        newPosition[1] += -1
-        while (isPositionOnBoard(newPosition))
-        {
-            result.push([...newPosition])
-            newPosition[0] += 1
-            newPosition[1] += -1
-        }
-
-        let allowedPositions = [...state.positions]
-        const badPositions = [...state.player1.rings, ...state.player1.pawns, ...state.player2.rings, ...state.player2.pawns]
-        allowedPositions = allowedPositions.filter(pos => !this.isVectorOnList(pos, badPositions))
-
-        result = result.filter(pos => this.isVectorOnList(pos, allowedPositions))
+        })
 
         return result
     },
