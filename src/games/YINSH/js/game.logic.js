@@ -49,13 +49,15 @@ const logicOfGame = {
 
         if (state.placement_done)
         {
-
+            state[player].rings.forEach((ring, ringIndex) => {
+                
+            })
         }
         else
         {
             state.positions.forEach(pos => {
                 const unavailable = [...state.player1.rings, ...state.player2.rings]
-                if (unavailable.some(ring => ring[0] === pos[0] && ring[1] === pos[1]) === false)
+                if (!this.isVectorOnList(pos, unavailable))
                 {
                     moves.push(pos)
                 }
@@ -98,6 +100,9 @@ const logicOfGame = {
     /**
      * Funkcja generująca unikalny klucz dla wskazanego stanu.
      */
+    isVectorOnList(vector, list) {
+        return list.some(otherVector => otherVector[0] === vector[0] && otherVector[1] === vector[1])
+    },
     generateUniqueKey: undefined,
 };
 

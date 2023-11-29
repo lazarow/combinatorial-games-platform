@@ -10,13 +10,14 @@ const visualizationOfGame = {
             board += "<tr>"
             for (let x=0; x<11; x++)
             {
-                if (state.positions.some(pos => pos[0] === x && pos[1] === y))
+                const currentPos = [x, y]
+                if (logicOfGame.isVectorOnList(currentPos, state.positions))
                 {
-                    if (state.player1.rings.some(pos => pos[0] === x && pos[1] === y))
+                    if (logicOfGame.isVectorOnList(currentPos, state.player1.rings))
                     {
                         board += "<td class='white-ring'></td>"
                     }
-                    else if (state.player2.rings.some(pos => pos[0] === x && pos[1] === y))
+                    else if (logicOfGame.isVectorOnList(currentPos, state.player2.rings))
                     {
                         board += "<td class='black-ring'></td>"
                     }
