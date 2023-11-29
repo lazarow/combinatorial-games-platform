@@ -9,10 +9,18 @@
         <div class="col p-3">
             <div class="game-container p-3"><div id="game"></div></div>
             <div id="gameHistoryNavigation" class="mt-3 text-center d-none">
-                <a href="javascript:void(0);" onclick="restoreFirstTurn()" class="btn btn-dark"><i class="ri-rewind-fill"></i></a>
-                <a href="javascript:void(0);" onclick="restorePreviousTurn()" class="btn btn-dark"><i class="ri-skip-back-fill"></i></a>
-                <a href="javascript:void(0);" onclick="restoreNextTurn()" class="btn btn-dark"><i class="ri-skip-forward-fill"></i></a>
-                <a href="javascript:void(0);" onclick="restoreLastTurn()" class="btn btn-dark"><i class="ri-speed-fill"></i></a>
+                <a href="javascript:void(0);" onclick="restoreFirstTurn()" class="btn btn-dark"
+                    ><i class="ri-rewind-fill"></i
+                ></a>
+                <a href="javascript:void(0);" onclick="restorePreviousTurn()" class="btn btn-dark"
+                    ><i class="ri-skip-back-fill"></i
+                ></a>
+                <a href="javascript:void(0);" onclick="restoreNextTurn()" class="btn btn-dark"
+                    ><i class="ri-skip-forward-fill"></i
+                ></a>
+                <a href="javascript:void(0);" onclick="restoreLastTurn()" class="btn btn-dark"
+                    ><i class="ri-speed-fill"></i
+                ></a>
             </div>
         </div>
         <div class="col p-3 ps-0">
@@ -63,8 +71,11 @@
     <div class="tab-pane active" id="tabDescription"><%~ it.description %></div>
     <div class="tab-pane" id="tabHistory"></div>
     <div class="tab-pane" id="tabAlphaBetaTextTree">
-        <p>Do wygenerowania drzewa można użyć <a href="https://jimblackler.net/treefun/index.html" target="_blank">tej strony</a>.</p>
-        <pre id="alphaBetaTextTree"></pre>
+        <p class="bg-light p-3">
+            Do wygenerowania drzewa można użyć
+            <a href="https://jimblackler.net/treefun/index.html" target="_blank">tej strony</a>.
+        </p>
+        <pre class="bg-dark text-white p-3" id="alphaBetaTextTree"></pre>
     </div>
 </div>
 

@@ -27,7 +27,7 @@ const games = fs
         return {
             name,
             title: config.title,
-            extraJsFiles: config.extraJsFiles ?? []
+            extraJsFiles: config.extraJsFiles ?? [],
         };
     });
 
@@ -83,22 +83,28 @@ function concatScripts(cb) {
             fs.mkdirSync(outputDir + "/js/" + game.name, { recursive: true });
         }
         concat(
-            game.extraJsFiles.map(file => {
-                return gamesDir + "/" + game.name + "/js/" + file;
-            }).concat([
-                sourceDir + "/game.pre.js",
-                gamesDir + "/" + game.name + "/js/game.logic.js",
-                gamesDir + "/" + game.name + "/js/game.visualization.js",
-                sourceDir + "/game.post.js",
-            ]),
+            game.extraJsFiles
+                .map((file) => {
+                    return gamesDir + "/" + game.name + "/js/" + file;
+                })
+                .concat([
+                    sourceDir + "/game.pre.js",
+                    gamesDir + "/" + game.name + "/js/game.logic.js",
+                    gamesDir + "/" + game.name + "/js/game.visualization.js",
+                    sourceDir + "/game.post.js",
+                ]),
             outputDir + "/js/" + game.name + "/game.js"
         );
         concat(
-            [
-                sourceDir + "/game.pre.js",
-                gamesDir + "/" + game.name + "/js/game.logic.js",
-                sourceDir + "/alphabeta.js",
-            ],
+            game.extraJsFiles
+                .map((file) => {
+                    return gamesDir + "/" + game.name + "/js/" + file;
+                })
+                .concat([
+                    sourceDir + "/game.pre.js",
+                    gamesDir + "/" + game.name + "/js/game.logic.js",
+                    sourceDir + "/alphabeta.js",
+                ]),
             outputDir + "/js/" + game.name + "/alphabeta.js"
         );
     }
@@ -123,7 +129,7 @@ exports.default = function () {
     server.deploy(
         {
             port: 8000,
-            root: 'dist/'
+            root: "dist/",
         },
         () => {
             console.log("Platforma została uruchomiona pod adresem http://localhost:8000");
