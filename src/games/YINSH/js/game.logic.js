@@ -79,6 +79,57 @@ const logicOfGame = {
 
         if (state.placement_done)
         {
+            const moveStart = state[player].rings[move[0]]
+            const moveEnd = move[1]
+            const direction = [0, 0]
+
+            if (moveStart[0] > moveEnd[0])
+            {
+                direction[0] = -1
+            }
+            if (moveStart[0] < moveEnd[0])
+            {
+                direction[0] = 1
+            }
+
+            if (moveStart[1] > moveEnd[1])
+            {
+                direction[1] = -1
+            }
+            if (moveStart[1] < moveEnd[1])
+            {
+                direction[1] = 1
+            }
+
+            const currentPos = [...moveStart]
+            const reverseWhite = []
+            const reverseBlack = []
+
+            while (currentPos[0] !== moveEnd[0] && currentPos[1] !== moveEnd[1])
+            {
+                currentPos[0] += direction[0]
+                currentPos[1] += direction[1]
+
+                if (this.isVectorOnList(currentPos, state.positions))
+                {
+                    if (this.isVectorOnList(currentPos, state.player1.pawns))
+                    {
+                        reverseWhite.push([...currentPos])
+                    }
+
+                    if (this.isVectorOnList(currentPos, state.player2.pawns))
+                    {
+                        reverseBlack.push([...currentPos])
+                    }
+                }
+            }
+
+            state.player1.pawns = state.player1.pawns.filter(pos => !this.isVectorOnList(pos, reverseWhite))
+            state.player2.pawns = state.player2.pawns.filter(pos => !this.isVectorOnList(pos, reverseBlack))
+
+            state.player1.pawns.push(...reverseBlack)
+            state.player2.pawns.push(...reverseWhite)
+
             state[player].pawns.push(state[player].rings[move[0]])
             state[player].rings.splice(move[0], 1)
             state[player].rings.push(move[1])
