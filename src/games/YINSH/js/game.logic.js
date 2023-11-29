@@ -105,7 +105,7 @@ const logicOfGame = {
             const reverseWhite = []
             const reverseBlack = []
 
-            while (currentPos[0] !== moveEnd[0] && currentPos[1] !== moveEnd[1])
+            while (!(currentPos[0] === moveEnd[0] && currentPos[1] === moveEnd[1]))
             {
                 currentPos[0] += direction[0]
                 currentPos[1] += direction[1]
