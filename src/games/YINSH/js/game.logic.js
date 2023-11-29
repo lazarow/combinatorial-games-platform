@@ -114,8 +114,9 @@ const logicOfGame = {
         const boardStart = [0, 0]
         const boardEnd = [10, 18]
         let result = []
+        const isPositionOnBoard = (pos) => { return pos[0] >= boardStart[0] && pos[1] >= boardStart[1] && pos[0] <= boardEnd[0] && pos[1] <= boardEnd[1] }
 
-        if (position[0] < boardStart[0] || position[1] < boardStart[1] || position[0] > boardEnd[0] || position[1] > boardEnd[1])
+        if (!isPositionOnBoard(position))
         {
             return []
         }
@@ -127,6 +128,46 @@ const logicOfGame = {
                 continue
             }
             result.push([position[0], i])
+        }
+
+        let newPosition = [...position]
+        newPosition[0] += 1
+        newPosition[1] += 1
+        while (isPositionOnBoard(newPosition))
+        {
+            result.push([...newPosition])
+            newPosition[0] += 1
+            newPosition[1] += 1
+        }
+
+        newPosition = [...position]
+        newPosition[0] += -1
+        newPosition[1] += 1
+        while (isPositionOnBoard(newPosition))
+        {
+            result.push([...newPosition])
+            newPosition[0] += -1
+            newPosition[1] += 1
+        }
+
+        newPosition = [...position]
+        newPosition[0] += -1
+        newPosition[1] += -1
+        while (isPositionOnBoard(newPosition))
+        {
+            result.push([...newPosition])
+            newPosition[0] += -1
+            newPosition[1] += -1
+        }
+
+        newPosition = [...position]
+        newPosition[0] += 1
+        newPosition[1] += -1
+        while (isPositionOnBoard(newPosition))
+        {
+            result.push([...newPosition])
+            newPosition[0] += 1
+            newPosition[1] += -1
         }
 
         let allowedPositions = [...state.positions]

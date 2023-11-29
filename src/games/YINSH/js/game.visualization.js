@@ -56,6 +56,9 @@ const visualizationOfGame = {
     handleHumanTurn(state, player, cb) {
         if (state.placement_done)
         {
+            self.selectedRingId = -1
+            self.possibleMovesForRing = []
+
             $("." + (player === "player1" ? "white" : "black") + "-ring").on("click", function () {
                 const ringPos = [parseInt($(this).attr("data-x")), parseInt($(this).attr("data-y"))]
                 state[player].rings.forEach((otherRingPos, ringIndex) => {
