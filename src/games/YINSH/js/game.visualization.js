@@ -54,6 +54,10 @@ const visualizationOfGame = {
      * wejście podać wybrany ruch.
      */
     handleHumanTurn(state, player, cb) {
+        
+
+        
+        
         if (state.placement_done)
         {
             self.selectedRingId = -1
@@ -66,7 +70,19 @@ const visualizationOfGame = {
                     {
                         self.selectedRingId = ringIndex
                         self.possibleMovesForRing = []
+                        
+                        
                         self.possibleMovesForRing.push(...logicOfGame.getAllAlignedPositionsToPosition(ringPos, state))
+                        $(".highlight").toggleClass("highlight dot")
+                        $(".dot").each(function () {
+                            var x = parseInt($(this).attr("data-x"));
+                            var y = parseInt($(this).attr("data-y"));
+                            if (logicOfGame.isVectorOnList([x, y], self.possibleMovesForRing)) {
+                                $(this).toggleClass("dot highlight");
+                            }
+                            
+
+                        });
                     }
                 })
             })
@@ -77,6 +93,7 @@ const visualizationOfGame = {
                     const currentPosition = [parseInt($(this).attr("data-x")), parseInt($(this).attr("data-y"))]
                     if (logicOfGame.isVectorOnList(currentPosition, self.possibleMovesForRing))
                     {
+                        
                         cb([self.selectedRingId, currentPosition])
                         self.selectedRingId = -1
                     }
@@ -101,7 +118,7 @@ const visualizationOfGame = {
      * Funkcja zwraca czytelny dla człowieka opis ruchu.
      */
     getReadableMoveDescription(state, player, move) {
-        return (player === "player1" ? "B" : "C") +  "(" + move[0]+"," + move[1]+ ")";
+       
 
     },
     /**
