@@ -91,7 +91,7 @@ const visualizationOfGame = {
         if (player === "player2") return "Czarny";
     },
     getReadableMoveDescription(state, player, move) {
-        return String.fromCharCode(97 + move[0]) + (move[1] + 1);
+        return String.fromCharCode(97 + move[1]) + (move[2] + 1);
     },
     getReadableWinnerName(state, player) {
         return player === "player1" ? "Czarny" : "Biały";
