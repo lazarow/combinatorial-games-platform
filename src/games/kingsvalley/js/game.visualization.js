@@ -100,15 +100,17 @@ const visualizationOfGame = {
                         return $(".square-placeholder[data-x=" + x + "][data-y=" + y + "]")
                     })
                     const startingField = $(".square-placeholder[data-x=" + startPosition.x + "][data-y=" + startPosition.y + "]");
-                    startingField.addClass("highlighted2");
+                    if (destinationPosition !== undefined && destinationPosition !== undefined) startingField.addClass("highlighted2");
                     fields.forEach(field => {
                         field.removeClass("highlighted")
                         field.removeClass('highlighted2')
                         field.removeClass("sun-highlight")
                     });
                     fields.forEach(field => {
-                        if (field.data('x') === destinationPosition.x && field.data('y') === destinationPosition.y) {
-                            field.addClass("highlighted2");
+                        if (destinationPosition !== undefined && destinationPosition !== undefined) {
+                            if (field.data('x') === destinationPosition.x && field.data('y') === destinationPosition.y) {
+                                field.addClass("highlighted2");
+                            }
                         }
                     });
                 }
