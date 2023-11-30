@@ -3,6 +3,8 @@ const boardHeight = 5;
 
 const gameId = "kingsvalley";
 
+let totalMoves = 0;
+
 const logicOfGame = {
     generateInitialState() {
         return {
@@ -54,9 +56,11 @@ const logicOfGame = {
                 }
                 if (prevX === position[0] && prevY === position[1]) continue;
                 if (pawn !== kingPawn && prevX === 2 && prevY === 2) continue;
+                if (pawn === kingPawn && totalMoves < 2) continue;
                 moves.push([pawn, prevX, prevY]);
             }
         }
+        totalMoves++;
         return moves;
     },
     generateStateAfterMove(previousState, player, move) {
