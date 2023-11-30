@@ -11,7 +11,10 @@ function alphaBetaNegamax(node, player, depth, alpha, beta, sign = 1, textTreePr
         const stateAfterMove = logicOfGame.generateStateAfterMove(node.state, node.player, move);
 
         if (logicOfGame.generateUniqueKey !== undefined) {
-            const uniqueKey = logicOfGame.generateUniqueKey(stateAfterMove);
+            const uniqueKey = logicOfGame.generateUniqueKey(
+                stateAfterMove,
+                node.player === "player1" ? "player2" : "player1"
+            );
             if (uniqueKey in transpositionTable) {
                 continue;
             } else {

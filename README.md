@@ -63,7 +63,7 @@ const players = [
 Gdzie `maxDepth` oznacza głębokość drzewa algorytmu, co powinno przełożyć się na siłę SI. Dobór głębokości drzewa
 powinien zostać dobrany empirycznie do wybranej gry.
 
-Metoda `generateUniqueKey` powinna zwracać unikatowy hash dla stanu gry (`state`). Jedną z możliwych implementacji jest
+Metoda `generateUniqueKey` powinna zwracać unikatowy hash dla stanu gry oraz gracza (`state` i `player`). Jedną z możliwych implementacji jest
 biblioteka [_object-hash_](https://github.com/puleos/object-hash).
 
 Dodatkowa flaga `printTree` pozwala włączyć _drukowanie_ drzewa gry.
