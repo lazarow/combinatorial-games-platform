@@ -1,0 +1,81 @@
+.board {
+    text-align: center;
+    margin: 0 auto;
+    border-spacing: 0;
+}
+
+.board label {
+    width: 48px;
+    height: 48px;
+    margin: 0;
+    line-height: 48px;
+    font-size: 24px;
+    text-align: center;
+    font-weight: normal;
+}
+
+.board tr td {
+    padding: 0;
+    margin: 0;
+    border: 0;
+    border-spacing: 0;
+}
+
+.board tr td.square {
+    width: 128px;
+    height: 128px;
+    background-color: #779556;
+}
+
+.board tr td.square div {
+    width: 128px;
+    height: 128px;
+}
+
+.board tr td.square div.highlighted {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: rgba(0,0,0,0.2);
+    transform: translate(79%, 0%);
+}
+
+.board tr:nth-child(even) td.square:nth-child(odd) {
+    background-color: #ebecd0;
+}
+
+.board tr:nth-child(odd) td.square:nth-child(even) {
+    background-color: #ebecd0;
+}
+
+.board tr td div[data-available='false'] {
+    background-color: #3b3b3b;
+}
+
+.white-pawn {
+    width: 128px;
+    height: 128px;
+    background: url(../../images/kingsvalley/white-pawn.png) no-repeat center center transparent;
+}
+
+.black-pawn {
+    width: 128px;
+    height: 128px;
+    background: url(../../images/kingsvalley/black-pawn.png) no-repeat center center transparent;
+}
+
+.white-king {
+    width: 128px;
+    height: 128px;
+    background: url(../../images/kingsvalley/white-king.png) no-repeat center center transparent;
+}
+
+.black-king {
+    width: 128px;
+    height: 128px;
+    background: url(../../images/kingsvalley/black-king.png) no-repeat center center transparent;
+}
+
+.board tr td.square.center {
+    background: url(../../images/kingsvalley/sun.png) no-repeat center center transparent;
+}
