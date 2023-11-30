@@ -36,16 +36,19 @@ const logicOfGame = {
         const fences = []; // Tablica na płotki
         const moves = []; // Tablica na ruchy graczy
 
-        // BoardHeight i BoardWidth są równe 18, płotki są aktualnie zrobione tak, że "data-x" i "data-y" nie przekraczają wartości 16 (sprawdziłem używając opcji "zbadaj element" w przeglądarce)
-        // dlatego też w pętlach dałem do tych zmiennych -2
-        for (let x = 0; x <= boardHeight-2; ++x) {
-            for (let y = boardWidth-2; y >= 0; --y) {
-                if ((x % 2 != 0) || (y % 2 != 0)) {
-                    fences.push([x, y]);
-                }
+        //wiersze parzyste posiadają 8 płotków pionowych natomiast wiersze nie parzyste posiadają 9 płotków poziomych
+        for (let y = 0; y <= boardHeight-2; y++) {
+            if(y%2===0){
+                //wiersz parzysty 
+                for (let x =1; x <= boardHeight-3; x+=2) 
+                    fences.push([x,y]);
+            }else{
+                //wiersz nieparzysty
+                for (let x =0; x <= boardHeight-2; x+=2) 
+                    fences.push([x,y]);
             }
         }
-
+        console.log(fences);
         const enemy = player === "player1" ? "player2" : "player1";
 
         for (let i = 0; i < offsets.length; ++i) {
@@ -68,7 +71,7 @@ const logicOfGame = {
                 }
             }
         }
-        return moves;
+        return [moves,fences];
     },
     /**
      * Funkcja generuje stan po wykonaniu wskazanego ruchu.

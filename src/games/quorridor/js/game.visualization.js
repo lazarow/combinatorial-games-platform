@@ -57,7 +57,7 @@ const visualizationOfGame = {
                 // Wstawienie płotków horyzontalnych pomiędzy wierszami
             } else if (!(y === boardHeight - 1)) {
                 board += "<tr class = 'fenceRow'<td></td>";
-                for (x = 0; x <= boardHeight / 2 - 1; ++x) {
+                for (x = 0; x <= boardHeight-1 ; x+=2) {
                     board += "<td></td>";
                     board += '<td class="fenceRow"><div class="fenceRow" data-x="' + x + '" data-y="' + y + '">';
                 }
@@ -98,7 +98,12 @@ const visualizationOfGame = {
         const pawnX = state[player][0];
         const pawnY = state[player][1];
         // Wygenerowanie możliwych ruchów
-        const moves = logicOfGame.generateMoves(state, player);
+        const temp = logicOfGame.generateMoves(state, player);
+        
+        const moves=temp[0];
+        const fences=temp[1];
+
+        console.log(fences)
         let fieldsList = "";
         // Utworzenie listy pól, na które można przesunąć pionek
         for (let i = 0; i < moves.length; ++i) {
@@ -111,8 +116,25 @@ const visualizationOfGame = {
             }
 
         }
+
+        let fencelist = "";
+        for (let i=0; i<fences.length;i++){
+            let type = fences[i][1]%2===0?".fenceCol":".fenceRow";
+            
+            const fence = $( type +"[data-x=" + fences[i][0] + "][data-y=" + fences[i][1] + "]")
+            if (fence.length > 0)
+                fencelist +=
+                (fencelist.length > 0 ? ", " : "") +
+                type+"[data-x=" + fences[i][0] +
+                "][data-y=" + fences[i][1] + "]";
+        }
+
         // Pobranie referencji do pól, na które można przesunąć pionek
         const fields = $(fieldsList);
+        const blockades = $(fencelist);
+
+        console.log(fields)
+        console.log(blockades)
         // Ustawienie pionka jako przesuwalnego
         pawn.draggable({
             scope: "fields",
@@ -126,6 +148,8 @@ const visualizationOfGame = {
                 fields.removeClass("highlighted2");
             },
         });
+
+
 
         // Ustawienie pól jako miejsca, na które można przesunąć pionek
         fields.droppable({
@@ -141,6 +165,27 @@ const visualizationOfGame = {
             },
             out() {
                 $(this).removeClass("highlighted2");
+            },
+        });
+
+        blockades.on({
+            mouseenter(){
+              $(this).addClass("hover");
+              console.log("lol");
+            },
+            mouseleave(){
+                $(this).removeClass("hover");
+            },
+            click(event, ui){
+                $(this).addClass("placed");
+                
+                $(this).removeClass("hover");
+                
+                ui.on.appendTo(this);
+                
+                ui.on.css("left", 0);
+                cb([parseInt(ui.on.parent().attr("data-x")), parseInt(ui.on.parent().attr("data-y"))]);
+              console.log("lel");
             },
         });
     },
