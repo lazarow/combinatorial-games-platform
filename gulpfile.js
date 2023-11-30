@@ -28,6 +28,7 @@ const games = fs
             name,
             title: config.title,
             extraJsFiles: config.extraJsFiles ?? [],
+            webWorkerExtraJsFiles: config.webWorkerExtraJsFiles ?? [],
         };
     });
 
@@ -83,7 +84,7 @@ function concatScripts(cb) {
             fs.mkdirSync(outputDir + "/js/" + game.name, { recursive: true });
         }
         concat(
-            (game.extraJsFiles ?? [])
+            game.extraJsFiles
                 .map((file) => {
                     return gamesDir + "/" + game.name + "/js/" + file;
                 })
@@ -96,7 +97,7 @@ function concatScripts(cb) {
             outputDir + "/js/" + game.name + "/game.js"
         );
         concat(
-            (game.webWorkerExtraJsFiles ?? [])
+            game.webWorkerExtraJsFiles
                 .map((file) => {
                     return gamesDir + "/" + game.name + "/js/" + file;
                 })
