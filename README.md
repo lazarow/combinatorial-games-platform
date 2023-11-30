@@ -71,11 +71,12 @@ Dodatkowa flaga `printTree` pozwala włączyć _drukowanie_ drzewa gry.
 ## Dodatkowe pliki JavaScript
 
 Istnieje możliwość dodania kolejnych plików JavaScript do skryptu gry. Dodatkowe pliki
-należy dodać do pliku `config.json` jako tablica plików o kluczu `extraJsFiles`. Dodatkowe pliki muszą znaleźć się w katalogu `js` w katalogu gry.
+należy dodać do pliku `config.json` jako tablica plików o kluczu `extraJsFiles` (pliki dla wizualizacji gry) oraz `webWorkerExtraJsFiles` (pliki dla algorytmów SI). Dodatkowe pliki muszą znaleźć się w katalogu `js` w katalogu gry.
 
 ```
 {
     "title": "Template",
-    "extraJsFiles": ["extra.js"]
+    "extraJsFiles": ["extra.js"],
+    "webWorkerExtraJsFiles": ["extra.js"]
 }
 ```
