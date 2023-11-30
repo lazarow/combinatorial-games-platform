@@ -61,7 +61,17 @@ const visualizationOfGame = {
                     let fields = moves.filter(move => move[0] === pawn).map(([, x, y]) => {
                         return $(".square-placeholder[data-x=" + x + "][data-y=" + y + "]")
                     })
-                    fields.forEach(field => field.addClass("highlighted"));
+                    fields.forEach(field => {
+                        if (field.data('x') === 2
+                            && field.data('y') === 2
+                            && pawn === 2
+                        ) {
+                            field.addClass("sun-highlight");
+                        }
+                        else {
+                            field.addClass("highlighted")
+                        }
+                    });
                     fields.forEach(field => {
                         field.droppable({
                             accept: pawnEl,
@@ -81,7 +91,10 @@ const visualizationOfGame = {
                     let fields = moves.filter(move => move[0] === pawn).map(([, x, y]) => {
                         return $(".square-placeholder[data-x=" + x + "][data-y=" + y + "]")
                     })
-                    fields.forEach(field => field.removeClass("highlighted"));
+                    fields.forEach(field => {
+                        field.removeClass("highlighted")
+                        field.removeClass("sun-highlight")
+                    });
                 },
             })
         }
