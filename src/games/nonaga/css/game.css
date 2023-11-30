@@ -1,0 +1,99 @@
+#board {
+    display: grid;
+    grid-template-columns: repeat(13, 52px);
+    grid-template-rows: repeat(13, 52px);
+    width: 720px;
+    height: 720px;
+    gap: 1px;
+    margin-left: 12px;
+    margin-right: 0px;
+    position: relative;
+}
+
+.cell {
+    box-sizing: border-box;
+    background: rgb(250, 250, 250);
+    border-radius: 50%;
+    position: relative;
+}
+
+.dark {
+    background: #e9ae84;
+}
+
+.piece {
+    width: 80%;
+    height: 80%;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+}
+
+
+.player2-pawn {
+    background: black;
+}
+
+.player1-pawn {
+    background: red;
+}
+
+.highlight {
+    border: 5px solid rgb(151, 185, 0);
+    box-sizing: border-box;
+    cursor: pointer;
+    animation-name: glowGreen;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+}
+.highlight-blue {
+    border: 5px solid rgb(0, 111, 185);
+    box-sizing: border-box;
+    cursor: pointer;
+    animation-name: glowBlue;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+}
+.moveTile {
+    border: 5px solid rgb(185, 0, 0);
+    box-sizing: border-box;
+    cursor: pointer;
+}
+.tileHighlight {
+    background-color: #e9ae84;
+    animation-name: glowBoard;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+}
+.pointer{
+    cursor: pointer;
+}
+
+.round-info {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 18px;
+}
+
+.translation {
+    transform: translateY(25px);
+}
+@keyframes glowBoard {
+    0%{border: 5px solid #e9ae84;}
+    50%{border: 5px solid #b85855;}
+    100%{border: 5px solid #e9ae84;}
+}
+@keyframes glowBlue {
+    0%{border: 5px solid rgb(0, 111, 185);}
+    50%{border: 5px solid rgb(250, 250, 250);}
+    100%{border: 5px solid rgb(0, 111, 185);}
+}
+@keyframes glowGreen {
+    0%{border: 5px solid #e9ae84;}
+    50%{border: 5px solid rgb(54, 190, 50);}
+    100%{border: 5px solid #e9ae84;}
+}
