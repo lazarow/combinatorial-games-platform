@@ -71,8 +71,11 @@ const logicOfGame = {
         const availableMoves = this.generateMoves(state, player);
         return availableMoves.length === 0;
     },
-    generateUniqueKey: function (state) {
-        return objectHash.sha1(state);
+    generateUniqueKey: function (state, player) {
+        return objectHash.sha1({
+            state,
+            player
+        });
     },
 };
 
