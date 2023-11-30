@@ -7,6 +7,7 @@ let totalMoves = 0;
 
 const logicOfGame = {
     generateInitialState() {
+        totalMoves = 0;
         return {
             player1: [0, 0, 1, 0, 2, 0, 3, 0, 4, 0],
             player2: [0, 4, 1, 4, 2, 4, 3, 4, 4, 4]
@@ -60,7 +61,6 @@ const logicOfGame = {
                 moves.push([pawn, prevX, prevY]);
             }
         }
-        totalMoves++;
         return moves;
     },
     generateStateAfterMove(previousState, player, move) {
@@ -96,12 +96,9 @@ const logicOfGame = {
         availableMoves.forEach(move => {
             if (move[0] === 2) kingMoves++;
         })
-        const isTerminal =
-            (state.player1[4] === 2 && state.player1[5] === 2)
+        return (state.player1[4] === 2 && state.player1[5] === 2)
             || (state.player2[4] === 2 && state.player2[5] === 2)
-            || (kingMoves === 0 && totalMoves > 1);
-        if (isTerminal) totalMoves = 0;
-        return isTerminal;
+            || (kingMoves === 0 && totalMoves > 2);
     },
     generateUniqueKey: undefined,
 };

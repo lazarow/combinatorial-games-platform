@@ -72,9 +72,7 @@ const visualizationOfGame = {
                         ) {
                             field.addClass("sun-highlight");
                         }
-                        else {
-                            field.addClass("highlighted")
-                        }
+                        else field.addClass("highlighted")
                     });
                     fields.forEach(field => {
                         field.droppable({
@@ -90,6 +88,7 @@ const visualizationOfGame = {
                                 ui.draggable.css("left", 0);
                                 fields.forEach(field => field.droppable("destroy"));
                                 pawns.forEach(pawnEl => pawnEl.draggable("destroy"));
+                                totalMoves++;
                                 cb([pawn, parseInt(ui.draggable.parent().attr("data-x")), parseInt(ui.draggable.parent().attr("data-y"))]);
                             }
                         });
