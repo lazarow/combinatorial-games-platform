@@ -41,7 +41,6 @@ const visualizationOfGame = {
         container.innerHTML = board;
         cb();
     },
-
     handleHumanTurn(state, player, cb) {
         const moves = logicOfGame.generateMoves(state, player);
         const pawns = [
@@ -51,13 +50,18 @@ const visualizationOfGame = {
             $("#" + player + "_3"),
             $("#" + player + "_4")
         ];
+        let startPosition, destinationPosition;
         for (let [pawn, pawnEl] of pawns.entries()) {
             pawnEl.draggable({
                 scope: "fields",
                 revert: "invalid",
                 revertDuration: 0,
                 refreshPositions: true,
-                start() {
+                start(event, ui) {
+                    startPosition = {
+                        x: parseInt(ui.helper.parent().attr("data-x")),
+                        y: parseInt(ui.helper.parent().attr("data-y"))
+                    };
                     let fields = moves.filter(move => move[0] === pawn).map(([, x, y]) => {
                         return $(".square-placeholder[data-x=" + x + "][data-y=" + y + "]")
                     })
@@ -77,6 +81,10 @@ const visualizationOfGame = {
                             accept: pawnEl,
                             scope: "fields",
                             drop(event, ui) {
+                                destinationPosition = {
+                                    x: parseInt($(this).attr("data-x")),
+                                    y: parseInt($(this).attr("data-y"))
+                                }
                                 ui.draggable.appendTo(this);
                                 ui.draggable.css("top", 0);
                                 ui.draggable.css("left", 0);
@@ -91,11 +99,19 @@ const visualizationOfGame = {
                     let fields = moves.filter(move => move[0] === pawn).map(([, x, y]) => {
                         return $(".square-placeholder[data-x=" + x + "][data-y=" + y + "]")
                     })
+                    const startingField = $(".square-placeholder[data-x=" + startPosition.x + "][data-y=" + startPosition.y + "]");
+                    startingField.addClass("highlighted2");
                     fields.forEach(field => {
                         field.removeClass("highlighted")
+                        field.removeClass('highlighted2')
                         field.removeClass("sun-highlight")
                     });
-                },
+                    fields.forEach(field => {
+                        if (field.data('x') === destinationPosition.x && field.data('y') === destinationPosition.y) {
+                            field.addClass("highlighted2");
+                        }
+                    });
+                }
             })
         }
     },

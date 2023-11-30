@@ -90,13 +90,21 @@ const logicOfGame = {
         }
         return state;
     },
-    isStateTerminal(state) {
-        return (state.player1[4] === 2 && state.player1[5] === 2)
-            || (state.player2[4] === 2 && state.player2[5] === 2);
+    isStateTerminal(state, player) {
+        let kingMoves = 0;
+        const availableMoves = this.generateMoves(state, player);
+        availableMoves.forEach(move => {
+            if (move[0] === 2) kingMoves++;
+        })
+        const isTerminal =
+            (state.player1[4] === 2 && state.player1[5] === 2)
+            || (state.player2[4] === 2 && state.player2[5] === 2)
+            || (kingMoves === 0 && totalMoves > 1);
+        if (isTerminal) totalMoves = 0;
+        return isTerminal;
     },
     generateUniqueKey: undefined,
 };
-
 const players = [
     { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (łatwy)", maxDepth: 3 }
 ];

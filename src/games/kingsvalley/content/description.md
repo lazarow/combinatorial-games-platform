@@ -9,4 +9,4 @@ Grę zaczyna gracz biały, który w pierwszym ruchu może ruszyć się tylko kt�
 Wszystkie figury poruszają się tak samo - poziomo, pionowo lub ukośnie (łącznie 8 kierunków), ale muszą kontynuować swój ruch "do oporu" - czyli do momentu, gdy dotrą do wolnego pola obok krawędzi planszy lub innej figury. Żaden pion nie może zająć centralnego pola, ponieważ równałoby się to z zablokowaniem możliwości zakończenia rozgrywki.
 
 ***Zakończenie gry:***
-Rozgrywka dobiega końca w momencie, gdy jeden z króli zajmie pole oznaczone symbolem słońca.
+Rozgrywka dobiega końca w momencie, gdy jeden z króli zajmie pole oznaczone symbolem słońca. Wygrywa również ten, który zablokuje króla przeciwnika w ten sposób, że nie będzie on mógł wykonać żadnego posunięcia (tzw. pat).
