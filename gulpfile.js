@@ -28,6 +28,7 @@ const games = fs
             name,
             title: config.title,
             extraJsFiles: config.extraJsFiles ?? [],
+            webWorkerExtraJsFiles: config.webWorkerExtraJsFiles ?? [],
         };
     });
 
@@ -96,7 +97,7 @@ function concatScripts(cb) {
             outputDir + "/js/" + game.name + "/game.js"
         );
         concat(
-            game.extraJsFiles
+            game.webWorkerExtraJsFiles
                 .map((file) => {
                     return gamesDir + "/" + game.name + "/js/" + file;
                 })

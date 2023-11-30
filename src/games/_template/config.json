@@ -1,4 +1,5 @@
 {
     "title": "Template",
-    "extraJsFiles": []
+    "extraJsFiles": [],
+    "webWorkerExtraJsFiles": []
 }
