@@ -1,10 +1,14 @@
 .board {
-    text-align: center;
-    margin: 0 auto;
+    
+    table-layout: fixed;
+    border-collapse: collapse;
+    margin:0;
     border-spacing: 0;
+    padding:0;
 }
 
 .board label {
+    
     width: 50px;
     height: 50px;
     margin: 0;
@@ -14,69 +18,105 @@
     font-weight: normal;
 }
 
-.board tr td {
-    padding: 10;
-    margin: 0;
-    border: 0;
-    border-spacing: 0;
-}
 
-.board tr td.square div {
-    width: 50px;
+.board tr.even {
+    position: relative;
+    
     height: 50px;
+    
+}
+.board tr.odd {
+    position: relative;
+    
+    height: 10px;
+    
+}
+.board td.even{
+    position: relative;
+    
+    width: 50px;
+}
+.board td.odd{
+    position: relative;
+    width: 10px;
+    
+}
+/*pole planszy*/
+.square{
+    
+    height: 50px;
+    width: 100%;   
+    padding: 10%;
     background-color: #ae9ffb;
 }
-
-.board tr td.square div.highlighted {
-    background-color: rgba(207, 207, 207, 0.445);
+.highlighted {
+    background-color: #f0f0f0;
+    opacity: 0.5;
 }
+.highlighted2 {
+    background-color: #ffffff;
+    opacity: 0.5;
+} 
 
-.board tr td.square div.highlighted2 {
-    background-color: rgba(234, 234, 234, 0.849);
+/*płotki*/
+.fence{
+    display: inline-block;
+    position: absolute;
+    background-color: #ffe400;
+    opacity: 0;
 }
+.vertical{
 
-.board td.fenceCol div {
+    left: 0px;
+    top: 10px;
     width: 10px;
-    height: 50px;
-    background-color: #ffffff;
-    opacity: 0;
+    height: 100px;
 }
 
-.board td.fenceCol div.hover {
-    background-color: #ffe400;
-    opacity: 0.5;
-}
 
-.board td.fenceCol div.placed {
-    background-color: #ffe400;
-    opacity: 1;
-}
-
-.board tr.fenceRow div {
-    width: 50px;
+.horizontal {
+    left: 10px;
+    top: 0px;
+    width: 100px;
     height: 10px;
-    background-color: #ffffff;
-    opacity: 0;
 }
 
-.board tr.fenceRow div.hover {
-    background-color: #ffe400;
+.hover{
     opacity: 0.5;
 }
 
-.board td.fenceRow div.placed {
-    background-color: #ffe400;
+.placed{
     opacity: 1;
 }
 
-#white-pawn {
+
+/*pionki*/
+#whitepawn {
+    height: 100%;
+    width: 100%;
+    margin-top: auto;
+    background-color: #ffffff;
+    
+    border-radius: 50%;
+}
+#blackpawn {
+    height: 100%;
+    width: 100%;
+    margin-top: auto;
+    background-color: #000000;
+    
+    border-radius: 50%;
+}
+
+/*
+.whitepawn {
     width: 50px;
     height: 50px;
     background: url(../../images/quorridor/white_pawn.png) no-repeat center center transparent;
 }
-
-#black-pawn {
+#blackpawn {
     width: 50px;
     height: 50px;
     background: url(../../images/quorridor/black_pawn.png) no-repeat center center transparent;
 }
+*/

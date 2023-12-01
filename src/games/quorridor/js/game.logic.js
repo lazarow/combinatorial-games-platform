@@ -9,13 +9,13 @@ function createFences(){
     for (let y = boardHeight; y >=0; y--) {
         if(y%2===0){
             //wiersz parzysty 
-            for (let x =1; x <= boardHeight-2; x+=2) {
+            for (let x =1; x <= boardHeight-3; x+=2) {
                 
                     r.push([x,y]);
             }
         }else{
             //wiersz nieparzysty
-            for (let x =0; x <= boardHeight-2; x+=2) 
+            for (let x =0; x <= boardHeight-3; x+=2) 
                 
                     r.push([x,y]);
         }
@@ -68,9 +68,9 @@ const logicOfGame = {
             for(i=0;i<fences.length;i++)
                 if(state.occupied.some(([invalidX, invalidY]) => fences[i][0] === invalidX && fences[i][1]  === invalidY) === false){
                     placebleFences.push(fences[i]);
-                }
-
             }
+
+        }
         
         //pozycja przeciwnika
         const enemy = player === "player1" ? "player2" : "player1";
@@ -96,9 +96,11 @@ const logicOfGame = {
                 }
             }
         }
+        console.log(moves.concat(placebleFences))
         //złączenie możliwych ruchów
         if(placebleFences.length>0)
             return moves.concat(placebleFences);
+        
         return moves;
     },
     /**
