@@ -2,7 +2,7 @@ const boardWidth = 9 * 2;
 const boardHeight = 9 * 2;
 //stworzenie tablicy płotków
 const fences = createFences();
-var debug = 
+var debug = 1
 
 function createFences(){
     let r = [];
@@ -69,7 +69,7 @@ const logicOfGame = {
         if(!(state[player+"fences"]==0)){
             //odrzucenie już zajętych płotków
             for(i=0;i<fences.length;i++)
-                if(state.occupied.some(([invalidX, invalidY]) => fences[i][0] === invalidX && fences[i][1]  === invalidY) === false){
+                if(!state.occupied.some(([invalidX, invalidY]) => fences[i][0] === invalidX && fences[i][1]  === invalidY) ){
                     placebleFences.push(fences[i]);
             }
 
@@ -77,7 +77,7 @@ const logicOfGame = {
         
         //pozycja przeciwnika
         const enemy = player === "player1" ? "player2" : "player1";
-const fence1 = state.fenceOne;
+        const fence1 = state.fenceOne;
 
         for (let i = 0; i < offsets.length; ++i) {
             const x = state[player][0] + offsets[i][0];
