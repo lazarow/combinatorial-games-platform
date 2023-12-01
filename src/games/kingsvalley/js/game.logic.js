@@ -88,6 +88,7 @@ const logicOfGame = {
             state[player][8] = move[1]
             state[player][9] = move[2]
         }
+        totalMoves++;
         return state;
     },
     isStateTerminal(state, player) {

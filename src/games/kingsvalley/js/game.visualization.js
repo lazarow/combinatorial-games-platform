@@ -1,4 +1,4 @@
-var currentPiece
+var currentPiece;
 const visualizationOfGame = {
     drawState(state, player, move, container, cb) {
         let board = '<table class="board">';
@@ -88,7 +88,6 @@ const visualizationOfGame = {
                                 ui.draggable.css("left", 0);
                                 fields.forEach(field => field.droppable("destroy"));
                                 pawns.forEach(pawnEl => pawnEl.draggable("destroy"));
-                                totalMoves++;
                                 cb([pawn, parseInt(ui.draggable.parent().attr("data-x")), parseInt(ui.draggable.parent().attr("data-y"))]);
                             }
                         });
