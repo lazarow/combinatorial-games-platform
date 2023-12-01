@@ -31,7 +31,6 @@ const visualizationOfGame = {
                 if (state.player2[4] === x && state.player2[5] === y) board += '<div class="black-king" id="player2_2"></div>';
                 if (state.player2[6] === x && state.player2[7] === y) board += '<div class="black-pawn" id="player2_3"></div>';
                 if (state.player2[8] === x && state.player2[9] === y) board += '<div class="black-pawn" id="player2_4"></div>';
-
                 board += "</div></td>";
             }
             board += "<td><label>" + (y + 1) + "</label></td>";
@@ -103,18 +102,9 @@ const visualizationOfGame = {
                         return $(".square-placeholder[data-x=" + x + "][data-y=" + y + "]")
                     })
                     const startingField = $(".square-placeholder[data-x=" + startPosition.x + "][data-y=" + startPosition.y + "]");
-                    if (destinationPosition !== undefined && destinationPosition !== undefined) startingField.addClass("highlighted2");
                     fields.forEach(field => {
                         field.removeClass("highlighted")
-                        field.removeClass('highlighted2')
                         field.removeClass("sun-highlight")
-                    });
-                    fields.forEach(field => {
-                        if (destinationPosition !== undefined && destinationPosition !== undefined) {
-                            if (field.data('x') === destinationPosition.x && field.data('y') === destinationPosition.y) {
-                                field.addClass("highlighted2");
-                            }
-                        }
                     });
                 }
             })
