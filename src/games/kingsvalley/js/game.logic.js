@@ -10,7 +10,8 @@ const logicOfGame = {
         totalMoves = 0;
         return {
             player1: [0, 0, 1, 0, 2, 0, 3, 0, 4, 0],
-            player2: [0, 4, 1, 4, 2, 4, 3, 4, 4, 4]
+            player2: [0, 4, 1, 4, 2, 4, 3, 4, 4, 4],
+            highlighted: []
         };
     },
     evaluateState() {
@@ -66,27 +67,49 @@ const logicOfGame = {
     generateStateAfterMove(previousState, player, move) {
         const state = {
             player1: [...previousState.player1],
-            player2: [...previousState.player2]
+            player2: [...previousState.player2],
+            highlighted: [...previousState.highlighted],
         };
+        state.highlighted = [];
         if (move[0] === 0) {
+            state.highlighted.push(state[player][0])
+            state.highlighted.push(state[player][1])
             state[player][0] = move[1]
             state[player][1] = move[2]
+            state.highlighted.push(state[player][0])
+            state.highlighted.push(state[player][1])
         }
         if (move[0] === 1) {
+            state.highlighted.push(state[player][2])
+            state.highlighted.push(state[player][3])
             state[player][2] = move[1]
             state[player][3] = move[2]
+            state.highlighted.push(state[player][2])
+            state.highlighted.push(state[player][3])
         }
         if (move[0] === 2) {
+            state.highlighted.push(state[player][4])
+            state.highlighted.push(state[player][5])
             state[player][4] = move[1]
             state[player][5] = move[2]
+            state.highlighted.push(state[player][4])
+            state.highlighted.push(state[player][5])
         }
         if (move[0] === 3) {
+            state.highlighted.push(state[player][6])
+            state.highlighted.push(state[player][7])
             state[player][6] = move[1]
             state[player][7] = move[2]
+            state.highlighted.push(state[player][6])
+            state.highlighted.push(state[player][7])
         }
         if (move[0] === 4) {
+            state.highlighted.push(state[player][8])
+            state.highlighted.push(state[player][9])
             state[player][8] = move[1]
             state[player][9] = move[2]
+            state.highlighted.push(state[player][8])
+            state.highlighted.push(state[player][9])
         }
         totalMoves++;
         return state;

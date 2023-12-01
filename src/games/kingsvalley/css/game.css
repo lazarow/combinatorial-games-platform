@@ -65,8 +65,8 @@
     background-color: #ebecd0;
 }
 
-.board tr td div[data-available='false'] {
-    background-color: #3b3b3b;
+.board tr td div[data-available="false"] {
+    background-color: rgba(255, 240, 30, 0.4);
 }
 
 .white-pawn {

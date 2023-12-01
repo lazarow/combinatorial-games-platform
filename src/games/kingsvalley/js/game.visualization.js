@@ -1,4 +1,4 @@
-var currentPiece;
+var currentPiece, startPosition = { x: -1, y: -1 }, destinationPosition = { x: -1, y: -1 };
 const visualizationOfGame = {
     drawState(state, player, move, container, cb) {
         let board = '<table class="board">';
@@ -10,11 +10,16 @@ const visualizationOfGame = {
         for (let y = boardHeight - 1; y >= 0; --y) {
             board += "<tr><td><label>" + (y + 1) + "</label></td>";
             for (let x = 0; x < boardWidth; ++x) {
+                const isHighlighted = state.highlighted.some((coord, index) => {
+                    return index % 2 === 0 && coord === x && state.highlighted[index + 1] === y;
+                });
                 board +=
                     '<td class="square' + (x === Math.floor(boardWidth / 2) && y === Math.floor(boardHeight / 2) ? ' center' : '') + '"><div class="square-placeholder" data-x="' +
                     x +
                     '" data-y="' +
                     y +
+                    '" data-available="' +
+                    (isHighlighted ? "false" : "true") +
                     '">';
                 if (state.player1[0] === x && state.player1[1] === y) board += '<div class="white-pawn" id="player1_0"></div>';
                 if (state.player1[2] === x && state.player1[3] === y) board += '<div class="white-pawn" id="player1_1"></div>';
@@ -42,6 +47,7 @@ const visualizationOfGame = {
         cb();
     },
     handleHumanTurn(state, player, cb) {
+        state.hightlighted = [];
         const moves = logicOfGame.generateMoves(state, player);
         const pawns = [
             $("#" + player + "_0"),
@@ -50,7 +56,6 @@ const visualizationOfGame = {
             $("#" + player + "_3"),
             $("#" + player + "_4")
         ];
-        let startPosition, destinationPosition;
         for (let [pawn, pawnEl] of pawns.entries()) {
             pawnEl.draggable({
                 scope: "fields",
