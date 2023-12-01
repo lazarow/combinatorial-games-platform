@@ -53,10 +53,6 @@
     }
 }
 
-.board tr td.square div.highlighted2 {
-    background-color: rgba(255, 240, 30, 0.4);
-}
-
 .board tr:nth-child(even) td.square:nth-child(odd) {
     background-color: #ebecd0;
 }
