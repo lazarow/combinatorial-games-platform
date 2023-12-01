@@ -39,8 +39,7 @@ const visualizationOfGame = {
                 // Wiersze z polami pionków na przemiennie z płotkami wertykalnymi
                 for (let x = 0; x < boardWidth - 1; ++x) {
                     if (x % 2 == 0) {
-                        const isRemoved = state.removed.some(([removedX, removedY]) => x === removedX && y === removedY);
-                        board += '<td class="square"> <div class= "square" data-x ="' + x + '" data-y="' + y + '" data-available="' + (isRemoved ? "false" : "true") + '">';
+                        board += '<td class="square"> <div class= "square" data-x ="' + x + '" data-y="' + y +  '">';
                     } else {
                         // W wierszu poniżej dodałem "data-available = true", ponieważ w pewnym momenc
                         board += '<td class="fenceCol"><div class="fenceCol" data-x ="' + x + '" data-y="' + y + '">';
@@ -57,7 +56,7 @@ const visualizationOfGame = {
                 // Wstawienie płotków horyzontalnych pomiędzy wierszami
             } else if (!(y === boardHeight - 1)) {
                 board += "<tr class = 'fenceRow'<td></td>";
-                for (x = 0; x <= boardHeight / 2 - 1; ++x) {
+                for (x = 0; x <= boardHeight-1 ; x+=2) {
                     board += "<td></td>";
                     board += '<td class="fenceRow"><div class="fenceRow" data-x="' + x + '" data-y="' + y + '">';
                 }
@@ -99,20 +98,40 @@ const visualizationOfGame = {
         const pawnY = state[player][1];
         // Wygenerowanie możliwych ruchów
         const moves = logicOfGame.generateMoves(state, player);
+        
+
         let fieldsList = "";
+        let i=0;
         // Utworzenie listy pól, na które można przesunąć pionek
-        for (let i = 0; i < moves.length; ++i) {
+        //zakłada że ruchy pionków są pierwsze
+        while((moves[i][0]%2===0&&moves[i][1]%2===0)) {
             const field = $(".square[data-x=" + moves[i][0] + "][data-y=" + moves[i][1] + "]");
-            if (field.length > 0 && field.attr("data-available") === "true" && field.is(":empty")) {
+            if (field.length > 0 && field.is(":empty")) {
                 fieldsList +=
                     (fieldsList.length > 0 ? ", " : "") +
                     ".square[data-x=" + moves[i][0] +
                     "][data-y=" + moves[i][1] + "]";
             }
-
+            i++;
+            if(moves[i]===undefined)
+                break;
         }
+        // Utworzenie listy płotków, na które można postawić
+        let fencelist = "";
+        for (i; i<moves.length;i++){
+            let type = moves[i][1]%2===0?".fenceCol":".fenceRow";
+            
+            const fence = $( type +"[data-x=" + moves[i][0] + "][data-y=" + moves[i][1] + "]")
+            if (fence.length > 0)
+                fencelist +=
+                (fencelist.length > 0 ? ", " : "") +
+                type+"[data-x=" + moves[i][0] +
+                "][data-y=" + moves[i][1] + "]";
+        }
+
         // Pobranie referencji do pól, na które można przesunąć pionek
         const fields = $(fieldsList);
+        const blockades = $(fencelist);
         // Ustawienie pionka jako przesuwalnego
         pawn.draggable({
             scope: "fields",
@@ -127,13 +146,14 @@ const visualizationOfGame = {
             },
         });
 
+
+
         // Ustawienie pól jako miejsca, na które można przesunąć pionek
         fields.droppable({
             accept: "#white-pawn, #black-pawn",
             scope: "fields",
             drop(event, ui) {
                 ui.draggable.appendTo(this);
-                ui.draggable.css("left", 0);
                 cb([parseInt(ui.draggable.parent().attr("data-x")), parseInt(ui.draggable.parent().attr("data-y"))]);
             },
             over() {
@@ -141,6 +161,22 @@ const visualizationOfGame = {
             },
             out() {
                 $(this).removeClass("highlighted2");
+            },
+        });
+        //dodanie interakcji do płotków
+        blockades.on({
+            mouseenter(){
+                $(this).addClass("hover");
+            },
+            mouseleave(){
+                $(this).removeClass("hover");
+            },
+            click(event, ui){
+                $(this).addClass("placed");
+                $(this).removeClass("hover");
+                
+                cb([parseInt($(this).attr("data-x")), parseInt($(this).attr("data-y"))]);
+
             },
         });
     },

@@ -39,7 +39,8 @@ let currentMove = null;
 let currentTurn = null;
 let statesHistory = [];
 let movesHistory = [];
-let alphaBetaTextTree = "";
+const defaultAlphaBetaTextTree = "Uruchom agenta SI aby wygenerować kod drzewa.";
+let alphaBetaTextTree = defaultAlphaBetaTextTree;
 
 /**
  * Uchwyty do struktur HTML związanych z grą.
@@ -123,12 +124,16 @@ function startCurrentTurn() {
                 function (e) {
                     const [score, move, textTree] = e.data;
                     workers[currentPlayer].terminate();
+                    console.timeEnd("ALPHABETA");
                     workers[currentPlayer] = null;
-                    alphaBetaTextTree = textTree;
+                    if (allPlayers[playerIndex].printTree) {
+                        alphaBetaTextTree = textTree;
+                    }
                     makeMove(move);
                 },
                 false
             );
+            console.time("ALPHABETA");
             workers[currentPlayer].postMessage({
                 state: currentState,
                 player: currentPlayer,
@@ -184,7 +189,7 @@ const alphaBetaTextTreeEl = document.querySelector("#alphaBetaTextTree");
  */
 function updateUserInterface() {
     currentPlayerNameEl.parentNode.classList.remove("d-none");
-    currentPlayerNameEl.innerText = visualizationOfGame.getTruePlayerName(currentPlayer);
+    currentPlayerNameEl.innerHTML = visualizationOfGame.getTruePlayerName(currentPlayer);
     currentTurnEl.innerText = statesHistory.length + 1;
     gameHistoryNavigationEl.classList.add("d-none");
     tabHistoryEl.innerHTML = "";
@@ -199,7 +204,7 @@ function hideUserInterface() {
     gameOverNotificationEl.classList.add("d-none");
     gameHistoryNavigationEl.classList.add("d-none");
     tabHistoryEl.innerHTML = "";
-    alphaBetaTextTreeEl.innerText = "";
+    alphaBetaTextTreeEl.innerText = defaultAlphaBetaTextTree;
 }
 
 /**
@@ -233,7 +238,9 @@ function updateUserInterfaceAfterGame(forceHistoryTab = false, forceWinnerUpdate
                 turn + 1
             }. ${readableMoveDescription}]</b></a> `;
         } else {
-            historyLinks += `<a href="javascript:void(0);" onclick="restoreTurn(${turn})">${turn + 1}. ${readableMoveDescription}</a> `;
+            historyLinks += `<a href="javascript:void(0);" onclick="restoreTurn(${turn})">${
+                turn + 1
+            }. ${readableMoveDescription}</a> `;
         }
     }
     tabHistoryEl.innerHTML = historyLinks;
