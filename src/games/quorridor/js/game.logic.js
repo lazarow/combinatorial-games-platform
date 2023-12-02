@@ -3,11 +3,11 @@ const boardHeight = 9 * 2;
 //stworzenie tablicy płotków
 const fences = createFences();
 var debug = 1
-
+//tworzenie koordy
 function createFences(){
     let r = [];
 
-    for (let y = boardHeight; y >=0; y--) {
+    for (let y = boardHeight-2; y >=1; y--) {
         if(y%2===0){
             //wiersz parzysty 
             for (let x =1; x <= boardHeight-3; x+=2) {
@@ -66,15 +66,14 @@ const logicOfGame = {
         //wiersze parzyste posiadają 8 płotków pionowych natomiast wiersze nie parzyste posiadają 9 płotków poziomych
 
         //sprawdzenie ilości płotków
-        if(!(state[player+"fences"]==0)){
+        if(state[player+"fences"]>0){
             //odrzucenie już zajętych płotków
             for(i=0;i<fences.length;i++)
-                if(!state.occupied.some(([invalidX, invalidY]) => fences[i][0] === invalidX && fences[i][1]  === invalidY) ){
+                if(this.checkFecneCollision(state,fences[i][0],fences[i][1])){
                     placebleFences.push(fences[i]);
             }
 
         }
-        
         //pozycja przeciwnika
         const enemy = player === "player1" ? "player2" : "player1";
         const fence1 = state.fenceOne;
@@ -155,12 +154,38 @@ const logicOfGame = {
                 }
             }
         }
-        console.log(moves.concat(placebleFences))
         //złączenie możliwych ruchów
-        if(placebleFences.length>0)
+        if(state[player+"fences"]>0)
             return moves.concat(placebleFences);
         
         return moves;
+    },
+    /*
+     * funckja sprawdzająca czy inny płotek 
+     */
+    checkFecneCollision(state,x,y){
+
+        //czy już jest na tym miejscu
+        if(state.occupied.some(([invalidX, invalidY]) => x === invalidX && y  === invalidY) )
+            return false;
+        //sprawdzenie kolizji innych płotków
+        if( y%2===0){
+            if(state.occupied.some(([invalidX, invalidY]) => x === invalidX && y-2  === invalidY) )
+                return false;
+            if(state.occupied.some(([invalidX, invalidY]) => x === invalidX && y+2  === invalidY) )
+                return false;
+            if(state.occupied.some(([invalidX, invalidY]) => x-1 === invalidX && y-1  === invalidY) )
+                return false;
+        }else{
+            if(state.occupied.some(([invalidX, invalidY]) => x+1 === invalidX && y+1  === invalidY) )
+                return false;
+            if(state.occupied.some(([invalidX, invalidY]) => x-2 === invalidX && y  === invalidY) )
+                return false;
+            if(state.occupied.some(([invalidX, invalidY]) => x+2 === invalidX && y  === invalidY) )
+                return false;
+        }
+
+        return true;
     },
     /**
      * Funkcja generuje stan po wykonaniu wskazanego ruchu.
@@ -192,8 +217,8 @@ fenceOne: [...previousState.fenceOne],
      */
     isStateTerminal(state, player) {
         // Sprawdzenie czy pionek jest po drugiej stronie
-        let end = player === "player1" ? 16 : 0;
-        return state[player][1] === end;
+        let end = player === "player2" ? 16 : 0;
+        return state[player === "player2" ?"player1":"player2"][1] === end;
     },
     /**
      * Funkcja generująca unikalny klucz dla wskazanego stanu.

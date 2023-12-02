@@ -135,7 +135,6 @@ const visualizationOfGame = {
             }else{
                  type = ".fence"+ ".horizontal";
             }*/
-            console.log(type)
             const fence = $( type +"[data-x=" + moves[i][0] + "][data-y=" + moves[i][1] + "]")
             if (fence.length > 0)
                 fencelist +=
@@ -168,7 +167,6 @@ const visualizationOfGame = {
             accept: "#whitepawn, #blackpawn",
             scope: "fields",
             drop(event, ui) {
-                console.log(ui)
                 ui.draggable.appendTo(this);
                 cb([parseInt(ui.draggable.parent().attr("data-x")), parseInt(ui.draggable.parent().attr("data-y"))]);
             },
@@ -216,6 +214,6 @@ const visualizationOfGame = {
      * Funkcja zwraca czytelny dla człowieka opis wygranego gracza.
      */
     getReadableWinnerName(state, player) {
-        return player === "player1" ? "Biały" : "Czarny";
+        return player === "player2" ? "Biały" : "Czarny";
     },
 };

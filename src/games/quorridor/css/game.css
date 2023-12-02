@@ -68,14 +68,14 @@
 .vertical{
 
     left: 0px;
-    top: 10px;
+    top: 6px;
     width: 10px;
     height: 100px;
 }
 
 
 .horizontal {
-    left: 10px;
+    left: 6px;
     top: 0px;
     width: 100px;
     height: 10px;
