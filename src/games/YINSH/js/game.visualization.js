@@ -6,7 +6,8 @@ const visualizationOfGame = {
     selectedRingId: -1,
     possibleMovesForRing: [],
     drawState(state, player, move, container, cb) {
-        let board = "<table>"
+        let board = "Punkty dla gracza Białego: " + state.player1.points + "<table>"
+
         for (let y=0; y<19; y++)
         {
             board += "<tr>"
@@ -45,7 +46,7 @@ const visualizationOfGame = {
             }
             board += "</tr>"
         }
-        board += "</table>"
+        board += "</table> Punkty dla gracza Czarnego: " + state.player2.points;
         container.innerHTML = board;
         cb();
     },
