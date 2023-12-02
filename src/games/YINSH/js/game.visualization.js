@@ -54,51 +54,64 @@ const visualizationOfGame = {
      * wejście podać wybrany ruch.
      */
     handleHumanTurn(state, player, cb) {
-        
-
-        
-        
         if (state.placement_done)
         {
-            self.selectedRingId = -1
-            self.possibleMovesForRing = []
+            if (state.choosing_ring_to_remove !== "none")
+            {
+                if (state.choosing_ring_to_remove === player)
+                {
+                    $("." + (player === "player1" ? "white" : "black") + "-ring").on("click", function () {
+                        const ringPos = [parseInt($(this).attr("data-x")), parseInt($(this).attr("data-y"))]
+                        cb(ringPos)
+                    })
+                }
+                else
+                {
+                    cb()
+                }
+            }
+            else
+            {
+                self.selectedRingId = -1
+                self.possibleMovesForRing = []
 
-            $("." + (player === "player1" ? "white" : "black") + "-ring").on("click", function () {
-                const ringPos = [parseInt($(this).attr("data-x")), parseInt($(this).attr("data-y"))]
-                state[player].rings.forEach((otherRingPos, ringIndex) => {
-                    if (ringPos[0] === otherRingPos[0] && ringPos[1] === otherRingPos[1])
+                $("." + (player === "player1" ? "white" : "black") + "-ring").on("click", function () {
+                    const ringPos = [parseInt($(this).attr("data-x")), parseInt($(this).attr("data-y"))]
+                    state[player].rings.forEach((otherRingPos, ringIndex) => {
+                        if (ringPos[0] === otherRingPos[0] && ringPos[1] === otherRingPos[1])
+                        {
+                            self.selectedRingId = ringIndex
+                            self.possibleMovesForRing = []
+
+
+                            self.possibleMovesForRing.push(...logicOfGame.getAllAlignedPositionsToPosition(ringPos, state))
+                            $(".highlight").toggleClass("highlight dot")
+                            $(".dot").each(function () {
+                                var x = parseInt($(this).attr("data-x"));
+                                var y = parseInt($(this).attr("data-y"));
+                                if (logicOfGame.isVectorOnList([x, y], self.possibleMovesForRing)) {
+                                    $(this).toggleClass("dot highlight");
+                                }
+
+
+                            });
+                        }
+                    })
+                })
+
+                $(".dot").on("click", function() {
+                    if (self.selectedRingId !== -1)
                     {
-                        self.selectedRingId = ringIndex
-                        self.possibleMovesForRing = []
-                        
-                        
-                        self.possibleMovesForRing.push(...logicOfGame.getAllAlignedPositionsToPosition(ringPos, state))
-                        $(".highlight").toggleClass("highlight dot")
-                        $(".dot").each(function () {
-                            var x = parseInt($(this).attr("data-x"));
-                            var y = parseInt($(this).attr("data-y"));
-                            if (logicOfGame.isVectorOnList([x, y], self.possibleMovesForRing)) {
-                                $(this).toggleClass("dot highlight");
-                            }
-                            
+                        const currentPosition = [parseInt($(this).attr("data-x")), parseInt($(this).attr("data-y"))]
+                        if (logicOfGame.isVectorOnList(currentPosition, self.possibleMovesForRing))
+                        {
 
-                        });
+                            cb([self.selectedRingId, currentPosition])
+                            self.selectedRingId = -1
+                        }
                     }
                 })
-            })
-
-            $(".dot").on("click", function() {
-                if (self.selectedRingId !== -1)
-                {
-                    const currentPosition = [parseInt($(this).attr("data-x")), parseInt($(this).attr("data-y"))]
-                    if (logicOfGame.isVectorOnList(currentPosition, self.possibleMovesForRing))
-                    {
-                        
-                        cb([self.selectedRingId, currentPosition])
-                        self.selectedRingId = -1
-                    }
-                }
-            })
+            }
         }
         else
         {
@@ -118,8 +131,28 @@ const visualizationOfGame = {
      * Funkcja zwraca czytelny dla człowieka opis ruchu.
      */
     getReadableMoveDescription(state, player, move) {
-       
-
+        if (state.placement_done)
+        {
+            if (state.choosing_ring_to_remove !== "none")
+            {
+                if (state.choosing_ring_to_remove === player)
+                {
+                    return (player === "player1" ? "B" : "C") + "r(" + move[0] + "," + move[1] + ")"
+                }
+                else
+                {
+                    return (player === "player1" ? "B" : "C") + "w"
+                }
+            }
+            else
+            {
+                return (player === "player1" ? "B" : "C") + "(" + move[1][0] + "," + move[1][1] + ")"
+            }
+        }
+        else
+        {
+            return (player === "player1" ? "B" : "C") + "(" + move[0] + "," + move[1] + ")"
+        }
     },
     /**
      * Funkcja zwraca czytelny dla człowieka opis wygranego gracza.
