@@ -7,7 +7,6 @@
 }
 
 .board label {
-
     width: 50px;
     height: 50px;
     margin: 0;
@@ -17,49 +16,43 @@
     font-weight: normal;
 }
 
-
 .board tr.even {
     position: relative;
-
     height: 50px;
-
 }
 
 .board tr.odd {
     position: relative;
-
     height: 10px;
-
 }
 
 .board td.even {
     position: relative;
-
     width: 50px;
 }
 
 .board td.odd {
     position: relative;
     width: 10px;
-
 }
 
 /*pole planszy*/
 .square {
-
     height: 50px;
     width: 100%;
     padding: 10%;
-    background-color: #ae9ffb;
+    background-color: #7e5df5;
+    border: 1px solid #644ac4;
+    border-radius: 10%;
 }
 
 .highlighted {
-    background-color: #f0f0f0;
+    background-color: #c1c0c4;
     opacity: 0.5;
 }
 
 .highlighted2 {
-    background-color: #ffffff;
+    background-color: #c1c0c4;
     opacity: 0.5;
 }
 
@@ -69,16 +62,16 @@
     position: absolute;
     background-color: #ec8029;
     opacity: 0;
+    border: 1px solid #ba5c11;
+    border-radius: 10px;
 }
 
 .vertical {
-
     left: 0px;
     top: 6px;
     width: 10px;
     height: 100px;
 }
-
 
 .horizontal {
     left: 6px;
@@ -95,14 +88,13 @@
     opacity: 1;
 }
 
-
 /*pionki*/
 #whitepawn {
     height: 100%;
     width: 100%;
     margin-top: auto;
     background-color: #ffffff;
-
+    border: 1px solid #000000;
     border-radius: 50%;
 }
 
@@ -111,6 +103,7 @@
     width: 100%;
     margin-top: auto;
     background-color: #000000;
+    border: 1px solid #ffffff;
     border-radius: 50%;
 }
 
@@ -131,6 +124,7 @@
     width: 30px;
     height: 30px;
     background-color: #ffffff;
+    border: 1px solid #000000;
     border-radius: 50%;
 }
 
@@ -139,6 +133,7 @@
     width: 30px;
     height: 30px;
     background-color: #000000;
+    border: 1px solid #ffffff;
     border-radius: 50%;
 }
 
@@ -161,8 +156,7 @@
     margin-left: 238px;
 }
 
-.countTextA,
-.countTextB {
+.countTextA, .countTextB {
     margin-left: 10px;
     font-weight: bold;
     color: #000000;
