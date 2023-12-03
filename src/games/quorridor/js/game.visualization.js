@@ -18,7 +18,7 @@ const visualizationOfGame = {
         board += "<a class = 'textB'>Płotki<a class = 'space'></a>";
         board += "<div class = 'pawnBlack'></div></a>";
         board += "<a class = 'countTextB'>x" + state.player2fences + "</a></div></div>";
-        
+
         // Dodanie pustej komórki na górze planszy (aby wyrównać oznaczenia pól na planszy)
         board += "<tr><td></td>";
 
@@ -42,16 +42,23 @@ const visualizationOfGame = {
         // Zamknięcie wiersza z oznaczeniami pól
         board += "</tr>";
 
+        // Zmienna pomocnicza do oznaczania wierszy i kolumn płotków
+        let temp = true;
+
         // Numerowanie wierszy z lewej strony
         for (let y = boardHeight - 1; y >= 0; --y) {
 
             // Oznaczenia tylko dla wierszy parzystych (kwadratów)
-            if (y % 2 == 0) {
-                board += '<tr class="even"><td><label>' + (y / 2 + 1) + '</label></td>';
+            if (y % 2 === 0) {
+                board += '<tr class="even"><td>';
+                if ((((y / 2) + 1) % 2 != 0)) {
+                    board += '<label class = "labelEven">' + (y / 2 + 1) + '</label></td>';
+                } else {
+                    board += '<label class = "labelOdd">' + (y / 2 + 1) + '</label></td>';
+                }
 
                 // Wiersze z polami pionków na przemiennie z płotkami wertykalnymi
                 for (let x = 0; x < boardWidth - 1; ++x) {
-
                     const isOccupied = state.occupied.some(([occupiedX, occupiedY]) => x === occupiedX && y === occupiedY);
                     if (x % 2 == 0) {
                         board += '<td class="even"> <div class= "square" data-x ="' + x + '" data-y="' + y + '">';
@@ -72,11 +79,20 @@ const visualizationOfGame = {
                 }
                 // Wstawienie płotków horyzontalnych pomiędzy wierszami
             } else if (!(y === boardHeight - 1)) {
-                board += "<tr class = 'odd'<td></td>";
+                board += '<tr class = "odd"<td></td>';
                 for (x = 0; x <= boardHeight - 1; x += 2) {
-
                     const isOccupied = state.occupied.some(([occupiedX, occupiedY]) => x === occupiedX && y === occupiedY);
-                    board += '<td class="odd"></td>';
+                    if (x === 0) {
+                        if (temp) {
+                            board += '<td class="firstOdd"></td>';
+                            temp = false;
+                        } else {
+                            board += '<td class="firstEven"></td>';
+                            temp = true;
+                        }
+                    } else {
+                        board += '<td></td>';
+                    }
                     board += '<td class="even"><div class="fence horizontal ' + (isOccupied ? "placed" : "") + '" data-x="' + x + '" data-y="' + y + '">';
                 }
                 board += "</tr>";
@@ -84,21 +100,36 @@ const visualizationOfGame = {
         }
 
         // Zerowanie zmiennej pomocnicznej, dodanie pustego wiersza i oznaczeń dla pól (kolumn) na dole planszy
-        board += "<tr><td></td>";
+        board += '<tr><td></td>';
 
         // Numerowanie kolumn z dołu
         for (let x = 0; x < boardWidth; ++x) {
             // Ustawienie oznaczeń tylko dla pól parzystych (kwadratów)
             if (x % 2 === 0) {
-                board += "<td><label>" + String.fromCharCode(97 + x / 2) + "</label></td>";
+                board += '<td>';
+                if ((97 + x / 2) % 2 === 0) {
+                    board += '<label class = "labelEven">' + String.fromCharCode(97 + x / 2) + '</label></td>';
+                } else {
+                    board += '<label class = "labelOdd">' + String.fromCharCode(97 + x / 2) + '</label></td>';
+                }
             } else {
-                board += "<td></td>";
+                if (x == boardWidth - 1) {
+                    board += '<td></td>';
+                } else {
+                    if (temp) {
+                        board += '<td class = "firstEven"></td>';
+                        temp = false;
+                    } else {
+                        board += '<td class = "firstOdd"></td>';
+                        temp = true;
+                    }
+                }
             }
         }
 
         // Zamknięcie tabeli
-        board += "</tr>";
-        board += "</table>";
+        board += '</tr>';
+        board += '</table>';
         // Ustawienie HTML planszy w kontenerze
         container.innerHTML = board;
 
