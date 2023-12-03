@@ -216,9 +216,9 @@ const visualizationOfGame = {
     getReadableMoveDescription(state, player, move) {
 
         if (move[0] % 2 === 0 && move[1] % 2 === 0)
-            return (player === "player1" ? "B " : "C ") + "move: " + String.fromCharCode(97 + move[0] / 2) + ((move[1] / 2) + 1);
+            return (player === "player1" ? "B " : "C ") + "R: " + String.fromCharCode(97 + move[0] / 2) + ((move[1] / 2) + 1);
         else
-            return (player === "player1" ? "B " : "C ") + "fence: " + (move[1] % 2 === 0 ? "V" : "H") + String.fromCharCode(97 + Math.floor(move[0] / 2)) + (Math.ceil((move[1] / 2)))
+            return (player === "player1" ? "B " : "C ") + "P: " + (move[1] % 2 === 0 ? "W" : "H") + String.fromCharCode(97 + Math.floor(move[0] / 2)) + (Math.ceil((move[1] / 2)))
     },
     /**
      * Funkcja zwraca czytelny dla człowieka opis wygranego gracza.
