@@ -81,30 +81,25 @@ const logicOfGame = {
             const y = state[player][1] + offsets[i][1];
 
             // Dodanie tylko możliwych 
-            if (x >= 0 && x < boardWidth && y >= 0 && y < boardHeight) {
+            if (x >= 0 && x < boardWidth && y >= 0 && y < boardHeight) 
                 //sprawdzenie czy przeciwnik sąsiaduje
-                if (!(x === state[enemy][0] && y === state[enemy][1])) {
-                    if (!this.checkFencesOnTheWay(x, y, state[player], state.occupied)) {
+                if (!(x === state[enemy][0] && y === state[enemy][1])) 
+                    if (!this.checkFencesOnTheWay(state[player][0],state[player][1],x, y, state.occupied)) 
                         moves.push([x, y]);
-                    }
-                } else {
+                    
+                else 
+                if (!this.checkFencesOnTheWay(state[player][0],state[player][1],state[enemy][0],state[enemy][1], state.occupied)) 
                     // Tworzenie przeskoku nad przeciwnikiem
                     for (let i = 0; i < offsets.length; ++i) {
                         const x = state[enemy][0] + offsets[i][0];
                         const y = state[enemy][1] + offsets[i][1];
-                        // Dodanie tylko możliwych 
-                        if (x >= 0 && x < boardWidth && y >= 0 && y < boardHeight) {
-                            if (!(x === state[player][0] && y === state[player][1])) {
-                                if (!this.checkFenceBetweenPlayers(state[player], state[enemy], state.occupied)) {
-                                    if (!this.checkFencesOnTheWay(x, y, state[enemy], state.occupied)) {
+                        // Dodanie tylko możliwych
+                        if (x >= 0 && x < boardWidth && y >= 0 && y < boardHeight) 
+                            if (!(x === state[player][0] && y === state[player][1])) 
+                                    if (!this.checkFencesOnTheWay(state[enemy][0],state[enemy][1],x, y, state.occupied)) 
                                         moves.push([x, y]);
-                                    }
-                                }
-                            }
-                        }
+                        
                     }
-                }
-            }
         }
         //złączenie możliwych ruchów
         if (state[player + "fences"] > 0)
@@ -141,58 +136,29 @@ const logicOfGame = {
     },
 
     // Funkcja sprawdzająca czy na drodze danego pionka znajduje się płotek
-    checkFencesOnTheWay(nextMoveX, nextMoveY, player, occupied) {
-
-        if (player[0] == nextMoveX && player[1] + 2 == nextMoveY &&
+    checkFencesOnTheWay(x,y,nextMoveX, nextMoveY, occupied) {
+        //n
+        if (x == nextMoveX && y + 2 == nextMoveY &&
             !occupied.some(([fencePosX, fencePosY]) => ((fencePosX === nextMoveX && fencePosY === nextMoveY - 1) ||
                 (fencePosX === nextMoveX - 2 && fencePosY === nextMoveY - 1))))
             return false;
-
-        if (player[0] == nextMoveX && player[1] - 2 == nextMoveY &&
+        //s
+        if (x== nextMoveX && y - 2 == nextMoveY &&
             !occupied.some(([fencePosX, fencePosY]) => (fencePosX === nextMoveX && fencePosY === nextMoveY + 1) ||
                 (fencePosX === nextMoveX - 2 && fencePosY === nextMoveY + 1)))
             return false;
-
-        if (player[0] + 2 == nextMoveX && player[1] == nextMoveY &&
+        //e
+        if (x + 2 == nextMoveX && y == nextMoveY &&
             !occupied.some(([fencePosX, fencePosY]) => (fencePosX === nextMoveX - 1 && fencePosY === nextMoveY) ||
                 (fencePosX === nextMoveX - 1 && fencePosY === nextMoveY + 2)))
             return false;
-
-        if (player[0] - 2 == nextMoveX && player[1] == nextMoveY &&
+        //w
+        if (x - 2 == nextMoveX && y == nextMoveY &&
             !occupied.some(([fencePosX, fencePosY]) => (fencePosX === nextMoveX + 1 && fencePosY === nextMoveY) ||
                 (fencePosX === nextMoveX + 1 && fencePosY === nextMoveY + 2)))
             return false;
 
         return true;
-    },
-
-    // Funkcja sprawdzająca czy pomiędzy pionkami graczy znajduje się płotek
-    checkFenceBetweenPlayers(player1, player2, occupied) {
-        if (player1[0] == player2[0] && player1[1] + 2 == player2[1] &&
-            occupied.some(([fencePosX, fencePosY]) => (fencePosX === player1[0] &&
-                fencePosY - 1 === player1[1]) || (fencePosX === player1[0] - 2 &&
-                    fencePosY - 1 === player1[1]))) {
-            return true;
-        }
-        if (player1[0] == player2[0] && player1[1] - 2 == player2[1] &&
-            occupied.some(([fencePosX, fencePosY]) => (fencePosX === player1[0] &&
-                fencePosY + 1 === player1[1]) || (fencePosX === player1[0] - 2 &&
-                    fencePosY + 1 === player1[1]))) {
-            return true;
-        }
-        if (player1[0] + 2 == player2[0] && player1[1] == player2[1] &&
-            occupied.some(([fencePosX, fencePosY]) => (fencePosX === player1[0] + 1 &&
-                fencePosY === player1[1]) || (fencePosX === player1[0] + 1 &&
-                    fencePosY - 2 === player1[1]))) {
-            return true;
-        }
-        if (player1[0] - 2 == player2[0] && player1[1] == player2[1] &&
-            occupied.some(([fencePosX, fencePosY]) => (fencePosX === player1[0] - 1 &&
-                fencePosY === player1[1]) || (fencePosX === player1[0] - 1 &&
-                    fencePosY - 2 === player1[1]))) {
-            return true;
-        }
-        return false;
     },
 
     /**
