@@ -4,10 +4,21 @@ const visualizationOfGame = {
      * Po zakończeniu rysowania należy wykonać funkcję `cb`.
      */
     drawState(state, player, move, container, cb) {
-        debug =1
+        debug = 1
         // Utworzenie planszy
         let board = '<table class="board">';
 
+        // Utworzenie liczników o ilości możliwych do postawienia płotków
+        board += "<div class = 'fenceCounterA'>";
+        board += "<a class = 'textA'>Płotki<a class = 'space'></a>";
+        board += "<div class = 'pawnWhite'></div></a>";
+        board += "<a class = 'countTextA'>x" + state.player1fences + "</a>";
+
+        board += "<div class = 'fenceCounterB'>";
+        board += "<a class = 'textB'>Płotki<a class = 'space'></a>";
+        board += "<div class = 'pawnBlack'></div></a>";
+        board += "<a class = 'countTextB'>x" + state.player2fences + "</a></div></div>";
+        
         // Dodanie pustej komórki na górze planszy (aby wyrównać oznaczenia pól na planszy)
         board += "<tr><td></td>";
 
@@ -33,20 +44,20 @@ const visualizationOfGame = {
 
         // Numerowanie wierszy z lewej strony
         for (let y = boardHeight - 1; y >= 0; --y) {
-            
+
             // Oznaczenia tylko dla wierszy parzystych (kwadratów)
             if (y % 2 == 0) {
                 board += '<tr class="even"><td><label>' + (y / 2 + 1) + '</label></td>';
 
                 // Wiersze z polami pionków na przemiennie z płotkami wertykalnymi
                 for (let x = 0; x < boardWidth - 1; ++x) {
-                    
+
                     const isOccupied = state.occupied.some(([occupiedX, occupiedY]) => x === occupiedX && y === occupiedY);
                     if (x % 2 == 0) {
-                        board += '<td class="even"> <div class= "square" data-x ="' + x + '" data-y="' + y +   '">';
+                        board += '<td class="even"> <div class= "square" data-x ="' + x + '" data-y="' + y + '">';
                     } else {
-                        if(!(y==0))
-                            board += '<td class="odd"><div class="fence vertical '+(isOccupied ? "placed":"" )+'" data-x ="' + x + '" data-y="' + y  + '">';
+                        if (!(y == 0))
+                            board += '<td class="odd"><div class="fence vertical ' + (isOccupied ? "placed" : "") + '" data-x ="' + x + '" data-y="' + y + '">';
                         else
                             board += '<td class="odd"><div>'
                     }
@@ -56,17 +67,17 @@ const visualizationOfGame = {
 
                     if (state.player2[0] === x && state.player2[1] === y)
                         board += '<div id="blackpawn">';
-                    
+
                     board += "</div></td>";
                 }
                 // Wstawienie płotków horyzontalnych pomiędzy wierszami
             } else if (!(y === boardHeight - 1)) {
                 board += "<tr class = 'odd'<td></td>";
-                for (x = 0; x <= boardHeight-1 ; x+=2) {
-                    
+                for (x = 0; x <= boardHeight - 1; x += 2) {
+
                     const isOccupied = state.occupied.some(([occupiedX, occupiedY]) => x === occupiedX && y === occupiedY);
                     board += '<td class="odd"></td>';
-                    board += '<td class="even"><div class="fence horizontal '+(isOccupied ? "placed":"" )+'" data-x="' + x + '" data-y="' + y  + '">';
+                    board += '<td class="even"><div class="fence horizontal ' + (isOccupied ? "placed" : "") + '" data-x="' + x + '" data-y="' + y + '">';
                 }
                 board += "</tr>";
             }
@@ -77,9 +88,9 @@ const visualizationOfGame = {
 
         // Numerowanie kolumn z dołu
         for (let x = 0; x < boardWidth; ++x) {
-        // Ustawienie oznaczeń tylko dla pól parzystych (kwadratów)
+            // Ustawienie oznaczeń tylko dla pól parzystych (kwadratów)
             if (x % 2 === 0) {
-                board += "<td><label>" + String.fromCharCode(97 + x/2) + "</label></td>";
+                board += "<td><label>" + String.fromCharCode(97 + x / 2) + "</label></td>";
             } else {
                 board += "<td></td>";
             }
@@ -88,7 +99,6 @@ const visualizationOfGame = {
         // Zamknięcie tabeli
         board += "</tr>";
         board += "</table>";
-
         // Ustawienie HTML planszy w kontenerze
         container.innerHTML = board;
 
@@ -106,13 +116,13 @@ const visualizationOfGame = {
         const pawnY = state[player][1];
         // Wygenerowanie możliwych ruchów
         const moves = logicOfGame.generateMoves(state, player);
-        
+
 
         let fieldsList = "";
-        let i=0;
+        let i = 0;
         // Utworzenie listy pól, na które można przesunąć pionek
         //zakłada że ruchy pionków są pierwsze
-        while((moves[i][0]%2===0&&moves[i][1]%2===0)) {
+        while ((moves[i][0] % 2 === 0 && moves[i][1] % 2 === 0)) {
             const field = $(".square[data-x=" + moves[i][0] + "][data-y=" + moves[i][1] + "]");
             if (field.length > 0 && field.is(":empty")) {
                 fieldsList +=
@@ -121,13 +131,13 @@ const visualizationOfGame = {
                     "][data-y=" + moves[i][1] + "]";
             }
             i++;
-            if(moves[i]===undefined)
+            if (moves[i] === undefined)
                 break;
         }
         // Utworzenie listy płotków, na które można postawić
         let fencelist = "";
-        for (i; i<moves.length;i++){
-            let type = ".fence".concat( moves[i][1]%2===0?".vertical":".horizontal");
+        for (i; i < moves.length; i++) {
+            let type = ".fence".concat(moves[i][1] % 2 === 0 ? ".vertical" : ".horizontal");
             /*
             let type
             if(moves[i][1]%2===0){
@@ -135,12 +145,12 @@ const visualizationOfGame = {
             }else{
                  type = ".fence"+ ".horizontal";
             }*/
-            const fence = $( type +"[data-x=" + moves[i][0] + "][data-y=" + moves[i][1] + "]")
+            const fence = $(type + "[data-x=" + moves[i][0] + "][data-y=" + moves[i][1] + "]")
             if (fence.length > 0)
                 fencelist +=
-                (fencelist.length > 0 ? ", " : "") +
-                type+"[data-x=" + moves[i][0] +
-                "][data-y=" + moves[i][1] + "]";
+                    (fencelist.length > 0 ? ", " : "") +
+                    type + "[data-x=" + moves[i][0] +
+                    "][data-y=" + moves[i][1] + "]";
         }
 
         // Pobranie referencji do pól, na które można przesunąć pionek
@@ -179,13 +189,13 @@ const visualizationOfGame = {
         });
         //dodanie interakcji do płotków
         blockades.on({
-            mouseenter(){
+            mouseenter() {
                 $(this).addClass("hover");
             },
-            mouseleave(){
+            mouseleave() {
                 $(this).removeClass("hover");
             },
-            click(){
+            click() {
                 $(this).addClass("placed");
                 $(this).removeClass("hover");
                 cb([parseInt($(this).attr("data-x")), parseInt($(this).attr("data-y"))]);
@@ -205,10 +215,10 @@ const visualizationOfGame = {
      */
     getReadableMoveDescription(state, player, move) {
 
-        if(move[0]%2===0&&move[1]%2===0)
-            return (player === "player1" ? "B " : "C ") + "move: " +  String.fromCharCode(97 + move[0]/2) + ((move[1]/2)+1);
+        if (move[0] % 2 === 0 && move[1] % 2 === 0)
+            return (player === "player1" ? "B " : "C ") + "move: " + String.fromCharCode(97 + move[0] / 2) + ((move[1] / 2) + 1);
         else
-            return (player === "player1" ? "B " : "C ") + "fence: "+ (move[1]%2 === 0 ? "V" : "H")+ String.fromCharCode(97 + Math.floor(move[0]/2 )) + (Math.ceil((move[1]/2)))
+            return (player === "player1" ? "B " : "C ") + "fence: " + (move[1] % 2 === 0 ? "V" : "H") + String.fromCharCode(97 + Math.floor(move[0] / 2)) + (Math.ceil((move[1] / 2)))
     },
     /**
      * Funkcja zwraca czytelny dla człowieka opis wygranego gracza.
