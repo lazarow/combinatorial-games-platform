@@ -83,22 +83,22 @@ const logicOfGame = {
             // Dodanie tylko możliwych 
             if (x >= 0 && x < boardWidth && y >= 0 && y < boardHeight) 
                 //sprawdzenie czy przeciwnik sąsiaduje
-                if (!(x === state[enemy][0] && y === state[enemy][1])) 
+                if (!(x === state[enemy][0] && y === state[enemy][1])){
                     if (!this.checkFencesOnTheWay(state[player][0],state[player][1],x, y, state.occupied)) 
                         moves.push([x, y]);
                     
-                else 
-                if (!this.checkFencesOnTheWay(state[player][0],state[player][1],state[enemy][0],state[enemy][1], state.occupied)) 
+                }else if (!this.checkFencesOnTheWay(state[player][0],state[player][1],state[enemy][0],state[enemy][1], state.occupied)) {
                     // Tworzenie przeskoku nad przeciwnikiem
                     for (let i = 0; i < offsets.length; ++i) {
                         const x = state[enemy][0] + offsets[i][0];
                         const y = state[enemy][1] + offsets[i][1];
                         // Dodanie tylko możliwych
-                        if (x >= 0 && x < boardWidth && y >= 0 && y < boardHeight) 
-                            if (!(x === state[player][0] && y === state[player][1])) 
-                                    if (!this.checkFencesOnTheWay(state[enemy][0],state[enemy][1],x, y, state.occupied)) 
-                                        moves.push([x, y]);
                         
+                            if (x >= 0 && x < boardWidth && y >= 0 && y < boardHeight) 
+                                if (!(x === state[player][0] && y === state[player][1])) 
+                                        if (!this.checkFencesOnTheWay(state[enemy][0],state[enemy][1],x, y, state.occupied)) 
+                                            moves.push([x, y]);
+                        }
                     }
         }
         //złączenie możliwych ruchów
@@ -137,6 +137,7 @@ const logicOfGame = {
 
     // Funkcja sprawdzająca czy na drodze danego pionka znajduje się płotek
     checkFencesOnTheWay(x,y,nextMoveX, nextMoveY, occupied) {
+        console.log(x,y,nextMoveX, nextMoveY, occupied)
         //n
         if (x == nextMoveX && y + 2 == nextMoveY &&
             !occupied.some(([fencePosX, fencePosY]) => ((fencePosX === nextMoveX && fencePosY === nextMoveY - 1) ||
