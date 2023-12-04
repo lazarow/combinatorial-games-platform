@@ -246,7 +246,8 @@ const logicOfGame = {
      */
     isStateTerminal(state, player) {
         // Sprawdzenie czy pionek jest po drugiej stronie
-        return state[player === "player2" ? "player1" : "player2"][1] === state[player === "player2" ? "player1" : "player2"+"WinRow"];
+        console.log( (player === "player2" ?"player1" : "player2") +"WinRow")
+        return state[player === "player2" ? "player1" : "player2"][1] === state[(player === "player2" ?"player1" : "player2") +"WinRow"];
     },
     /**
      * Funkcja generująca unikalny klucz dla wskazanego stanu.
