@@ -1,0 +1,82 @@
+.board {
+    text-align: center;
+    margin: 0 auto;
+    border-spacing: 0;
+}
+
+.board label {
+    width: 48px;
+    height: 48px;
+    margin: 0;
+    line-height: 48px;
+    font-size: 24px;
+    text-align: center;
+    font-weight: normal;
+}
+
+.board tr td {
+    padding: 0;
+    margin: 0;
+    border: 0;
+    border-spacing: 0;
+}
+
+.board tr td.square {
+    width: 128px;
+    height: 128px;
+    background-color: #05272c;
+}
+
+.board tr td.square div {
+    width: 128px;
+    height: 128px;
+}
+
+.board tr td.square div.highlighted {
+    position: relative;
+    width: 128px;
+    height: 128px;
+    background-color: rgba(0, 0, 0, 0.01);
+    z-index: 997;
+
+    &::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-color: rgba(175, 233, 170, 0.8);
+        z-index: 998;
+    }
+}
+
+.board tr:nth-child(even) td.square:nth-child(odd) {
+    background-color: rgba(152, 224, 215, 0.8);
+}
+
+.board tr:nth-child(odd) td.square:nth-child(even) {
+    background-color: rgba(152, 224, 215, 0.8);
+}
+
+.board tr td div[data-available="false"] {
+    background-color: rgba(15, 116, 7, 0.8);
+}
+
+.white-pawn {
+    width: 128px;
+    height: 128px;
+    background: url(../../images/Neutreeko/white-pawn.png) no-repeat center center transparent;
+    z-index: 999;
+}
+
+.black-pawn {
+    width: 128px;
+    height: 128px;
+    background: url(../../images/Neutreeko/black-pawn.png) no-repeat center center transparent;
+    z-index: 999;
+}
+
+
