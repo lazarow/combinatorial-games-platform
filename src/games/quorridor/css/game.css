@@ -1,0 +1,210 @@
+.board {
+    table-layout: fixed;
+    border-collapse: collapse;
+    margin-left: 10;
+    border-spacing: 0;
+    padding: 0;
+}
+
+.labelEven {
+    width: 50px;
+    height: 50px;
+    margin: 0;
+    line-height: 60px;
+    font-size: 24px;
+    text-align: center;
+    font-weight: normal;
+    background-color: #c24b2a;
+    border-radius: 10%;
+}
+
+.labelOdd {
+    width: 50px;
+    height: 50px;
+    margin: 0;
+    line-height: 60px;
+    font-size: 24px;
+    text-align: center;
+    font-weight: normal;
+    background-color: #774360;
+    border-radius: 10%;
+}
+
+.firstOdd {
+    background-color: #c24b2a;
+    border-radius: 10px;
+    transform: scale(0.95);
+    height: 10px;
+    width: 10px;
+}
+
+.firstEven {
+    background-color: #774360;
+    border-radius: 10px;
+    transform: scale(0.95);
+    height: 10px;
+    width: 10px;
+}
+
+.board tr.even {
+    position: relative;
+    height: 50px;
+}
+
+.board tr.odd {
+    position: relative;
+    height: 10px;
+}
+
+.board td.even {
+    position: relative;
+    width: 50px;
+}
+
+.board td.odd {
+    position: relative;
+    width: 10px;
+}
+
+/*pole planszy*/
+.square {
+    height: 50px;
+    width: 100%;
+    padding: 10%;
+    background-color: #7e5df5;
+    border: 1px solid #644ac4;
+    border-radius: 10%;
+}
+
+.highlighted {
+    background-color: #c1c0c4;
+    opacity: 0.5;
+}
+
+.highlighted2 {
+    background-color: #c1c0c4;
+    opacity: 0.5;
+}
+
+/*płotki*/
+.fence {
+    display: inline-block;
+    position: absolute;
+    background-color: #ec8029;
+    opacity: 0;
+    border: 1px solid #ba5c11;
+    border-radius: 10px;
+}
+
+.vertical {
+    left: 0px;
+    top: 6px;
+    width: 10px;
+    height: 100px;
+}
+
+.horizontal {
+    left: 6px;
+    top: 0px;
+    width: 100px;
+    height: 10px;
+}
+
+.hover {
+    opacity: 0.5;
+}
+
+.placed {
+    opacity: 1;
+}
+
+/*pionki*/
+#whitepawn {
+    height: 100%;
+    width: 100%;
+    margin-top: auto;
+    background-color: #ffffff;
+    border: 1px solid #000000;
+    border-radius: 50%;
+}
+
+#blackpawn {
+    height: 100%;
+    width: 100%;
+    margin-top: auto;
+    background-color: #000000;
+    border: 1px solid #ffffff;
+    border-radius: 50%;
+}
+
+.fenceCounterA {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-left: 52px;
+    margin-right: 120px;
+    margin-bottom: 10px;
+    padding: 4px;
+    background-color: #e6e6e6;
+    border: 2px solid #a6a6a6;
+    border-radius: 10px 10px 10px 10px;
+}
+
+.pawnWhite {
+    width: 30px;
+    height: 30px;
+    background-color: #ffffff;
+    border: 1px solid #000000;
+    border-radius: 50%;
+}
+
+.pawnBlack {
+    margin-left: 10px;
+    width: 30px;
+    height: 30px;
+    background-color: #000000;
+    border: 1px solid #ffffff;
+    border-radius: 50%;
+}
+
+.textA {
+    margin-right: 10px;
+    font-weight: bold;
+    color: #ec8029;
+}
+
+.textB {
+    margin-left: 55px;
+    font-weight: bold;
+    color: #ec8029;
+}
+
+.fenceCounterB {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin-left: 238px;
+}
+
+.countTextA, .countTextB {
+    margin-left: 10px;
+    font-weight: bold;
+    color: #000000;
+}
+
+.space {
+    margin-left: 3px;
+}
+
+/*
+.whitepawn {
+    width: 50px;
+    height: 50px;
+    background: url(../../images/quorridor/white_pawn.png) no-repeat center center transparent;
+}
+#blackpawn {
+    width: 50px;
+    height: 50px;
+    background: url(../../images/quorridor/black_pawn.png) no-repeat center center transparent;
+}
+*/
