@@ -12,9 +12,15 @@ const logicOfGame = {
         };
     },
     evaluateState(state, player) {
+        const opponent = player === "player1" ? "player2" : "player1";
+        if (this.isStateTerminal(state, player)) {
+            return -999;
+        } else if (this.isStateTerminal(state, opponent)) {
+            return 999;
+        }
         let totalMoves = {
             player1: 0,
-            player2: 0
+            player2: 0,
         };
         for (let playerX of ["player1", "player2"]) {
             const moves = this.generateMoves(state, playerX);
@@ -24,12 +30,7 @@ const logicOfGame = {
                 totalMoves[playerX] += 1 + afterMoves.length;
             }
         }
-		const moves = {
-			player1: this.generateMoves(state, "player1"),
-			player2: this.generateMoves(state, "player2")
-		};
-		const opponent = player === "player1" ? "player2" : "player1";
-		const score = totalMoves[player] - totalMoves[opponent];
+        const score = totalMoves[player] - totalMoves[opponent];
         return score;
     },
     generateMoves(state, player) {
@@ -70,9 +71,16 @@ const logicOfGame = {
         const availableMoves = this.generateMoves(state, player);
         return availableMoves.length === 0;
     },
-    generateUniqueKey: undefined,
+    generateUniqueKey: function (state, player) {
+        return objectHash.sha1({
+            state,
+            player
+        });
+    },
 };
 
 const players = [
-    { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (łatwy)", maxDepth: 3 }
+    { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (łatwy)", maxDepth: 3, printTree: true },
+    { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (średni)", maxDepth: 5, printTree: false },
+    { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (trudny)", maxDepth: 7, printTree: false },
 ];

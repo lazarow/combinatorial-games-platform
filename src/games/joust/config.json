@@ -1,4 +1,5 @@
 {
     "title": "Joust",
-    "extraJsFiles": ["extra.js"]
+    "extraJsFiles": ["extra.js", "object_hash.min.js"],
+    "webWorkerExtraJsFiles": ["object_hash.min.js"]
 }
