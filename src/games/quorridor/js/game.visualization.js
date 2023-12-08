@@ -84,10 +84,10 @@ const visualizationOfGame = {
                     const isOccupied = state.occupied.some(([occupiedX, occupiedY]) => x === occupiedX && y === occupiedY);
                     if (x === 0) {
                         if (temp) {
-                            board += '<td class="firstOdd"></td>';
+                            board += '<td class="firstEven"></td>';
                             temp = false;
                         } else {
-                            board += '<td class="firstEven"></td>';
+                            board += '<td class="firstOdd"></td>';
                             temp = true;
                         }
                     } else {
@@ -108,19 +108,19 @@ const visualizationOfGame = {
             if (x % 2 === 0) {
                 board += '<td>';
                 if ((97 + x / 2) % 2 === 0) {
-                    board += '<label class = "labelEven">' + String.fromCharCode(97 + x / 2) + '</label></td>';
-                } else {
                     board += '<label class = "labelOdd">' + String.fromCharCode(97 + x / 2) + '</label></td>';
+                } else {
+                    board += '<label class = "labelEven">' + String.fromCharCode(97 + x / 2) + '</label></td>';
                 }
             } else {
                 if (x == boardWidth - 1) {
                     board += '<td></td>';
                 } else {
                     if (temp) {
-                        board += '<td class = "firstEven"></td>';
+                        board += '<td class = "firstOdd"></td>';
                         temp = false;
                     } else {
-                        board += '<td class = "firstOdd"></td>';
+                        board += '<td class = "firstEven"></td>';
                         temp = true;
                     }
                 }
