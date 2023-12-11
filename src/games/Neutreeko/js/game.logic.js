@@ -14,9 +14,23 @@ const logicOfGame = {
             highlighted: []
         };
     },
-    evaluateState() {
-        
+    evaluateState(state, player) {
+        const opponent = player === "player1" ? "player2" : "player1";
+    
+        // Sprawdź, czy któryś z graczy wygrał
+        if (this.isStateTerminal(state, player)) {
+            return 100;
+        } else if (this.isStateTerminal(state, opponent)) {
+            return -100;
+        }
+    
+        // Ocena stanu na podstawie liczby pionków na planszy
+        const playerPawns = state[player].length / 2;
+        const opponentPawns = state[opponent].length / 2;
+    
+        return playerPawns - opponentPawns;
     },
+
     generateMoves(state, player) {
         const offsets = [
             [0, 1], [0, -1], [1, 0], [-1, 0],
@@ -311,5 +325,15 @@ const logicOfGame = {
     generateUniqueKey: undefined,
 };
 const players = [
-    { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (łatwy)", maxDepth: 3 }
+    { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (łatwy)", maxDepth: 3, printTree: true },
+    { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (średni)", maxDepth: 5, printTree: false },
+    { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (trudny)", maxDepth: 7, printTree: false },
 ];
+
+function createAlphaBetaPlayer(maxDepth, printTree) {
+    return {
+        type: "ALPHABETA",
+        maxDepth,
+        printTree,
+    };
+}
