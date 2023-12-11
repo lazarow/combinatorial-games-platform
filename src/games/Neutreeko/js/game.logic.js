@@ -14,6 +14,7 @@ const logicOfGame = {
             highlighted: []
         };
     },
+
     evaluateState(state, player) {
         const opponent = player === "player1" ? "player2" : "player1";
     
@@ -31,6 +32,10 @@ const logicOfGame = {
         return playerPawns - opponentPawns;
     },
 
+
+    evaluateState() {
+        
+    },
     generateMoves(state, player) {
         const offsets = [
             [0, 1], [0, -1], [1, 0], [-1, 0],
@@ -325,6 +330,7 @@ const logicOfGame = {
     generateUniqueKey: undefined,
 };
 const players = [
+
     { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (łatwy)", maxDepth: 3, printTree: true },
     { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (średni)", maxDepth: 5, printTree: false },
     { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (trudny)", maxDepth: 7, printTree: false },
@@ -337,3 +343,7 @@ function createAlphaBetaPlayer(maxDepth, printTree) {
         printTree,
     };
 }
+
+    { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (łatwy)", maxDepth: 3 }
+];
+
