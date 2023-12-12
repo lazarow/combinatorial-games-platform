@@ -19,15 +19,16 @@ const logicOfGame = {
      * Funkcja oceny, która ocenia z punktu widzenia wskazanego gracza.
      */
     evaluateState(state, player) {
-        let seedsInLeftPit = player.pits[0];
+        let playerStore = state[player].store;
+        let seedsInLeftPit = state[player].pits[0];
         let sumOfSeeds = 0;
         for(let i = 0; i < 6; i++)
         {
-            sumOfSeeds += player.pits[i];
+            sumOfSeeds += state[player].pits[i];
         }
-        let enemyScore = 48 - (sumOfSeeds + player.store);
-        let proximityToWin = (sumOfSeeds + player.store)/(enemyScore * 1.5)
-        return ( seedsInLeftPit * 0.23 + sumOfSeeds * 0.27 + player.store + enemyScore * (-0.5) + proximityToWin * 0.35 ) * 100;
+        let enemyScore = 48 - (sumOfSeeds + playerStore);
+        let proximityToWin = (sumOfSeeds + playerStore)/(enemyScore * 1.5)
+        return ( seedsInLeftPit * 0.23 + sumOfSeeds * 0.27 + playerStore + enemyScore * (-0.5) + proximityToWin * 0.35 ) * 100;
         /*
         wygrana zalezy od nast. zmiennych:
         1. Trzymaj nasiona w 1 pit od lewej *SeedsInLeftPit*
