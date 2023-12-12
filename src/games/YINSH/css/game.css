@@ -1,0 +1,35 @@
+
+table {
+    background: url(../../images/YINSH/board_gray.png) no-repeat center center transparent;
+}
+
+td {
+    width: 55px;
+    height: 35px;
+}
+
+.dot {
+    background: url(../../images/YINSH/dot.png) no-repeat center center transparent;
+}
+
+.highlight {
+    background: url(../../images/YINSH/highlight_dot.png) no-repeat center center transparent;
+    
+}
+
+.white-pawn {
+    background: url(../../images/YINSH/white_pawn.png) no-repeat center center transparent;
+}
+
+.white-ring {
+    background: url(../../images/YINSH/white_ring.png) no-repeat center center transparent;
+}
+
+.black-ring {
+    background: url(../../images/YINSH/black_ring.png) no-repeat center center transparent;
+}
+
+.black-pawn {
+    background: url(../../images/YINSH/black_pawn.png) no-repeat center center transparent;
+}
+

@@ -21,16 +21,15 @@ const visualizationOfGame = {
                     '" data-available="' +
                     (isHighlighted ? "false" : "true") +
                     '">';
-                if (state.player1[0] === x && state.player1[1] === y) board += '<div class="white-pawn" id="player1_0"></div>';
-                if (state.player1[2] === x && state.player1[3] === y) board += '<div class="white-pawn" id="player1_1"></div>';
-                if (state.player1[4] === x && state.player1[5] === y) board += '<div class="white-king" id="player1_2"></div>';
-                if (state.player1[6] === x && state.player1[7] === y) board += '<div class="white-pawn" id="player1_3"></div>';
-                if (state.player1[8] === x && state.player1[9] === y) board += '<div class="white-pawn" id="player1_4"></div>';
-                if (state.player2[0] === x && state.player2[1] === y) board += '<div class="black-pawn" id="player2_0"></div>';
-                if (state.player2[2] === x && state.player2[3] === y) board += '<div class="black-pawn" id="player2_1"></div>';
-                if (state.player2[4] === x && state.player2[5] === y) board += '<div class="black-king" id="player2_2"></div>';
-                if (state.player2[6] === x && state.player2[7] === y) board += '<div class="black-pawn" id="player2_3"></div>';
-                if (state.player2[8] === x && state.player2[9] === y) board += '<div class="black-pawn" id="player2_4"></div>';
+                    if (state.player1[0] === x && state.player1[1] === y) board += '<div class="black-pawn" id="player1_0"></div>';
+                    if (state.player1[2] === x && state.player1[3] === y) board += '<div class="black-pawn" id="player1_1"></div>';
+                    if (state.player1[4] === x && state.player1[5] === y) board += '<div class="black-pawn" id="player1_2"></div>';
+                    
+                    
+                    if (state.player2[0] === x && state.player2[1] === y) board += '<div class="white-pawn" id="player2_0"></div>';
+                    if (state.player2[2] === x && state.player2[3] === y) board += '<div class="white-pawn" id="player2_1"></div>';
+                    if (state.player2[4] === x && state.player2[5] === y) board += '<div class="white-pawn" id="player2_2"></div>';
+                    
                 board += "</div></td>";
             }
             board += "<td><label>" + (y + 1) + "</label></td>";
@@ -51,9 +50,7 @@ const visualizationOfGame = {
         const pawns = [
             $("#" + player + "_0"),
             $("#" + player + "_1"),
-            $("#" + player + "_2"),
-            $("#" + player + "_3"),
-            $("#" + player + "_4")
+            $("#" + player + "_2")
         ];
         for (let [pawn, pawnEl] of pawns.entries()) {
             pawnEl.draggable({
@@ -74,7 +71,7 @@ const visualizationOfGame = {
                             && field.data('y') === 2
                             && pawn === 2
                         ) {
-                            field.addClass("sun-highlight");
+                           
                         }
                         else field.addClass("highlighted")
                     });
@@ -104,20 +101,19 @@ const visualizationOfGame = {
                     const startingField = $(".square-placeholder[data-x=" + startPosition.x + "][data-y=" + startPosition.y + "]");
                     fields.forEach(field => {
                         field.removeClass("highlighted")
-                        field.removeClass("sun-highlight")
                     });
                 }
             })
         }
     },
     getTruePlayerName(player) {
-        if (player === "player1") return "Biały";
-        if (player === "player2") return "Czarny";
+        if (player === "player1") return "Czarny";
+        if (player === "player2") return "Biały";
     },
     getReadableMoveDescription(state, player, move) {
         return String.fromCharCode(97 + move[1]) + (move[2] + 1);
     },
     getReadableWinnerName(state, player) {
-        return player === "player1" ? "Czarny" : "Biały";
+        return player === "player1" ? "Biały" : "Czarny";
     },
 };
