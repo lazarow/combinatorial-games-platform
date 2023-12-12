@@ -45,15 +45,18 @@ const logicOfGame = {
      */
     evaluateState(state, player) {
 
-        const enemy = player === "player1" ? "player2" : "player1";
-
-        if (this.isStateTerminal(state, player)) {
-            return -999;
-        } else if (this.isStateTerminal(state, enemy)) {
+        const enemy = (player === "player1" ? "player2" : "player1");
+        //stan przegranej/wygranej
+        if (this.isStateTerminal(state, player)) 
             return 999;
-        }
-        let score = -this.getDistanceToEndGoal(player,state);
-        score += this.getDistanceToEndGoal(enemy,state);
+        else if (this.isStateTerminal(state, enemy)) 
+            return -999;
+        
+
+        let score =this.getDistanceToEndGoal(enemy,state) -this.getDistanceToEndGoal(player,state);
+        //potrojenie wagi dystansu
+        score *=3
+        score += state[enemy+"fences"]-state[player+"fences"];
 
         //console.log(score)
         return score;
@@ -257,7 +260,7 @@ const logicOfGame = {
      */
     isStateTerminal(state, player) {
         // Sprawdzenie czy pionek przeciwnika jest po drugiej stronie
-        return state[player === "player2" ? "player1" : "player2"][1] === state[(player === "player2" ?"player1" : "player2") +"WinRow"];
+        return state[player][1] === state[player +"WinRow"];
     },
     /**
      * Funkcja generująca unikalny klucz dla wskazanego stanu.
@@ -266,7 +269,7 @@ const logicOfGame = {
 };
 
 const players = [
-    { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (łatwy)" , maxDepth: 2, printTree: false },
-    { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (średni)", maxDepth: 3, printTree: true },
-    { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (trudny)", maxDepth: 4, printTree: false },
+    { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (łatwy)" , maxDepth: 1, printTree: true },
+    { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (średni)", maxDepth: 2, printTree: false },
+    { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (trudny)", maxDepth: 3, printTree: false },
 ];

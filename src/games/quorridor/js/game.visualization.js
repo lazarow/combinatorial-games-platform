@@ -255,6 +255,6 @@ const visualizationOfGame = {
      * Funkcja zwraca czytelny dla człowieka opis wygranego gracza.
      */
     getReadableWinnerName(state, player) {
-        return player === "player2" ? "Biały" : "Czarny";
+        return player === "player2" ? "Czarny" : "Biały";
     },
 };
