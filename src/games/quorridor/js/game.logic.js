@@ -3,18 +3,18 @@ const gameId = "quorridor";
 //plansza
 const boardWidth = 9 * 2;
 const boardHeight = 9 * 2;
-
-//stworzenie tablicy płotków
-
-//tworzenie koordy
-
+//flaga czy jest przeskok
+var jumpoverAv=false;
+//flaga czy jest to bezużyteczne postawienie płotka
+var uselessfence=false;
 const logicOfGame = {
     /**
      * Generuje stan początkowy gry.
      */
     generateInitialState() {
         let fencestmp = [];
-        //stworzenie 
+        //stworzenie tablicy płotków
+
         for (let y = boardHeight - 2; y >= 1; y--) {
             if (y % 2 === 0) {
                 //wiersz parzysty 
@@ -56,8 +56,19 @@ const logicOfGame = {
         let score =this.getDistanceToEndGoal(enemy,state) -this.getDistanceToEndGoal(player,state);
         //potrojenie wagi dystansu
         score *=3
+        //sprawdzenie czy przeskok jest wartościowy
+        if(jumpoverAv){
+            if(state[player+"WinRow"]===0){
+                if(state[player][1]-state[enemy][1]>=0)
+                    score+=2
+            }else{
+                if(state[player][1]-state[enemy][1]<=0)
+                    score+=2
+            }
+        }
         score += state[enemy+"fences"]-state[player+"fences"];
-
+        if(uselessfence)
+            score-=20;
         //console.log(score)
         return score;
     },
@@ -98,13 +109,14 @@ const logicOfGame = {
         let moves =this.getPossibleMoves(state[player][0],state[player][1],player,state)
         //dodanie przeskoku nad przeciwnikiem
         if(this.doesItHasCoords(moves,[state[enemy][0],state[enemy][1]])){
-
+            jumpoverAv = true;
             let tmp =this.getPossibleMoves(state[enemy][0],state[enemy][1],enemy,state)
             moves = moves.concat(tmp)
             moves = moves.filter(([x,y])=>!(
                 (x===state[enemy][0]&&y===state[enemy][1])||
                 (x===state[player][0]&&y===state[player][1])))
-        }
+        }else
+            jumpoverAv = false;
         
         //złączenie możliwych ruchów
         if (state[player + "fences"] > 0)
@@ -244,6 +256,12 @@ const logicOfGame = {
         };
         //czy to jest położenie płotka
         if (move[0] % 2 === 1 || move[1] % 2 === 1) {
+            
+            const enemy = (player === "player1" ? "player2" : "player1");
+            if(this.getDistanceToEndGoal(enemy,previousState)===this.getDistanceToEndGoal(enemy,state))
+                uselessfence=true;
+            else
+                uselessfence=false;
             //dodanie zajętych płotków DO DOKOŃCZENIA
             state.occupied.push(move);
             state[player + "fences"]--
