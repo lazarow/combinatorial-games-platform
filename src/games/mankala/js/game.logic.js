@@ -19,7 +19,30 @@ const logicOfGame = {
      * Funkcja oceny, która ocenia z punktu widzenia wskazanego gracza.
      */
     evaluateState(state, player) {
-        return state[player].store;
+        let playerStore = state[player].store;
+        let seedsInLeftPit = state[player].pits[0];
+        let sumOfSeeds = 0;
+        for(let i = 0; i < 6; i++)
+        {
+            sumOfSeeds += state[player].pits[i];
+        }
+        let enemyScore = 48 - (sumOfSeeds + playerStore);
+        let proximityToWin = (sumOfSeeds + playerStore)/(enemyScore * 1.5)
+        return ( seedsInLeftPit * 0.23 + sumOfSeeds * 0.27 + playerStore + enemyScore * (-0.5) + proximityToWin * 0.35 ) * 100;
+        /*
+        wygrana zalezy od nast. zmiennych:
+        1. Trzymaj nasiona w 1 pit od lewej *SeedsInLeftPit*
+        2. Trzymaj jak nakwiecej nasion po swojej stronie *sumOfSeeds*
+        3. Miej jak najwiecej nasion w storze *player.store*
+        4. Utrzymuj jak najmniejsza ilosc nasion przeciwnika *enemyScore*
+        5. Badz jak najblizej wygranej
+        Wagi tych rozwiazan to:
+        1. 0.23
+        2. 0.27
+        3. 1
+        4. 0.50
+        5. 0.35
+        */
     },
 
     /**
@@ -125,5 +148,7 @@ const logicOfGame = {
 };
 
 const players = [
-    { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (łatwy)", maxDepth: 3 }
+    { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (łatwy)", maxDepth: 3, printTree: true },
+    { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (średni)", maxDepth: 5, printTree: false },
+    { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (trudny)", maxDepth: 7, printTree: false },
 ];
