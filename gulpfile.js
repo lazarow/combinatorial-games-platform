@@ -108,6 +108,18 @@ function concatScripts(cb) {
                 ]),
             outputDir + "/js/" + game.name + "/alphabeta.js"
         );
+        concat(
+            game.webWorkerExtraJsFiles
+                .map((file) => {
+                    return gamesDir + "/" + game.name + "/js/" + file;
+                })
+                .concat([
+                    sourceDir + "/game.pre.js",
+                    gamesDir + "/" + game.name + "/js/game.logic.js",
+                    sourceDir + "/mcts.js",
+                ]),
+            outputDir + "/js/" + game.name + "/mcts.js"
+        );
     }
 
     // Gulp.
