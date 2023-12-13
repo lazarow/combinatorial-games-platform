@@ -23,7 +23,7 @@ jobs:
 
             - run: gulp build
 
-            - run: rm .gitignore
+            - run: rm dist/.gitignore
 
             - name: Deploy
               uses: peaceiris/actions-gh-pages@v3
