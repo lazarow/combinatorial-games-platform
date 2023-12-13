@@ -26,17 +26,42 @@ const logicOfGame = {
                 [0,1,1,1,1,1,1,1,1,1,1,1,1,1,0],
                 [0,1,1,1,1,1,1,1,1,1,1,1,1,1,0],
                 [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-            ],
-            currPlayer: 'player1',
-            currObjectToMove: 'pawn',
-            moves: []
+            ]
         };
     },
     /**
-     * Funkcja oceny, która ocenia z punktu widzenia wskazanego gracza.                             ##TODO##
+     * Funkcja oceny, która ocenia z punktu widzenia wskazanego gracza.
      */
     evaluateState(state, player) {
-        return 1;
+        const opponent = player === "player1" ? "player2" : "player1";
+        if (this.isStateTerminal(state, player)) {
+            return 999;
+        } 
+        else if (this.isStateTerminal(state, opponent)) {
+            return -999;
+        }
+        let winProximity = {
+            player1: 0,
+            player2: 0,
+        };
+        for (let playerX of ["player1", "player2"]) {
+            var playerNumber = playerX === 'player1' ? 3 : 4;
+            for(var i=0; i<15; i++){
+                for(var j=0; j<15; j++){
+                    if(state.board[i][j]===playerNumber){
+                        winProximity[playerX] += 2*this.countNeighbours(i,j,state.board,playerNumber);
+                        let newMoves = this.generateMovesforPawn(state,playerX,i,j);
+                        for (let move of newMoves) {
+                            let afterState = this.generateStateAfterMove(state, playerX, {pawn:[i,j,move[0],move[1]], tile: [0,0,0,0]});
+                            winProximity[playerX] += this.countNeighbours(i,j,afterState.board,playerNumber)
+                        }
+                    }
+                }
+            }
+        }
+        const score = winProximity[player] - winProximity[opponent];
+        console.log(score);
+        return score;
     },
      /**
      * Funkcja generująca możliwe ruchy z wskazanego pionka.
@@ -121,61 +146,59 @@ const logicOfGame = {
     generateMoves(state, player) {
         const playerBoard = state.board;
         const moves = [];
+        var pawnMove = []
         const playerPawnNumber = player==='player1' ? 3 : 4;
+        //runs through every board tile until it finds current player's pawn
+        for(var i=0; i<15; i++){
+            for(var j=0; j<15; j++){
+                if(playerBoard[i][j]==playerPawnNumber){
+                    let newPositions = this.generateMovesforPawn(state, player, i, j);
+                    for(var z=0; z<newPositions.length; z++){
 
-        if(state.currPlayer==player){
-            //check if currently moving pawns or tiles
-            if(state.currObjectToMove==='pawn'){
-                //runs through every board tile until it finds current player's pawn
-                for(var i=0; i<15; i++){
-                    for(var j=0; j<15; j++){
-                        if(playerBoard[i][j]==playerPawnNumber){
-                            let newPositions = this.generateMovesforPawn(state, player, i, j);
-                            for(var z=0; z<newPositions.length; z++)
-                                moves.push([i,j,newPositions[z][0],newPositions[z][1]]);
-                            
-                        }
-                    }
-                }
-                state.currObjectToMove = 'tile';
-                return moves;
-            }
-            else if(state.currObjectToMove==='tile'){   //moving tiles
-                for(var i=0; i<15; i++){
-                    for(var j=0; j<15; j++){
-                        if(playerBoard[i][j]==2 &&  //the tile can only be moved if it has less than 5 neighbours
-                        (this.countNeighbours(i,j,playerBoard,2)+
-                         this.countNeighbours(i,j,playerBoard,3)+
-                         this.countNeighbours(i,j,playerBoard,4))<5){
-                            let newPositions = this.generateMovesforTile(state, player, i, j);
-                            for(var z=0; z<newPositions.length; z++){
-                                moves.push([i,j,newPositions[z][0],newPositions[z][1]]);
+                        pawnMove = [i,j,newPositions[z][0],newPositions[z][1]];
+                        // moves.push({
+                        //     pawn:pawnMove,
+                        //     tile:[0,0,0,0]
+                        // });
+                        for(var i2=0; i2<15; i2++){
+                            for(var j2=0; j2<15; j2++){
+                                if( !(i2==newPositions[z][0] && j2==newPositions[z][1]) && 
+                                playerBoard[i2][j2]==2 &&  //the tile can only be moved if it has less than 5 neighbours
+                                (this.countNeighbours(i2,j2,playerBoard,2)+
+                                    this.countNeighbours(i2,j2,playerBoard,3)+
+                                    this.countNeighbours(i2,j2,playerBoard,4))<5){
+                                    let newPositions = this.generateMovesforTile(state, player, i2, j2);
+                                    for(var z2=0; z2<newPositions.length; z2++){
+                                        moves.push({
+                                            pawn:pawnMove,
+                                            tile:[i2,j2,newPositions[z2][0],newPositions[z2][1]]
+                                        });
+                                    }
+                                    
+                                }
                             }
-                            
                         }
                     }
+                    //Yes, this function has 6 levels of nested for loops... too bad.
                 }
-                state.currObjectToMove = 'pawn';
-                state.currPlayer = player==='player1' ? 'player2' : 'player1';
-                return moves;
             }
         }
-        else{
-            return [[0,0,0,0]];
-        }
+        return moves;
     },
     /**
      * Funkcja generuje stan po wykonaniu wskazanego ruchu.
      */
     generateStateAfterMove(previousState, player, move) {
-        const state = JSON.parse(JSON.stringify(previousState));
-        if(move===-[[0,0,0,0]])
-            console.log("Whoah there!");
-        else{       //swaps two items on the board
-            let buffer = state.board[move[0]][move[1]];
-            state.board[move[0]][move[1]] = state.board[move[2]][move[3]];
-            state.board[move[2]][move[3]] = buffer;
-        }
+        const state = JSON.parse(JSON.stringify(previousState));   
+        //swaps two items on the board
+        let buffer = state.board[move.pawn[0]][move.pawn[1]];
+        state.board[move.pawn[0]][move.pawn[1]] = state.board[move.pawn[2]][move.pawn[3]];
+        state.board[move.pawn[2]][move.pawn[3]] = buffer;
+
+        buffer = state.board[move.tile[0]][move.tile[1]];
+        state.board[move.tile[0]][move.tile[1]] = state.board[move.tile[2]][move.tile[3]];
+        state.board[move.tile[2]][move.tile[3]] = buffer;
+
         return state;
     },
     /**
@@ -218,4 +241,7 @@ const logicOfGame = {
     generateUniqueKey: undefined,
 };
 
-const players = [];
+const players = [
+    { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (łatwy)", maxDepth: 1, printTree: true },
+    { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (trudny)", maxDepth: 2, printTree: false }
+];
