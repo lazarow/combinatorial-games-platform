@@ -1,0 +1,2 @@
+_Implementacja na platformie:_ Igor Szczeponik & Dawid Lukasczyk  
+_Autor gry:_ Autor gry nie jest znany. Więcej informacji można znaleźć [tu](https://boardgamegeek.com/boardgame/180013/5-across?fbclid=IwAR3kE-Pg6nTU4ZLY0gOAk-nDIp34LIMCYROYJBaPz8Uqfycct70kxLa48YA).
