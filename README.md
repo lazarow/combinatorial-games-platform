@@ -3,6 +3,9 @@
 Combinatorix - platforma do badania różnych algorytmów SI dla gier kombinatorycznych tworzona w ramach projektu
 zaliczeniowego na przedmiocie _Wprowadzenie do teorii gier_.
 
+Strona dostępna jest pod adresem:  
+[https://lazarow.github.io/combinatorial-games-platform/index.html](https://lazarow.github.io/combinatorial-games-platform/index.html)
+
 ## Uruchomienie aplikacji we własnym środowisku
 
 Uwaga! Proszę stosować _node.js_ w wersji co najmniej 16.
