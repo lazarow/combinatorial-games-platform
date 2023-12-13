@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="pl">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="description" content="" />
+        <title>Combinatorix - Platforma do badania różnych algorytmów SI dla gier kombinatorycznych</title>
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+            crossorigin="anonymous"
+        />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600;1,700&display=swap"
+            rel="stylesheet"
+        />
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css"
+            integrity="sha512-HXXR0l2yMwHDrDyxJbrMD9eLvPe3z3qL3PPeozNTsiHJEENxx8DH2CxmV05iwG0dwoz5n4gQZQyYLUNt1Wdgfg=="
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer"
+        />
+                <link href="css/Neutreeko/game.css" rel="stylesheet" />
+                <style type="text/css">
+            :root {
+                --bs-font-sans-serif: "Fira Sans", sans-serif;
+                --bs-link-color-rgb: 209, 67, 35;
+                --bs-link-hover-color-rgb: 165, 43, 24;
+                --bs-link-color: #d14323;
+                --bs-link-hover-color: #a52b18;
+            }
+            .game-container {
+                background-color: white;
+                width: 752px;
+            }
+        </style>
+        <script
+            src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+            crossorigin="anonymous"
+        ></script>
+        <script
+            src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"
+            integrity="sha256-lSjKY0/srUM9BE3dPm+c4fBo1dky2v27Gdjm2uoZaL0="
+            crossorigin="anonymous"
+        ></script>
+    </head>
+    <body class="bg-body-secondary p-5">
+        <div class="container p-3 bg-white">
+            <header class="mb-3 bg-body-secondary">
+                <nav class="navbar navbar-expand">
+                    <div class="container-fluid">
+                        <a class="navbar-brand" href="index.html">Combinatorix</a>
+                        <ul class="navbar-nav">
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                                    Wybierz grę kombinatoryczną
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end rounded-0">
+                                                                        <li>
+                                        <a class="dropdown-item" href="5Across.game.html">5Across</a>
+                                    </li>
+                                                                        <li>
+                                        <a class="dropdown-item" href="Neutreeko.game.html">Neutreeko</a>
+                                    </li>
+                                                                        <li>
+                                        <a class="dropdown-item" href="YINSH.game.html">YINSH</a>
+                                    </li>
+                                                                        <li>
+                                        <a class="dropdown-item" href="joust.game.html">Joust</a>
+                                    </li>
+                                                                        <li>
+                                        <a class="dropdown-item" href="kingsvalley.game.html">King&#39;s Valley</a>
+                                    </li>
+                                                                        <li>
+                                        <a class="dropdown-item" href="mankala.game.html">Mankala</a>
+                                    </li>
+                                                                        <li>
+                                        <a class="dropdown-item" href="nonaga.game.html">Nonaga</a>
+                                    </li>
+                                                                        <li>
+                                        <a class="dropdown-item" href="quorridor.game.html">quorridor</a>
+                                    </li>
+                                                                    </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </header>
+            <main>
+<h1 class="mb-3">Neutreeko</h1>
+
+<p>Autor gry: Jan Kristian Haugland<br>Autorzy kodu: Mateusz Stachowiak &amp; Alicja Kieczka</p>
+
+<div class="container-fluid mb-3">
+    <div class="row bg-body-tertiary">
+        <div class="col p-3">
+            <div class="game-container p-3"><div id="game"></div></div>
+            <div id="gameHistoryNavigation" class="mt-3 text-center d-none">
+                <a href="javascript:void(0);" onclick="restoreFirstTurn()" class="btn btn-dark"
+                    ><i class="ri-rewind-fill"></i
+                ></a>
+                <a href="javascript:void(0);" onclick="restorePreviousTurn()" class="btn btn-dark"
+                    ><i class="ri-skip-back-fill"></i
+                ></a>
+                <a href="javascript:void(0);" onclick="restoreNextTurn()" class="btn btn-dark"
+                    ><i class="ri-skip-forward-fill"></i
+                ></a>
+                <a href="javascript:void(0);" onclick="restoreLastTurn()" class="btn btn-dark"
+                    ><i class="ri-speed-fill"></i
+                ></a>
+            </div>
+        </div>
+        <div class="col p-3 ps-0">
+            <div class="alert alert-light mb-2 d-none">
+                <small>Aktualny gracz (<span id="currentTurn"></span> tura):</small>
+                <br /><strong id="currentPlayerName"></strong>
+            </div>
+            <div class="alert alert-success mb-2 d-none" id="gameOverNotification">
+                Gra została <strong>zakończona</strong>.<br />
+                Zwycięzcą jest <strong id="winnerName"></strong>.
+            </div>
+            <div class="form-floating mb-2">
+                <select id="player1" class="form-select"></select>
+                <label id="player1TrueName" for="player1">Gracz 1:</label>
+            </div>
+            <div class="form-floating mb-2">
+                <select id="player2" class="form-select"></select>
+                <label id="player2TrueName" for="player2">Gracz 2:</label>
+            </div>
+            <div class="d-grid">
+                <button class="btn btn-dark btn-lg" id="startButton">Start</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<nav>
+    <div class="nav nav-tabs mb-3">
+        <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tabDescription" type="button" role="tab">
+            Opis i zasady gry
+        </button>
+        <button
+            class="nav-link"
+            id="tabHistoryButton"
+            data-bs-toggle="tab"
+            data-bs-target="#tabHistory"
+            type="button"
+            role="tab"
+        >
+            Przebieg gry
+        </button>
+        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tabAlphaBetaTextTree" type="button" role="tab">
+            Drzewo tekstowe AlphaBeta
+        </button>
+    </div>
+</nav>
+<div class="tab-content">
+    <div class="tab-pane active" id="tabDescription"><p><strong>Zasady gry</strong></p>
+<p>Czarne pionki zawsze poruszają się jako pierwsze.
+Pionki przesuwają się prostopadle lub ukośnie, aż zostaną zablokowane przez krawędź planszy (5x5) lub inny element (czyli pionek gracza lub przeciwnika).
+Celem gry jest ułożenie pionków w rzędzie, prostopadle lub na ukos.</p>
+</div>
+    <div class="tab-pane" id="tabHistory"></div>
+    <div class="tab-pane" id="tabAlphaBetaTextTree">
+        <p class="bg-light p-3">
+            Do wygenerowania drzewa można użyć
+            <a href="https://jimblackler.net/treefun/index.html" target="_blank">tej strony</a>.
+        </p>
+        <pre class="bg-dark text-white p-3" id="alphaBetaTextTree"></pre>
+    </div>
+</div>
+
+<script src="js/Neutreeko/game.js"></script>
+</main>
+            <footer class="mt-3 py-2 bg-body-secondary">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col">
+                            <strong>Combinatorix</strong>. Platforma do badania różnych algorytmów SI dla gier
+                            kombinatorycznych.
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+            crossorigin="anonymous"
+        ></script>
+    </body>
+</html>

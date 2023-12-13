@@ -1,0 +1,54 @@
+.board {
+    text-align: center;
+    margin: 0 auto;
+    border-spacing: 0;
+}
+.board label {
+    width: 72px;
+    height: 72px;
+    margin: 0;
+    line-height: 72px;
+    font-size: 24px;
+    text-align: center;
+    font-weight: normal;
+}
+.board tr td {
+    padding: 0;
+    margin: 0;
+    border: 0;
+    border-spacing: 0;
+}
+.board tr td.square {
+    width: 72px;
+    height: 72px;
+    background-color: #fbc99f;
+}
+.board tr td.square div {
+    width: 72px;
+    height: 72px;
+}
+.board tr td.square div.highlighted {
+    background-color: rgba(255, 240, 30, 0.4);
+}
+.board tr td.square div.highlighted2 {
+    background-color: rgba(255, 240, 30, 0.8);
+}
+.board tr:nth-child(even) td.square:nth-child(odd) {
+    background-color: #d18b47;
+}
+.board tr:nth-child(odd) td.square:nth-child(even) {
+    background-color: #d18b47;
+}
+.board tr td div[data-available="false"] {
+    background-color: #3b3b3b;
+}
+#white-pawn {
+    width: 72px;
+    height: 72px;
+    background: url(../../images/joust/knight_white.png) no-repeat center center transparent;
+}
+#black-pawn {
+    width: 72px;
+    height: 72px;
+    background: url(../../images/joust/knight_black.png) no-repeat center center transparent;
+}
