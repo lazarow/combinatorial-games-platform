@@ -68,6 +68,27 @@ biblioteka [_object-hash_](https://github.com/puleos/object-hash).
 
 Dodatkowa flaga `printTree` pozwala włączyć _drukowanie_ drzewa gry.
 
+### MCTS
+
+1. W pliku `game.logic.js` uzupełniamy:
+    1. `computeMCTSNodeValue` (funkcja wartości węzła drzewa gry),
+    2. `MCTSPlayOut` (symulacja losowa),
+    3. `getBestMCTSNode` (wybór najlepszego ruchu).
+
+W pliku `game.logic.js` dodajemy konfigurację dla graczy:
+
+```js
+...
+const players = [
+    { type: PlayerTypes.MCTS, label: "MCTS (łatwy)", iterations: 1000 },
+    { type: PlayerTypes.MCTS, label: "MCTS (średni)", iterations: 3000 },
+    { type: PlayerTypes.MCTS, label: "MCTS (trudny)", iterations: 7000 },
+];
+```
+
+Gdzie `iterations` oznacza liczbę iteracji algorytmu, co powinno przełożyć się na siłę SI. Dobór liczby iteracji
+powinien zostać dobrany empirycznie do gry.
+
 ## Dodatkowe pliki JavaScript
 
 Istnieje możliwość dodania kolejnych plików JavaScript do skryptu gry. Dodatkowe pliki
