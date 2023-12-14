@@ -58,3 +58,23 @@ button {
     width: 80px; /* Adjust the width of each column number */
     text-align: center;
 }
+
+.column-buttons {
+    display: grid;
+    grid-template-columns: repeat(7, 80px); /* Match the number and width of columns in the game board */
+    gap: 5px;
+    margin-top: 10px;
+}
+
+.column-buttons button {
+    width: 80px; /* Adjust the width of each button to match the column width */
+    height: 80px; /* Adjust the height of each button */
+    padding: 12px 12px; /* Adjust padding for both vertical and horizontal space */
+    font-size: 18px;   /* Adjust font size */
+    cursor: pointer;
+    border: 1px solid #333; /* Add border to each button */
+}
+
+.column-buttons button:hover {
+    background-color: #ddd; /* Change background color on hover for visual feedback */
+}
