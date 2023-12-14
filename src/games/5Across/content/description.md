@@ -12,7 +12,7 @@ Na początku gry, gracze wybierają czy chcą być X (Czerwony) czy O (Niebieski
 ***Ruchy:***
 Gracze wykonują ruchy na przemian.
 
-W swoim ruchu gracz wpisuje do której kolumny chce wrzucić swój żeton i naciska Make Move. Następnie żeton spada na sam dół wybranej kolumny 
+W swoim ruchu gracz wybiera kolumnę do której  chce wrzucić swój żeton naciskając przycisk od 1 do 7. Następnie żeton spada na sam dół wybranej kolumny 
 
 
 ***Zakończenie gry:***
