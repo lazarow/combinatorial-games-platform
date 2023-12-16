@@ -1,0 +1,34 @@
+
+table {
+    background: url(../../images/teeko/board.png) no-repeat center center transparent;
+}
+
+td {
+    width: 80px;
+    height: 80px;
+}
+
+.dot {
+    background: url(../../images/teeko/dot.png) no-repeat center center transparent;
+}
+
+.highlight {
+    background: url(../../images/teeko/highlight_dot.png) no-repeat center center transparent;
+}
+
+.white-pawn {
+    background: url(../../images/teeko/white_pawn.png) no-repeat center center transparent;
+}
+
+.white-ring {
+    background: url(../../images/teeko/white_ring.png) no-repeat center center transparent;
+}
+
+.black-ring {
+    background: url(../../images/teeko/black_ring.png) no-repeat center center transparent;
+}
+
+.black-pawn {
+    background: url(../../images/teeko/black_pawn.png) no-repeat center center transparent;
+}
+
