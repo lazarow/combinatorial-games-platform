@@ -1,0 +1,30 @@
+
+table {
+    background: url(../../images/teeko/board.png) no-repeat center center transparent;
+}
+
+td {
+    width: 80px;
+    height: 80px;
+}
+
+.dot {
+    background: url(../../images/teeko/dot.png) no-repeat center center transparent;
+}
+
+.highlight {
+    background: url(../../images/teeko/highlight_dot.png) no-repeat center center transparent;
+}
+
+
+
+.blue{
+    background: url(../../images/teeko/blue.png) no-repeat center center transparent;
+}
+
+.red{
+    background: url(../../images/teeko/red.png) no-repeat center center transparent;
+}
+
+
+
