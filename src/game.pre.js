@@ -7,6 +7,5 @@ const PlayerTypes = {
     RANDOM: "random",
     SIMPLE_SCORE: "simple-score",
     ALPHABETA: "alphabeta",
-    MCS: "mcs",
     MCTS: "mcts",
 };

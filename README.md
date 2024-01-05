@@ -3,6 +3,9 @@
 Combinatorix - platforma do badania różnych algorytmów SI dla gier kombinatorycznych tworzona w ramach projektu
 zaliczeniowego na przedmiocie _Wprowadzenie do teorii gier_.
 
+Strona dostępna jest pod adresem:  
+[https://lazarow.github.io/combinatorial-games-platform/index.html](https://lazarow.github.io/combinatorial-games-platform/index.html)
+
 ## Uruchomienie aplikacji we własnym środowisku
 
 Uwaga! Proszę stosować _node.js_ w wersji co najmniej 16.
@@ -67,6 +70,27 @@ Metoda `generateUniqueKey` powinna zwracać unikatowy hash dla stanu gry oraz gr
 biblioteka [_object-hash_](https://github.com/puleos/object-hash).
 
 Dodatkowa flaga `printTree` pozwala włączyć _drukowanie_ drzewa gry.
+
+### MCTS
+
+1. W pliku `game.logic.js` uzupełniamy:
+    1. `computeMCTSNodeValue` (funkcja wartości węzła drzewa gry),
+    2. `MCTSPlayOut` (symulacja losowa),
+    3. `getBestMCTSNode` (wybór najlepszego ruchu).
+
+W pliku `game.logic.js` dodajemy konfigurację dla graczy:
+
+```js
+...
+const players = [
+    { type: PlayerTypes.MCTS, label: "MCTS (łatwy)", iterations: 1000 },
+    { type: PlayerTypes.MCTS, label: "MCTS (średni)", iterations: 3000 },
+    { type: PlayerTypes.MCTS, label: "MCTS (trudny)", iterations: 7000 },
+];
+```
+
+Gdzie `iterations` oznacza liczbę iteracji algorytmu, co powinno przełożyć się na siłę SI. Dobór liczby iteracji
+powinien zostać dobrany empirycznie do gry.
 
 ## Dodatkowe pliki JavaScript
 

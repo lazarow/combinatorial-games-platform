@@ -1,65 +1,76 @@
+
+const gameId = "quorridor";
 //plansza
 const boardWidth = 9 * 2;
 const boardHeight = 9 * 2;
-//ruchy     
-const mOffsets = [
-    [ 0, 2],
-    [ 0,-2],
-    [ 2, 0],
-    [-2, 0],
-];
-//stworzenie tablicy płotków
-const fences = createFences();
-//klasa z danymi do BFS
-class queueNode{
-    constructor(x,y, dist){
-        this.x = x // The coordinates of the cell
-        this.y = y 
-        this.dist = dist // Cell's distance from the source
-    }
-}
-//tworzenie koordy
-function createFences() {
-    let r = [];
-
-    for (let y = boardHeight - 2; y >= 1; y--) {
-        if (y % 2 === 0) {
-            //wiersz parzysty 
-            for (let x = 1; x <= boardHeight - 3; x += 2) {
-
-                r.push([x, y]);
-            }
-        } else {
-            //wiersz nieparzysty
-            for (let x = 0; x <= boardHeight - 3; x += 2)
-
-                r.push([x, y]);
-        }
-    }
-    return r
-};
-
+//flaga czy jest przeskok
+var jumpoverAv=false;
+//flaga czy jest to bezużyteczne postawienie płotka
+var uselessfence=false;
 const logicOfGame = {
     /**
      * Generuje stan początkowy gry.
      */
     generateInitialState() {
+        let fencestmp = [];
+        //stworzenie tablicy płotków
 
+        for (let y = boardHeight - 2; y >= 1; y--) {
+            if (y % 2 === 0) {
+                //wiersz parzysty 
+                for (let x = 1; x <= boardHeight - 3; x += 2) {
+    
+                    fencestmp.push([x, y]);
+                }
+            } else {
+                //wiersz nieparzysty
+                for (let x = 0; x <= boardHeight - 3; x += 2)
+    
+                fencestmp.push([x, y]);
+            }
+        }
         return {
-            player1: [8, 0], // Pozycja startowa gracza 1
-            player2: [8, 16], // Pozycja startowa gracza 2
-            player1fences: 10, // Ilość płotków jaką może postawić gracz 1
-            player2fences: 10, // Ilość płotków jaką może postawić gracz 2
-            player1WinRow:16,
+            player1: [8, 0], // Pozycja startowa gracza x
+            player2: [8, 16],
+            player1fences: 10, // Ilość płotków jaką może postawić gracz x
+            player2fences: 10, 
+            player1WinRow:16, //cel gracza x
             player2WinRow:0,
             occupied: [], // Tablica na postawione już płotki
+            fences: fencestmp //tablica możliwych płotków
         };
     },
     /**
      * Funkcja oceny, która ocenia z punktu widzenia wskazanego gracza.
      */
     evaluateState(state, player) {
-        return 1;
+
+        const enemy = (player === "player1" ? "player2" : "player1");
+        //stan przegranej/wygranej
+        if (this.isStateTerminal(state, player)) 
+            return 999;
+        else if (this.isStateTerminal(state, enemy)) 
+            return -999;
+        
+
+        let score =this.getDistanceToEndGoal(enemy,state) -this.getDistanceToEndGoal(player,state);
+        //potrojenie wagi dystansu
+        score *=3
+        //sprawdzenie czy przeskok jest wartościowy
+        if(jumpoverAv){
+            if(state[player+"WinRow"]===0){
+                if(state[player][1]-state[enemy][1]>=0)
+                    score+=2
+            }else{
+                if(state[player][1]-state[enemy][1]<=0)
+                    score+=2
+            }
+        }
+        score += state[enemy+"fences"]-state[player+"fences"];
+        if(uselessfence)
+            score-=20;
+        //console.log(score)
+        return score;
     },
 
     /**
@@ -69,57 +80,44 @@ const logicOfGame = {
 
 
         const placebleFences = []; //  stawialne na płotki
-        const moves = []; // Tablica na ruchy graczy
-
-
+        
+        const enemy = player === "player1" ? "player2" : "player1";
+        
         //wiersze parzyste posiadają 8 płotków pionowych natomiast wiersze nie parzyste posiadają 9 płotków poziomych
-
         //sprawdzenie ilości płotków
         if (state[player + "fences"] > 0) {
-            for (i = 0; i < fences.length; i++)
-                //odrzucenie już zajętych i nachodzących płotków
-                if (this.checkFecneCollision(state, fences[i][0], fences[i][1])) {
-                    //sprawdzenie czy płotek nie zablokuje kompletnie gracza
-                    //symulacja postawienia
-                    state.occupied.push(fences[i]);
-
-                    if(!(this.getDistanceToEndGoal(state["player1"][0],state["player1"][1],state["player1WinRow"],state.occupied)===-1))
-                        if(!(this.getDistanceToEndGoal(state["player2"][0],state["player2"][1],state["player2WinRow"],state.occupied)===-1))
-                            placebleFences.push(fences[i]);
+            for (i = 0; i < state["fences"].length; i++){
+                    //pominięcie sprawdzenia blokowania jeżelinie jest ich wystarczająco
+                    if(state.occupied.length>2){
+                        
+                        //sprawdzenie czy płotek nie zablokuje kompletnie gracza
+                        //symulacja postawienia
+                        state.occupied.push(state["fences"][i]);
+                        if(!(this.getDistanceToEndGoal(player,state)===-1))
+                            if(!(this.getDistanceToEndGoal(enemy,state)===-1))
+                                placebleFences.push(state["fences"][i]);
+                        state.occupied.pop(state["fences"][i]);
+                    }else{
+                        placebleFences.push(state["fences"][i]);
+                    }
                     
-                    state.occupied.pop(fences[i])
                 }
 
         }
 
-        //pozycja przeciwnika
-        const enemy = player === "player1" ? "player2" : "player1";
-
-        for (let i = 0; i < mOffsets.length; ++i) {
-            const x = state[player][0] + mOffsets[i][0];
-            const y = state[player][1] + mOffsets[i][1];
-
-            // Dodanie tylko możliwych 
-            if (x >= 0 && x < boardWidth && y >= 0 && y < boardHeight) 
-                //sprawdzenie czy przeciwnik sąsiaduje
-                if (!(x === state[enemy][0] && y === state[enemy][1])){
-                    if (!this.checkFencesOnTheWay(state[player][0],state[player][1],x, y, state.occupied)) 
-                        moves.push([x, y]);
-                  
-                }else if (!this.checkFencesOnTheWay(state[player][0],state[player][1],state[enemy][0],state[enemy][1], state.occupied)) {
-                    // Tworzenie przeskoku nad przeciwnikiem
-                    for (let i = 0; i < mOffsets.length; ++i) {
-                        const x = state[enemy][0] + mOffsets[i][0];
-                        const y = state[enemy][1] + mOffsets[i][1];
-                        // Dodanie tylko możliwych
-                        
-                            if (x >= 0 && x < boardWidth && y >= 0 && y < boardHeight) 
-                                if (!(x === state[player][0] && y === state[player][1])) 
-                                        if (!this.checkFencesOnTheWay(state[enemy][0],state[enemy][1],x, y, state.occupied)) 
-                                            moves.push([x, y]);
-                        }
-                    }
-        }
+        //możliwe ruchy
+        let moves =this.getPossibleMoves(state[player][0],state[player][1],player,state)
+        //dodanie przeskoku nad przeciwnikiem
+        if(this.doesItHasCoords(moves,[state[enemy][0],state[enemy][1]])){
+            jumpoverAv = true;
+            let tmp =this.getPossibleMoves(state[enemy][0],state[enemy][1],enemy,state)
+            moves = moves.concat(tmp)
+            moves = moves.filter(([x,y])=>!(
+                (x===state[enemy][0]&&y===state[enemy][1])||
+                (x===state[player][0]&&y===state[player][1])))
+        }else
+            jumpoverAv = false;
+        
         //złączenie możliwych ruchów
         if (state[player + "fences"] > 0)
             return moves.concat(placebleFences);
@@ -127,50 +125,65 @@ const logicOfGame = {
         return moves;
     },
     /*
-     * funckja sprawdzająca czy inny płotek 
+     * usuwająca niemożliwych do postawienia płotków
      */
-    checkFecneCollision(state, x, y) {
-        //odsunięcia płotków które mogą kolidować
+    removeCollidingFences(state, x, y) {
+        //odsunięcia płotków które mogą nachodzić
         const offsets= [
             [ 0,-2],
             [ 0, 2],
             [-1,-1],
             [ 0, 0]
         ];
-        //sprawdzenie kolizji innych płotków
+        //usunięcie nachodzących
         if (y % 2 === 0) {
-            for(let i=0;i<offsets.length;++i)
-                if (state.occupied.some(([invalidX, invalidY]) => x+offsets[i][0] === invalidX && y+offsets[i][1] === invalidY))
-                    return false;
+            for(let i=0;i<offsets.length;++i){
+                state["fences"] = state["fences"].filter(([fx,fy])=>!(fx===x+offsets[i][0]&&fy===y+offsets[i][1]))
+                }
         } else {
-            for(let i=offsets.length-1;i>=0;--i)
-                if (state.occupied.some(([invalidX, invalidY]) => x-offsets[i][1] === invalidX && y-offsets[i][0] === invalidY))
-                    return false;
-        }
+            for(let i=offsets.length-1;i>=0;--i){
+                state["fences"] = state["fences"].filter(([fx,fy])=>!(fx===x-offsets[i][1]&&fy===y-offsets[i][0]))
+            }
+        };
+    },    
 
-        return true;
-    },
 
 
     // Funkcja sprawdzająca czy na drodze danego pionka znajduje się płotek
-    checkFencesOnTheWay(x,y,nextMoveX, nextMoveY, occupied) {
+    getPossibleMoves(x,y,player,state) {
+        //odsunięcia rucu
+        const Offsets = [
+            [ 0, 2],
+            [ 0,-2],
+            [ 2, 0],
+            [-2, 0],
+        ];
  
-        //odsunięcia drugiego płotka
+        //odsunięcia drugiego płotka blokującego
         const fenceOffsets = [
             [-2,-1],
             [-2, 1],
             [-1, 2],
             [+1, 2],
         ];
-        //sprawdzanie czy jest płotek pomiędzy polami
-        for(let i=0;i<mOffsets.length;i++)
-            if (x + mOffsets[i][0] == nextMoveX && y + mOffsets[i][1] == nextMoveY)
-                if(!occupied.some(([fencePosX, fencePosY]) => 
-                    ((fencePosX === nextMoveX -(mOffsets[i][0]/2) && fencePosY === nextMoveY - (mOffsets[i][1]/2)) ||
-                    (fencePosX === nextMoveX + fenceOffsets[i][0] && fencePosY === nextMoveY + fenceOffsets[i][1]))))
-                return false;
+        //pozycja przeciwnika
+        const enemy = player === "player1" ? "player2" : "player1";
+
+        let possible=[];
+        let nextX,nextY;
+
+        for(let i=0;i<Offsets.length;i++){
+            nextX = x+Offsets[i][0];
+            nextY = y+Offsets[i][1];
+            if (nextX >= 0 && nextX  < boardWidth && nextY  >= 0 && nextY < boardHeight) 
+                    if(
+                    !(this.doesItHasCoords(state["occupied"],[nextX  -(Offsets[i][0]/2),nextY - (Offsets[i][1]/2)]) ||
+                    this.doesItHasCoords(state["occupied"],[nextX  + fenceOffsets[i][0],nextY + fenceOffsets[i][1]])))
+                        possible.push([nextX ,nextY]);
+    
+        } 
         
-        return true;
+        return possible;
 
 
     },
@@ -178,45 +191,56 @@ const logicOfGame = {
      * Funkcja zwraca dystans od x,y do celowanego wiersza za pomocą algorytmu BFS 
      * zwraca -1 gdy nie może znaleźć drogi do celu
      */
-    getDistanceToEndGoal(currentX,currentY,targetRow,occupied){
-
-     
+    getDistanceToEndGoal(player,state){
+        //console.count("lol")
         //odwiedzone już miejsca
         const explored=[];
-        explored.push([currentX,currentY]);
-
+        explored.push([state[player][0],state[player][1]]);
+        let unexplored
         //kolejka ruchów
         let que= [];
-        let start = new queueNode(currentX,currentY,0);
-        que.push(start);
+        que.push([state[player][0],state[player][1],0]);
+        let current
         //dopóki są 
         while(que.length!==0){
 
-            let current = que.shift();
+            current = que.shift();
             //sprawdzenie czy jest na miejscu jak tak to znaleziono najkrótszą
-            if(current.y===targetRow)
-                return current.dist
+            if(current[1]===state[player+"WinRow"])
+                return current[2];
+
+            unexplored = this.getPossibleMoves(current[0],current[1],player,state)
+      
             //dodanie do kolejki kojenych możliwych ruchów
-            for(let i=0;i<mOffsets.length;i++){
-                const x = current.x + mOffsets[i][0];
-                const y = current.y + mOffsets[i][1];
-                if(x>=0&&x<=16&&y>=0&&y<=16)
-                    if(!this.checkFencesOnTheWay(current.x,current.y,x,y,occupied))
-                        if(!(explored.some(([invalidX, invalidY]) => x === invalidX && y === invalidY))){
-                            explored.push([x,y])
-                            let newcell = new queueNode(x,y,current.dist+1)
-                            que.push(newcell)
-                        }
+            for(let i=0;i<unexplored.length;i++){
+                if(!this.doesItHasCoords(explored,unexplored[i])){
+
+                    explored.push([unexplored[i][0],unexplored[i][1]]);
+                    que.push([unexplored[i][0],unexplored[i][1],current[2]+1]);
+                    
+                }
         
             }
         }
+        
         //nie znaleziono miejsca
         return -1
 
     },
+    
+    /**
+     * funkcja sprawdza czy tablica ma dane koordynaty (szybsza niż array.some)
+     */
+    doesItHasCoords(coordsArray,coords){
+        for(let i=0;i<coordsArray.length;i++)
+            if(coordsArray[i][0]===coords[0]&&coordsArray[i][1]===coords[1])
+                return true;
+        return false;
+    },
     /**
      * Funkcja generuje stan po wykonaniu wskazanego ruchu.
      */
+    
     generateStateAfterMove(previousState, player, move) {
         //nowy stan gry
         const state = {
@@ -227,27 +251,34 @@ const logicOfGame = {
             player1WinRow: previousState.player1WinRow,
             player2WinRow: previousState.player2WinRow,
             occupied: [...previousState.occupied],
+            fences: [...previousState.fences]
 
         };
         //czy to jest położenie płotka
         if (move[0] % 2 === 1 || move[1] % 2 === 1) {
+            
+            const enemy = (player === "player1" ? "player2" : "player1");
+            if(this.getDistanceToEndGoal(enemy,previousState)===this.getDistanceToEndGoal(enemy,state))
+                uselessfence=true;
+            else
+                uselessfence=false;
             //dodanie zajętych płotków DO DOKOŃCZENIA
             state.occupied.push(move);
             state[player + "fences"]--
+            this.removeCollidingFences(state,move[0],move[1])
         } else {
             //aktualizacja pozycji gracza
             state[player] = move;
         }
-
+        //console.log(state)
         return state;
     },
     /**
      * Funkcja sprawdza czy stan jest terminalny, tzn. koniec gry.
      */
     isStateTerminal(state, player) {
-        // Sprawdzenie czy pionek jest po drugiej stronie
-        console.log( (player === "player2" ?"player1" : "player2") +"WinRow")
-        return state[player === "player2" ? "player1" : "player2"][1] === state[(player === "player2" ?"player1" : "player2") +"WinRow"];
+        // Sprawdzenie czy pionek przeciwnika jest po drugiej stronie
+        return state[player][1] === state[player +"WinRow"];
     },
     /**
      * Funkcja generująca unikalny klucz dla wskazanego stanu.
@@ -255,4 +286,8 @@ const logicOfGame = {
     generateUniqueKey: undefined,
 };
 
-const players = [];
+const players = [
+    { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (łatwy)" , maxDepth: 1, printTree: true },
+    { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (średni)", maxDepth: 2, printTree: false },
+    { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (trudny)", maxDepth: 3, printTree: false },
+];
