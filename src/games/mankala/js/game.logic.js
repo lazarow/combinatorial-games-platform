@@ -19,7 +19,30 @@ const logicOfGame = {
      * Funkcja oceny, która ocenia z punktu widzenia wskazanego gracza.
      */
     evaluateState(state, player) {
-        return state[player].store;
+        let playerStore = state[player].store;
+        let seedsInLeftPit = state[player].pits[0];
+        let sumOfSeeds = 0;
+        for(let i = 0; i < 6; i++)
+        {
+            sumOfSeeds += state[player].pits[i];
+        }
+        let enemyScore = 48 - (sumOfSeeds + playerStore);
+        let proximityToWin = (sumOfSeeds + playerStore)/(enemyScore * 1.5)
+        return ( seedsInLeftPit * 0.23 + sumOfSeeds * 0.27 + playerStore + enemyScore * (-0.5) + proximityToWin * 0.35 ) * 100;
+        /*
+        wygrana zalezy od nast. zmiennych:
+        1. Trzymaj nasiona w 1 pit od lewej *SeedsInLeftPit*
+        2. Trzymaj jak nakwiecej nasion po swojej stronie *sumOfSeeds*
+        3. Miej jak najwiecej nasion w storze *player.store*
+        4. Utrzymuj jak najmniejsza ilosc nasion przeciwnika *enemyScore*
+        5. Badz jak najblizej wygranej
+        Wagi tych rozwiazan to:
+        1. 0.23
+        2. 0.27
+        3. 1
+        4. 0.50
+        5. 0.35
+        */
     },
 
     /**
@@ -121,9 +144,66 @@ const logicOfGame = {
     /**
      * Funkcja generująca unikalny klucz dla wskazanego stanu.
      */
-    generateUniqueKey: undefined,
+    generateUniqueKey: function (state, player) {
+        return objectHash.sha1({
+            state,
+            player,
+        });
+    },
+     /**
+     * Funkcja oblicza wartość wskazanego węzła gry (np. UCB1). Na podstawie tej wartości MCTS dokona selekcji.
+     */
+     computeMCTSNodeValue(node) {return (node.reward * 2 + node.visits)/3;},
+     /**
+      * Funkcja rozgrywa losową symulację startując od zadanego stanu i gracza (state i player) i zwraca 1 jeżeli
+      * symulacja zostaje ostatecznie wygrana przez gracza, -1 jeżeli przez jego przeciwnika, 0 dla remisów.
+      * Proszę zwrócić uwagę na kolejność węzłów!
+      */
+     MCTSPlayOut(node) {
+        var player = node.player;
+        var state = node.state;
+        while (this.isStateTerminal(state, player) == false) {
+            var generatedMoves = this.generateMoves(state, player);
+            var randomMove = generatedMoves[Math.floor(Math.random() * generatedMoves.length)];
+            state = this.generateStateAfterMove(state, player, randomMove);
+            if(player === "player1")
+            {
+                player = "player2";
+            } else
+            {
+                player = "player1";
+            }
+        }
+            if(player === node.player)
+            {
+                return 1;
+            }
+            return -1;
+     },
+     /**
+      * Funkcja przyjmuje na wejście węzeł drzewa MCTS i wybiera najlepszy ruch (kolejny węzeł) wg obranej strategii (np. najwięcej wizyt).
+      */
+     getBestMCTSNode(node) {
+       var nodeKids = node.children;
+       var bestScore = this.computeMCTSNodeValue(nodeKids[0]);
+       var winner = 0;
+       for( var i = 0; i < nodeKids.length; i++)
+       {
+            if(bestScore <= this.computeMCTSNodeValue(nodeKids[i]))
+            {
+                bestScore = this.computeMCTSNodeValue(nodeKids[i]);
+                winner = i;
+            }
+       } 
+       return nodeKids[winner];
+     },
 };
 
 const players = [
-    { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (łatwy)", maxDepth: 3 }
+    { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (łatwy)", maxDepth: 3, printTree: true },
+    { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (średni)", maxDepth: 5, printTree: false },
+    { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (trudny)", maxDepth: 7, printTree: false },
+    { type: PlayerTypes.MCTS, label: "MCTS (łatwy)", iterations: 1000 },
+    { type: PlayerTypes.MCTS, label: "MCTS (średni)", iterations: 3000 },
+    { type: PlayerTypes.MCTS, label: "MCTS (trudny)", iterations: 7000 },
 ];

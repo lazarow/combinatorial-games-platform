@@ -26,7 +26,10 @@ const logicOfGame = {
         }
 
         // Ocena stanu na podstawie liczby pionków na planszy
-
+        /**
+         * @author AN
+         * Ta funkcja jest bez sensu. Przecież zawsze jest tyle samo pionów?
+         */
         const playerPawns = state[player].length / 2;
         const opponentPawns = state[opponent].length / 2;
 
