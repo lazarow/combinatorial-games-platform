@@ -9,7 +9,6 @@ const logicOfGame = {
             player2: [0, 4, 1, 4, 2, 4, 3, 4, 4, 4],
             highlighted: [],
             player1FirstTurn: true,
-            player2FirstTurn: true
         };
     },
     evaluateState(state, player) {
@@ -23,12 +22,12 @@ const logicOfGame = {
         availableOpponentMoves.forEach(move => {
             if (move[0] === 2) opponentKingMoves++;
         })
-        if ((state[player][4] === 2 && state[player][5] === 2) || (opponentKingMoves === 0)) {
-            return 999;
-        } else if ((state[opponent][4] === 2 && state[opponent][5] === 2) || (playerKingMoves === 0)) {
-            return -999;
-        }
         var score = 0;
+        if ((state[player][4] === 2 && state[player][5] === 2) || (opponentKingMoves === 0)) {
+            score += 999;
+        } else if ((state[opponent][4] === 2 && state[opponent][5] === 2) || (playerKingMoves === 0)) {
+            score -= 999;
+        }
         if (state[player][0] == 1 && state[player][1] == 2 ||
             state[player][2] == 1 && state[player][3] == 2 ||
             state[player][4] == 1 && state[player][5] == 2 ||
@@ -41,12 +40,12 @@ const logicOfGame = {
             state[opponent][8] == 1 && state[opponent][9] == 2
         ) {
             if ((state[player][4] == 3 && state[player][5] == 2) || state[player][4] == 4 && state[player][5] == 2) {
-                score += 20;
-            }
-            if ((state[opponent][4] == 3 && state[opponent][5] == 2) || state[opponent][4] == 4 && state[opponent][5] == 2) {
                 score -= 20;
             }
-            score++;
+            if ((state[opponent][4] == 3 && state[opponent][5] == 2) || state[opponent][4] == 4 && state[opponent][5] == 2) {
+                score += 20;
+            }
+            score--;
         }
         if (state[player][0] == 1 && state[player][1] == 3 ||
             state[player][2] == 1 && state[player][3] == 3 ||
@@ -60,12 +59,12 @@ const logicOfGame = {
             state[opponent][8] == 1 && state[opponent][9] == 3
         ) {
             if ((state[player][4] == 3 && state[player][5] == 1) || state[player][4] == 4 && state[player][5] == 0) {
-                score += 20;
-            }
-            if ((state[opponent][4] == 3 && state[opponent][5] == 1) || state[opponent][4] == 4 && state[opponent][5] == 0) {
                 score -= 20;
             }
-            score++;
+            if ((state[opponent][4] == 3 && state[opponent][5] == 1) || state[opponent][4] == 4 && state[opponent][5] == 0) {
+                score += 20;
+            }
+            score--;
         }
         if (state[player][0] == 2 && state[player][1] == 3 ||
             state[player][2] == 2 && state[player][3] == 3 ||
@@ -79,12 +78,12 @@ const logicOfGame = {
             state[opponent][8] == 2 && state[opponent][9] == 3
         ) {
             if ((state[player][4] == 2 && state[player][5] == 1) || state[player][4] == 2 && state[player][5] == 0) {
-                score += 20;
-            }
-            if ((state[opponent][4] == 2 && state[opponent][5] == 1) || state[opponent][4] == 2 && state[opponent][5] == 0) {
                 score -= 20;
             }
-            score++;
+            if ((state[opponent][4] == 2 && state[opponent][5] == 1) || state[opponent][4] == 2 && state[opponent][5] == 0) {
+                score += 20;
+            }
+            score--;
         }
         if (state[player][0] == 3 && state[player][1] == 3 ||
             state[player][2] == 3 && state[player][3] == 3 ||
@@ -98,12 +97,12 @@ const logicOfGame = {
             state[opponent][8] == 3 && state[opponent][9] == 3
         ) {
             if ((state[player][4] == 1 && state[player][5] == 1) || state[player][4] == 0 && state[player][5] == 0) {
-                score += 20;
-            }
-            if ((state[opponent][4] == 1 && state[opponent][5] == 1) || state[opponent][4] == 0 && state[opponent][5] == 0) {
                 score -= 20;
             }
-            score++;
+            if ((state[opponent][4] == 1 && state[opponent][5] == 1) || state[opponent][4] == 0 && state[opponent][5] == 0) {
+                score += 20;
+            }
+            score--;
         }
         if (state[player][0] == 3 && state[player][1] == 2 ||
             state[player][2] == 3 && state[player][3] == 2 ||
@@ -117,12 +116,12 @@ const logicOfGame = {
             state[opponent][8] == 3 && state[opponent][9] == 2
         ) {
             if ((state[player][4] == 1 && state[player][5] == 2) || state[player][4] == 0 && state[player][5] == 2) {
-                score += 20;
-            }
-            if ((state[opponent][4] == 1 && state[opponent][5] == 2) || state[opponent][4] == 0 && state[opponent][5] == 2) {
                 score -= 20;
             }
-            score++;
+            if ((state[opponent][4] == 1 && state[opponent][5] == 2) || state[opponent][4] == 0 && state[opponent][5] == 2) {
+                score += 20;
+            }
+            score--;
         }
         if (state[player][0] == 3 && state[player][1] == 1 ||
             state[player][2] == 3 && state[player][3] == 1 ||
@@ -136,12 +135,12 @@ const logicOfGame = {
             state[opponent][8] == 3 && state[opponent][9] == 1
         ) {
             if ((state[player][4] == 1 && state[player][5] == 3) || state[player][4] == 0 && state[player][5] == 4) {
-                score += 20;
-            }
-            if ((state[opponent][4] == 1 && state[opponent][5] == 3) || state[opponent][4] == 0 && state[opponent][5] == 4) {
                 score -= 20;
             }
-            score++;
+            if ((state[opponent][4] == 1 && state[opponent][5] == 3) || state[opponent][4] == 0 && state[opponent][5] == 4) {
+                score += 20;
+            }
+            score--;
         }
         if (state[player][0] == 2 && state[player][1] == 1 ||
             state[player][2] == 2 && state[player][3] == 1 ||
@@ -155,12 +154,12 @@ const logicOfGame = {
             state[opponent][8] == 2 && state[opponent][9] == 1
         ) {
             if ((state[player][4] == 2 && state[player][5] == 3) || state[player][4] == 2 && state[player][5] == 4) {
-                score += 20;
-            }
-            if ((state[opponent][4] == 2 && state[opponent][5] == 3) || state[opponent][4] == 2 && state[opponent][5] == 4) {
                 score -= 20;
             }
-            score++;
+            if ((state[opponent][4] == 2 && state[opponent][5] == 3) || state[opponent][4] == 2 && state[opponent][5] == 4) {
+                score += 20;
+            }
+            score--;
         }
         if (state[player][0] == 1 && state[player][1] == 1 ||
             state[player][2] == 1 && state[player][3] == 1 ||
@@ -174,12 +173,12 @@ const logicOfGame = {
             state[opponent][8] == 1 && state[opponent][9] == 1
         ) {
             if ((state[player][4] == 3 && state[player][5] == 3) || state[player][4] == 4 && state[player][5] == 4) {
-                score += 20;
-            }
-            if ((state[opponent][4] == 3 && state[opponent][5] == 3) || state[opponent][4] == 4 && state[opponent][5] == 4) {
                 score -= 20;
             }
-            score++;
+            if ((state[opponent][4] == 3 && state[opponent][5] == 3) || state[opponent][4] == 4 && state[opponent][5] == 4) {
+                score += 20;
+            }
+            score--;
         }
         return score;
     },
@@ -227,10 +226,6 @@ const logicOfGame = {
                 if (player === "player1") {
                     if (pawn === kingPawn && state.player1FirstTurn) continue;
                 }
-                if (player === "player2") {
-                    if (pawn === kingPawn && state.player2FirstTurn) continue;
-                }
-
                 moves.push([pawn, prevX, prevY]);
             }
         }
@@ -242,7 +237,6 @@ const logicOfGame = {
             player2: [...previousState.player2],
             highlighted: [...previousState.highlighted],
             player1FirstTurn: previousState.player1FirstTurn,
-            player2FirstTurn: previousState.player2FirstTurn
         };
         state.highlighted = [];
         const index = move[0] * 2;
@@ -252,8 +246,6 @@ const logicOfGame = {
         state.highlighted.push(state[player][index], state[player][index + 1]);
         if (player === "player1") {
             state.player1FirstTurn = false;
-        } else if (player === "player2") {
-            state.player2FirstTurn = false;
         }
         return state;
     },
@@ -266,12 +258,38 @@ const logicOfGame = {
         return (state.player1[4] === 2 && state.player1[5] === 2)
             || (state.player2[4] === 2 && state.player2[5] === 2)
             || (player === "player1" && kingMoves === 0 && state.player1FirstTurn === false)
-            || (player === "player2" && kingMoves === 0 && state.player2FirstTurn === false);
+            || (player === "player2" && kingMoves === 0);
     },
     generateUniqueKey: undefined,
+    computeMCTSNodeValue(node) {
+        return node.reward / node.visits + 0.4 * Math.sqrt(Math.log(node.parent.visits) / node.visits);
+    },
+    MCTSPlayOut(node) {
+        state = node.state;
+        player = node.player;
+        while (this.isStateTerminal(state, player) === false) {
+            const moves = this.generateMoves(state, player);
+            const move = moves[Math.floor(Math.random() * moves.length)];
+            state = this.generateStateAfterMove(state, player, move);
+            player = player === "player1" ? "player2" : "player1";
+        }
+        return player === node.player ? 1 : -1;
+    },
+    getBestMCTSNode(node) {
+        let bestNode = node.children[0];
+        for (let i = 1; i < node.children.length; i++) {
+            if (node.children[i].visits > bestNode.visits) {
+                bestNode = node.children[i];
+            }
+        }
+        return bestNode;
+    },
 };
 const players = [
-    { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (łatwy)", maxDepth: 2, printTree: true },
-    { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (średni)", maxDepth: 3, printTree: true },
-    { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (trudny)", maxDepth: 4, printTree: true },
+    { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (łatwy)", maxDepth: 3, printTree: true },
+    { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (średni)", maxDepth: 5, printTree: true },
+    { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (trudny)", maxDepth: 6, printTree: true },
+    { type: PlayerTypes.MCTS, label: "MCTS (łatwy)", iterations: 1000 },
+    { type: PlayerTypes.MCTS, label: "MCTS (średni)", iterations: 3000 },
+    { type: PlayerTypes.MCTS, label: "MCTS (trudny)", iterations: 7000 },
 ];
