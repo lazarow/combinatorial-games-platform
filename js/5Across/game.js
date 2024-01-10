@@ -181,31 +181,27 @@ const visualizationOfGame = {
     handleHumanTurn(state, player, cb) {
         const gameBoard = document.getElementById('game-board');
 
-        if (gameBoard) {
-            // Create input elements for the user to enter the move
-            const input = document.createElement('input');
-            input.type = 'number';
-            input.min = '1';
-            input.max = state[0].length.toString();
-            input.placeholder = `Enter your move (1-${state[0].length})`;
+    // Create buttons for each column
+    const buttonRow = document.createElement('div');
+    buttonRow.className = 'column-buttons';
 
-            const button = document.createElement('button');
-            button.textContent = 'Make Move';
-            button.addEventListener('click', () => {
-                const selectedMove = parseInt(input.value, 10) - 1;
+    for (let col = 0; col < state[0].length; col++) {
+        const button = document.createElement('button');
+        button.textContent = `${col + 1}`;
+        button.addEventListener('click', () => {
+            // Check if the selected column is not full
+            if (state[0][col] === null) {
+                cb(col);
+            } else {
+                alert('Column is full. Please choose another column.');
+            }
+        });
 
-                // Check if the input is valid
-                if (!isNaN(selectedMove) && selectedMove >= 0 && selectedMove < state[0].length) {
-                    cb(selectedMove);
-                } else {
-                    alert('Invalid move. Please enter a valid column number.');
-                }
-            });
+        buttonRow.appendChild(button);
+    }
 
-            // Append input elements to the game board container
-            gameBoard.appendChild(input);
-            gameBoard.appendChild(button);
-        }
+    // Append buttons below the game board
+    gameBoard.insertAdjacentElement('afterend', buttonRow);
     },
 
     getTruePlayerName(player) {
