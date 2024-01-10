@@ -24,7 +24,7 @@
             crossorigin="anonymous"
             referrerpolicy="no-referrer"
         />
-                <link href="css/joust/game.css" rel="stylesheet" />
+                <link href="css/teeko/game.css" rel="stylesheet" />
                 <style type="text/css">
             :root {
                 --bs-font-sans-serif: "Fira Sans", sans-serif;
@@ -95,9 +95,10 @@
                 </nav>
             </header>
             <main>
-<h1 class="mb-3">Joust</h1>
+<h1 class="mb-3">teeko</h1>
 
-<p><em>Implementacja na platformie:</em> Arkadiusz Nowakowski (<a href="mailto:arkadiusz.nowakowski@us.edu.pl">arkadiusz.nowakowski@us.edu.pl</a>)<br><em>Autor gry:</em> Autor gry nie jest znany. Więcej informacji można znaleźć <a href="http://indigo.ie/~gerryq/Joust/Joustra.htm">tu</a>.</p>
+<p><em>Autor gry:</em> Autor gry John Scarne. 
+Implementacja: Łukasz Para &amp; Dominika Ignacy </p>
 
 <div class="container-fluid mb-3">
     <div class="row bg-body-tertiary">
@@ -163,7 +164,11 @@
     </div>
 </nav>
 <div class="tab-content">
-    <div class="tab-pane active" id="tabDescription"><p>Opis gry i jej zasady.</p>
+    <div class="tab-pane active" id="tabDescription"><p>﻿### <em>Opis:</em></p>
+<h3><em>Zasady:</em></h3>
+<p>FIRST PHASE [DROP] - Players alternate moves by dropping 8 stones (4 for each) into empty cells.. 
+SECOND PHASE [MOVE] - If no player achieved the winning goal, then each player moves a stone into an adjacent orthogonal or diagonal empty cell. 
+GOAL - A player wins when he makes a 4 in-a-row, or creates a square (this square can be of any size, i.e., 2x2 to 5x5).</p>
 </div>
     <div class="tab-pane" id="tabHistory"></div>
     <div class="tab-pane" id="tabAlphaBetaTextTree">
@@ -175,7 +180,7 @@
     </div>
 </div>
 
-<script src="js/joust/game.js"></script>
+<script src="js/teeko/game.js"></script>
 </main>
             <footer class="mt-3 py-2 bg-body-secondary">
                 <div class="container-fluid">
