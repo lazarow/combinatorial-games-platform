@@ -744,12 +744,72 @@ const logicOfGame = {
             }
         }
     },
-    generateUniqueKey: undefined,
+    generateUniqueKey: function (state, player) {
+        return objectHash.sha1({
+            state,
+            player,
+        });
+    },
+    
+// Funkcja obliczania wartości węzła MCTS
+computeMCTSNodeValue(node) {
+    return (node.reward * 2 + node.visits) / 3;
+},
+
+// symulacja rozgrywki w drzewie MCTS
+MCTSPlayOut(node) {
+    var player = node.player;
+    var state = node.state;
+
+    // Pętla wykonująca rozgrywkę do momentu zakończenia stanu
+    while (this.isStateTerminal(state, player) == false) {
+        // Generowanie dostępnych ruchów
+        var generatedMoves = this.generateMoves(state, player);
+        // Losowy wybór ruchu spośród dostępnych
+        var randomMove = generatedMoves[Math.floor(Math.random() * generatedMoves.length)];
+        // Aktualizacja stanu po wybranym ruchu
+        state = this.generateStateAfterMove(state, player, randomMove);
+
+        // Zamiana gracza po wykonaniu ruchu
+        if (player === "player1") {
+            player = "player2";
+        } else {
+            player = "player1";
+        }
+    }
+
+    // Sprawdzenie zwycięstwa
+    if (player === node.player) {
+        return 1;
+    }
+    return -1;
+},
+
+// Funkcja do wybierania najlepszego węzła MCTS
+getBestMCTSNode(node) {
+    var nodeKids = node.children;
+    var bestScore = this.computeMCTSNodeValue(nodeKids[0]);
+    var winner = 0;
+
+    // Iteracja po wszystkich dzieciach węzła
+    for (var i = 0; i < nodeKids.length; i++) {
+        if (bestScore <= this.computeMCTSNodeValue(nodeKids[i])) {
+            bestScore = this.computeMCTSNodeValue(nodeKids[i]);
+            winner = i;
+        }
+    }
+
+    return nodeKids[winner];
+},
 };
+
 const players = [
     { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (łatwy)", maxDepth: 3, printTree: true },
     { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (średni)", maxDepth: 5, printTree: false },
     { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (trudny)", maxDepth: 7, printTree: false },
+    { type: PlayerTypes.MCTS, label: "MCTS (łatwy)", iterations: 1000 },
+    { type: PlayerTypes.MCTS, label: "MCTS (średni)", iterations: 3000 },
+    { type: PlayerTypes.MCTS, label: "MCTS (trudny)", iterations: 7000 },
 ];
 let textTreeData = [];
 
