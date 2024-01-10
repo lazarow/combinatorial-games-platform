@@ -53,7 +53,7 @@ const logicOfGame = {
             return -999;
         
 
-        let score =this.getDistanceToEndGoal(enemy,state) -this.getDistanceToEndGoal(player,state);
+        let score =this.getDistanceToEndGoal(enemy,state) - this.getDistanceToEndGoal(player,state);
         //potrojenie wagi dystansu
         score *=3
         //sprawdzenie czy przeskok jest wartościowy
@@ -146,8 +146,6 @@ const logicOfGame = {
             }
         };
     },    
-
-
 
     // Funkcja sprawdzająca czy na drodze danego pionka znajduje się płotek
     getPossibleMoves(x,y,player,state) {
@@ -284,10 +282,58 @@ const logicOfGame = {
      * Funkcja generująca unikalny klucz dla wskazanego stanu.
      */
     generateUniqueKey: undefined,
+
+    /**
+     * Funkcja oblicza wartość wskazanego węzła gry (np. UCB1). Na podstawie tej wartości MCTS dokona selekcji.
+     */
+    computeMCTSNodeValue(node) {
+        // Obliczenia według wzoru UCT = AVG(Xj) + 2*Cp*SQRT[ (2*ln(n)) / nj ]. Wartość Cp może wynosić Cp = 1/SQRT(2), lub być dostosowana według (ale zawsze większa od 0)
+        return (node.reward + 2 * (1/(Math.sqrt(2))) * (Math.sqrt((2 * Math.log(node.parent.visits))/(node.visits))));
+    },
+
+    /**
+     * Funkcja rozgrywa losową symulację startując od zadanego stanu i gracza (state i player) i zwraca 1 jeżeli
+     * symulacja zostaje ostatecznie wygrana przez gracza, -1 jeżeli przez jego przeciwnika, 0 dla remisów.
+     * Proszę zwrócić uwagę na kolejność węzłów!
+     */
+    MCTSPlayOut(node) {
+        let currentState = node.state; 
+        let currentPlayer = node.player;
+
+        while(!this.isStateTerminal(currentState, currentPlayer)){ 
+            let availableMoves = this.generateMoves(currentState, currentPlayer); 
+            let randomMove = availableMoves[Math.floor(Math.random()*availableMoves.length)]; 
+            currentState = this.generateStateAfterMove(currentState, currentPlayer, randomMove); 
+            currentPlayer = currentPlayer === "player1" ? "player2" : "player1"; 
+        }
+
+        return currentPlayer === node.player ? 1 : -1; // Wynikiem będzie zawsze 1 lub -1, ponieważ w grze Quoridor nie jest możliwe osiągnięcie remisu
+    },
+
+    /**
+     * Funkcja przyjmuje na wejście węzeł drzewa MCTS i wybiera najlepszy ruch (kolejny węzeł) wg obranej strategii (np. najwięcej wizyt).
+     */
+    getBestMCTSNode(node) {
+        let bestNode = node.children[0];
+        let bestValue = this.computeMCTSNodeValue(bestNode); 
+
+        for(let i = 1; i < node.children.length; ++i){ 
+            let childValue = this.computeMCTSNodeValue(node.children[i]); 
+            let maxRobustValue = node.children[i].visits + childValue; 
+            if(maxRobustValue > (bestNode.visits + this.computeMCTSNodeValue(bestNode))){ 
+                bestNode = node.children[i]; 
+            }
+        }
+
+        return bestNode; 
+    }, 
 };
 
 const players = [
     { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (łatwy)" , maxDepth: 1, printTree: true },
     { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (średni)", maxDepth: 2, printTree: false },
     { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (trudny)", maxDepth: 3, printTree: false },
+    { type: PlayerTypes.MCTS, label: "MCTS (łatwy)", iterations: 25 },
+    { type: PlayerTypes.MCTS, label: "MCTS (średni)", iterations: 50 },
+    { type: PlayerTypes.MCTS, label: "MCTS (trudny)", iterations: 100 },
 ];
