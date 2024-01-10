@@ -71,7 +71,6 @@ const logicOfGame = {
             }
         }
         const score = winProximity[player] - winProximity[opponent];
-        console.log(score);
         return score;
     },
      /**
@@ -163,37 +162,38 @@ const logicOfGame = {
         for(var i=0; i<15; i++){
             for(var j=0; j<15; j++){
                 if(playerBoard[i][j]==playerPawnNumber){
-                    let newPositions = this.generateMovesforPawn(state, player, i, j);
-                    for(var z=0; z<newPositions.length; z++){
+                    let newPositionsPawn = this.generateMovesforPawn(state, player, i, j);
+                    for(var z=0; z<newPositionsPawn.length; z++){
 
-                        pawnMove = [i,j,newPositions[z][0],newPositions[z][1]];
-                        // moves.push({
-                        //     pawn:pawnMove,
-                        //     tile:[0,0,0,0]
-                        // });
+                        pawnMove = [i,j,newPositionsPawn[z][0],newPositionsPawn[z][1]];
+                        var tileMoves = [];
+
                         for(var i2=0; i2<15; i2++){
                             for(var j2=0; j2<15; j2++){
-                                if( !(i2==newPositions[z][0] && j2==newPositions[z][1]) && 
+                                if( !(i2==newPositionsPawn[z][0] && j2==newPositionsPawn[z][1]) && 
                                 playerBoard[i2][j2]==2 &&  //the tile can only be moved if it has less than 5 neighbours
                                 (this.countNeighbours(i2,j2,playerBoard,2)+
                                     this.countNeighbours(i2,j2,playerBoard,3)+
                                     this.countNeighbours(i2,j2,playerBoard,4))<5){
-                                    let newPositions = this.generateMovesforTile(state, player, i2, j2);
-                                    for(var z2=0; z2<newPositions.length; z2++){
-                                        moves.push({
-                                            pawn:pawnMove,
-                                            tile:[i2,j2,newPositions[z2][0],newPositions[z2][1]]
-                                        });
-                                    }
-                                    
+                                    tileMoves.push([i2,j2]);
                                 }
                             }
                         }
+                        //To prevent huge amounts of calculations, generateMoves chooses only one randomly selected tile to move
+                        var randomTileMove = Math.floor(Math.random() * tileMoves.length);
+                        var newPositions = this.generateMovesforTile(state, player, tileMoves[randomTileMove][0], tileMoves[randomTileMove][1]);
+                        for(var z2=0; z2<newPositions.length; z2++){
+                            moves.push({
+                                pawn:pawnMove,
+                                tile:[tileMoves[randomTileMove][0],tileMoves[randomTileMove][1],newPositions[z2][0],newPositions[z2][1]]
+                            });
+                        }
                     }
-                    //Yes, this function has 6 levels of nested for loops... too bad.
+                    //Yes, this function has 5 levels of nested for loops... too bad.
                 }
             }
         }
+        //console.log(moves.length);
         return moves;
     },
     /**
@@ -246,6 +246,32 @@ const logicOfGame = {
 
         return count;
     },
+    computeMCTSNodeValue(node) {
+        return node.reward / node.visits + 0.4 * Math.sqrt(Math.log(node.parent.visits) / node.visits);
+    },
+    MCTSPlayOut(node) {
+        state = node.state;
+        player = node.player;
+        while (this.isStateTerminal(state, player) === false) {
+            const moves = this.generateMoves(state, player);
+            const move = moves[Math.floor(Math.random() * moves.length)];
+            state = this.generateStateAfterMove(state, player, move);
+            player = player === "player1" ? "player2" : "player1";
+        }
+        return player === node.player ? 1 : -1;
+    },
+    /**
+     * Funkcja przyjmuje na wejście węzeł drzewa MCTS i wybiera najlepszy ruch wg obranej strategii (np. najwięcej wizyt).
+     */
+    getBestMCTSNode(node) {
+        let bestNode = node.children[0];
+        for (let i = 1; i < node.children.length; ++i) {
+            if (node.children[i].visits > bestNode.visits) {
+                bestNode = node.children[i];
+            }
+        }
+        return bestNode;
+    },
     /**
      * Funkcja generująca unikalny klucz dla wskazanego stanu.
      */
@@ -254,7 +280,11 @@ const logicOfGame = {
 
 const players = [
     { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (łatwy)", maxDepth: 1, printTree: true },
-    { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (trudny)", maxDepth: 2, printTree: false }
+    { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (średni)", maxDepth: 2, printTree: true },
+    { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (trudny)", maxDepth: 3, printTree: false },
+    { type: PlayerTypes.MCTS, label: "MCTS (łatwy)", iterations: 50 },
+    { type: PlayerTypes.MCTS, label: "MCTS (średni)", iterations: 200 },
+    { type: PlayerTypes.MCTS, label: "MCTS (trudny)", iterations: 600 }
 ];
 const visualizationOfGame = {
     /**
@@ -288,7 +318,6 @@ const visualizationOfGame = {
                 }
             }
         }
-        console.log('test');
         board+="</div>";
         container.innerHTML = board;
         if (typeof cb === 'function') {
