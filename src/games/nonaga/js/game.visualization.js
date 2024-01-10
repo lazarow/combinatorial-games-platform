@@ -30,7 +30,6 @@ const visualizationOfGame = {
                 }
             }
         }
-        console.log('test');
         board+="</div>";
         container.innerHTML = board;
         if (typeof cb === 'function') {
