@@ -1,0 +1,80 @@
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: Arial, sans-serif;
+}
+
+#game-board {
+    display: grid;
+    grid-template-columns: repeat(7, 80px);
+    gap: 5px;
+    margin-top: 20px;
+}
+
+.cell {
+    width: 80px;
+    height: 80px;
+    border: 1px solid #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    cursor: pointer;
+    background-color: #eee;
+}
+
+.cell.player1 {
+    background-color: #ffcccb; /* Light red */
+}
+
+.cell.player2 {
+    background-color: #add8e6; /* Light blue */
+}
+
+input {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding: 5px;
+    font-size: 16px;
+}
+
+button {
+    padding: 12px 12px; /* Increase padding for both vertical and horizontal space */
+    font-size: 18px;   /* Increase font size */
+    cursor: pointer;
+    display: flex;     /* Use flexbox to center content */
+    align-items: center; /* Center content vertically */
+    justify-content: center; /* Center content horizontally */
+}
+
+.column-numbers {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.column-number {
+    width: 80px; /* Adjust the width of each column number */
+    text-align: center;
+}
+
+.column-buttons {
+    display: grid;
+    grid-template-columns: repeat(7, 80px); /* Match the number and width of columns in the game board */
+    gap: 5px;
+    margin-top: 10px;
+}
+
+.column-buttons button {
+    width: 80px; /* Adjust the width of each button to match the column width */
+    height: 80px; /* Adjust the height of each button */
+    padding: 12px 12px; /* Adjust padding for both vertical and horizontal space */
+    font-size: 18px;   /* Adjust font size */
+    cursor: pointer;
+    border: 1px solid #333; /* Add border to each button */
+}
+
+.column-buttons button:hover {
+    background-color: #ddd; /* Change background color on hover for visual feedback */
+}
