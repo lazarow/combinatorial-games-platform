@@ -30,16 +30,16 @@ const logicOfGame = {
 
     evaluateState(state, player) {
         const checkWinner = (line) => {
-            const playerCount = line.filter(cell => cell === player).length;
-            const opponentCount = line.filter(cell => cell !== player && cell !== null).length;
+            const playerCount = line.filter((cell) => cell === player).length;
+            const opponentCount = line.filter((cell) => cell !== player && cell !== null).length;
 
-            // If the line has five consecutive player pieces, return a positive score
-            if (playerCount === 5) {
+            // If the line has five or more consecutive player pieces, return a positive score
+            if (playerCount >= 5) {
                 return 100;
             }
 
-            // If the line has five consecutive opponent pieces, return a negative score
-            if (opponentCount === 5) {
+            // If the line has five or more consecutive opponent pieces, return a negative score
+            if (opponentCount >= 5) {
                 return -100;
             }
 
@@ -60,7 +60,13 @@ const logicOfGame = {
         // Check columns
         for (let col = 0; col < state[0].length; col++) {
             for (let row = 0; row <= state.length - 5; row++) {
-                const line = [state[row][col], state[row + 1][col], state[row + 2][col], state[row + 3][col], state[row + 4][col]];
+                const line = [
+                    state[row][col],
+                    state[row + 1][col],
+                    state[row + 2][col],
+                    state[row + 3][col],
+                    state[row + 4][col],
+                ];
                 const score = checkWinner(line);
                 if (score !== 0) {
                     return score;
@@ -71,7 +77,13 @@ const logicOfGame = {
         // Check diagonals (from top-left to bottom-right)
         for (let row = 0; row <= state.length - 5; row++) {
             for (let col = 0; col <= state[row].length - 5; col++) {
-                const line = [state[row][col], state[row + 1][col + 1], state[row + 2][col + 2], state[row + 3][col + 3], state[row + 4][col + 4]];
+                const line = [
+                    state[row][col],
+                    state[row + 1][col + 1],
+                    state[row + 2][col + 2],
+                    state[row + 3][col + 3],
+                    state[row + 4][col + 4],
+                ];
                 const score = checkWinner(line);
                 if (score !== 0) {
                     return score;
@@ -82,7 +94,13 @@ const logicOfGame = {
         // Check diagonals (from top-right to bottom-left)
         for (let row = 0; row <= state.length - 5; row++) {
             for (let col = 4; col < state[row].length; col++) {
-                const line = [state[row][col], state[row + 1][col - 1], state[row + 2][col - 2], state[row + 3][col - 3], state[row + 4][col - 4]];
+                const line = [
+                    state[row][col],
+                    state[row + 1][col - 1],
+                    state[row + 2][col - 2],
+                    state[row + 3][col - 3],
+                    state[row + 4][col - 4],
+                ];
                 const score = checkWinner(line);
                 if (score !== 0) {
                     return score;
@@ -127,7 +145,7 @@ const logicOfGame = {
         // Implement the logic to check if the game state is terminal (game over)
         // You might check for a winner or a full board
 
-        const isBoardFull = state.every(row => row.every(cell => cell !== null));
+        const isBoardFull = state.every((row) => row.every((cell) => cell !== null));
         const winnerScore = this.evaluateState(state, player);
 
         return isBoardFull || Math.abs(winnerScore) === 100;
@@ -138,29 +156,94 @@ const logicOfGame = {
         // You might serialize the state into a string for simplicity
         return JSON.stringify(state);
     },
+    computeMCTSNodeValue(node) {
+        const explorationParam = 0.8; // You can adjust this parameter
+        return node.reward / node.visits + explorationParam * Math.sqrt(Math.log(node.parent.visits) / node.visits);
+    },
+    /**
+     * Funkcja rozgrywa losową symulację startując od zadanego stanu i gracza (state i player) i zwraca 1 jeżeli
+     * symulacja zostaje ostatecznie wygrana przez gracza, -1 jeżeli przez jego przeciwnika, 0 dla remisów.
+     * Proszę zwrócić uwagę na kolejność węzłów!
+     */
+    MCTSPlayOut(node) {
+        let state = node.state;
+        let player = node.player;
+
+        while (this.isStateTerminal(state, player) === false) {
+            const moves = this.generateMoves(state, player);
+
+            // Blocking strategy: Prioritize moves that block the opponent
+            const blockingMoves = moves.filter((move) => {
+                const nextState = this.generateStateAfterMove(
+                    state,
+                    player === "player1" ? "player2" : "player1",
+                    move
+                );
+                return this.evaluateState(nextState, player === "player1" ? "player2" : "player1") === 100;
+            });
+
+            const move = blockingMoves.length > 0 ? blockingMoves[0] : moves[Math.floor(Math.random() * moves.length)];
+
+            state = this.generateStateAfterMove(state, player, move);
+            player = player === "player1" ? "player2" : "player1";
+        }
+
+        return player === node.player ? 1 : -1;
+    },
+
+    chooseMove(state, player, moves) {
+        // Check for potential opponent wins and prioritize blocking
+        for (const move of moves) {
+            const nextState = this.generateStateAfterMove(state, player === "player1" ? "player2" : "player1", move);
+            if (this.evaluateState(nextState, player === "player1" ? "player2" : "player1") === 100) {
+                return move; // Block the opponent's potential win
+            }
+        }
+
+        // If no potential wins to block, choose a random move
+        return moves[Math.floor(Math.random() * moves.length)];
+    },
+    /**
+     * Funkcja przyjmuje na wejście węzeł drzewa MCTS i wybiera najlepszy ruch (kolejny węzeł) wg obranej strategii (np. najwięcej wizyt).
+     */
+    getBestMCTSNode(node) {
+        let bestNode = node.children[0];
+        for (let i = 1; i < node.children.length; ++i) {
+            if (node.children[i].visits > bestNode.visits) {
+                bestNode = node.children[i];
+            }
+        }
+        return bestNode;
+    },
 };
 
-
-const players = [];
+const players = [
+    { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (łatwy)", maxDepth: 2, printTree: true },
+    { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (średni)", maxDepth: 4, printTree: false },
+    { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (trudny)", maxDepth: 7, printTree: false },
+    { type: PlayerTypes.MCTS, label: "MCTS (łatwy)", iterations: 2000 },
+    { type: PlayerTypes.MCTS, label: "MCTS (średni)", iterations: 5000 },
+    { type: PlayerTypes.MCTS, label: "MCTS (trudny)", iterations: 10000 },
+];
 const visualizationOfGame = {
     drawState(state, player, move, container, cb) {
-        const gameBoard = document.createElement('div');
-        gameBoard.id = 'game-board';
+        const gameBoard = document.createElement("div");
+        gameBoard.id = "game-board";
 
         for (let row = 0; row < state.length; row++) {
             for (let col = 0; col < state[row].length; col++) {
-                const cell = document.createElement('div');
-                cell.className = 'cell';
+                const cell = document.createElement("div");
+                cell.className = "cell";
                 cell.dataset.row = row;
                 cell.dataset.col = col;
 
                 const playerTile = state[row][col];
                 if (playerTile !== null) {
-                    cell.textContent = playerTile === 'player1' ? 'X' : 'O';
-                    cell.style.backgroundColor = playerTile === 'player1' ? '#ffcccb' : '#add8e6';
+                    cell.textContent = playerTile === "player1" ? "X" : "O";
+                    cell.style.backgroundColor = playerTile === "player1" ? "#ffcccb" : "#add8e6";
                 }
 
-                cell.addEventListener('click', () => {
+                cell.addEventListener("click", () => {
                     const clickedCell = event.target;
                     const row = parseInt(clickedCell.dataset.row, 10);
                     const col = parseInt(clickedCell.dataset.col, 10);
@@ -171,41 +254,44 @@ const visualizationOfGame = {
             }
         }
 
-        container.innerHTML = '';
+        container.innerHTML = "";
         container.appendChild(gameBoard);
-
-        // Execute the callback function
         cb();
     },
 
     handleHumanTurn(state, player, cb) {
-        const gameBoard = document.getElementById('game-board');
+        // Check if buttons row already exists
+        let buttonRow = document.getElementById("column-buttons");
 
-    // Create buttons for each column
-    const buttonRow = document.createElement('div');
-    buttonRow.className = 'column-buttons';
+        if (!buttonRow) {
+            // Create buttons for each column
+            buttonRow = document.createElement("div");
+            buttonRow.id = "column-buttons";
+            buttonRow.className = "column-buttons";
 
-    for (let col = 0; col < state[0].length; col++) {
-        const button = document.createElement('button');
-        button.textContent = `${col + 1}`;
-        button.addEventListener('click', () => {
-            // Check if the selected column is not full
-            if (state[0][col] === null) {
-                cb(col);
-            } else {
-                alert('Column is full. Please choose another column.');
+            for (let col = 0; col < state[0].length; col++) {
+                const button = document.createElement("button");
+                button.textContent = `${col + 1}`;
+                button.addEventListener("click", () => {
+                    // Check if the selected column is not full
+                    if (state[0][col] === null) {
+                        cb(col);
+                    } else {
+                        alert("Column is full. Please choose another column.");
+                    }
+                });
+
+                buttonRow.appendChild(button);
             }
-        });
 
-        buttonRow.appendChild(button);
-    }
-
-    // Append buttons below the game board
-    gameBoard.insertAdjacentElement('afterend', buttonRow);
+            // Append buttons below the game board
+            const gameBoard = document.getElementById("game-board");
+            gameBoard.insertAdjacentElement("afterend", buttonRow);
+        }
     },
 
     getTruePlayerName(player) {
-        return player === 'player1' ? 'X' : 'O';
+        return player === "player1" ? "X" : "O";
     },
 
     getReadableMoveDescription(state, player, move) {
@@ -216,15 +302,14 @@ const visualizationOfGame = {
         const winnerScore = logicOfGame.evaluateState(state, player);
 
         if (winnerScore === 100) {
-            return `Player ${player === 'player1' ? 'X' : 'O'} wins!`;
+            return `Player ${player === "player1" ? "X" : "O"} wins!`;
         } else if (winnerScore === -100) {
-            return `Player ${player === 'player1' ? 'O' : 'X'} wins!`;
+            return `Player ${player === "player1" ? "O" : "X"} wins!`;
         } else {
-            return 'It\'s a draw!';
+            return "It's a draw!";
         }
     },
 };
-
 /**
  * Domyślni gracze, którzy nie potrzebują dodatkowej konfiguracji.
  */
