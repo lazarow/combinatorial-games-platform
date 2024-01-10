@@ -287,13 +287,8 @@ const logicOfGame = {
      * Funkcja oblicza wartość wskazanego węzła gry (np. UCB1). Na podstawie tej wartości MCTS dokona selekcji.
      */
     computeMCTSNodeValue(node) {
-        // WERSJA WYKORZYSTUJĄCA WZÓR UCT (WSPOMNIANY W PRZESŁANYCH MATERIAŁACH)
-        return (node.reward + 2 * (1/(Math.sqrt(2))) * (Math.sqrt((2 * Math.log(node.parent.visits))/(node.visits)))); // Obliczone ze wzoru UCT = avg(Xj) + 2*Cp*SQRT[ (2*ln(n)) / nj ]  || Wartość Cp może wynosić Cp = 1/SQRT(2), lub należy sobie dostosować ją według potrzeb (musi być większa od 0)
-
-        // WERSJA ALTERNATYWNA Z WYKORZYSTANIEM WSPOMNIANEGO W OPISIE FUNKCJI UCB1
-        // return (node.reward + (Math.sqrt((2 * Math.log(node.parent.visits))/(node.visits)))); // Obliczone ze wzoru UCB1 = avg(Xj) + SQRT[ (2*ln(n)) / nj ]
-
-        // Trzeba będzie wybrać jedną z tych opcji (i w przypadku UCT dostosować wartość C (aktualnie wynoszącą 1.5))
+        // Obliczenia według wzoru UCT = AVG(Xj) + 2*Cp*SQRT[ (2*ln(n)) / nj ]. Wartość Cp może wynosić Cp = 1/SQRT(2), lub być dostosowana według (ale zawsze większa od 0)
+        return (node.reward + 2 * (1/(Math.sqrt(2))) * (Math.sqrt((2 * Math.log(node.parent.visits))/(node.visits))));
     },
 
     /**
@@ -302,32 +297,15 @@ const logicOfGame = {
      * Proszę zwrócić uwagę na kolejność węzłów!
      */
     MCTSPlayOut(node) {
-        let currentState = node.state; // Zadany stan
-        let currentPlayer = node.player; // Zadany gracz
+        let currentState = node.state; 
+        let currentPlayer = node.player;
 
-        // DZIAŁANIE NA LOSOWYM RUCHU (z tym rozwiązaniem czas wynosi początkowo około 5-6sec - najpewniej trzeba będzie to zostawić bo opis funkcji mówi o losowej symulacji no i jest szybsze niż to poniżej)
-        while(!this.isStateTerminal(currentState, currentPlayer)){ // Powtarzaj, dopóki stan gry nie jest terminalny
-            let availableMoves = this.generateMoves(currentState, currentPlayer); // Generowanie dostępnych ruchów
-            let randomMove = availableMoves[Math.floor(Math.random()*availableMoves.length)]; // Losowe wybranie jednego z wygenerowanych ruchów ()
-            currentState = this.generateStateAfterMove(currentState, currentPlayer, randomMove); // Generowanie stanu po wykonaniu wcześniej wylosowanego ruchu
-            currentPlayer = currentPlayer === "player1" ? "player2" : "player1"; // Zmiana gracza
+        while(!this.isStateTerminal(currentState, currentPlayer)){ 
+            let availableMoves = this.generateMoves(currentState, currentPlayer); 
+            let randomMove = availableMoves[Math.floor(Math.random()*availableMoves.length)]; 
+            currentState = this.generateStateAfterMove(currentState, currentPlayer, randomMove); 
+            currentPlayer = currentPlayer === "player1" ? "player2" : "player1"; 
         }
-
-        // DZIAŁANIE NA NAJLEPSZYM Z MOŻLIWYCH RUCHÓW (z tym rozwiązaniem czas wynosi początkowo około 20-50sec, opis funkcji mówi o losowym ruchu, ale )
-        // while(!this.isStateTerminal(currentState, currentPlayer)){ // Powtarzaj, dopóki stan gry nie jest terminalny
-        //     let availableMoves = this.generateMoves(currentState, currentPlayer); // Generowanie dostępnych ruchów
-        //     let bestMove = availableMoves[0]; // Ustaw najlepszy z dostępnych ruchów z dostępnych ruchów na pierwszy z wylosowanych
-        //     let bestMoveScore = this.evaluateState(this.generateStateAfterMove(currentState, currentPlayer, availableMoves[0]), currentPlayer); // Wykorzystanie funkcji ewaluacji stanu do obliczenie wyniku dla najlepszego ruchu
-        //     for(let i = 1; i<availableMoves.length; i++){ // Pętla przechodząca przez wszystkie dostępne ruchy
-        //         let currentMoveScore = this.evaluateState(this.generateStateAfterMove(currentState, currentPlayer, availableMoves[i]), currentPlayer); // Wykorzystanie funkcji ewaluacji stanu do obliczenie wyniku dla obecnie sprawdzanego ruchu
-        //         if(currentMoveScore > bestMoveScore){ // Sprawdź czy wynik obecnie sprawdzanego ruchu jest większy niż wynik najlepszego ruchu
-        //             bestMove = availableMoves[i]; // Jeśli wcześniejszy warunek jest spełniony, zapisz obecny ruch jako najlepszy
-        //             bestMoveScore = currentMoveScore; // Jeśli wcześniejszy warunek jest spełniony, zapisz wynik obecnie sprawdzanego ruchu jako najlepszy
-        //         }
-        //     }
-        //     currentState = this.generateStateAfterMove(currentState, currentPlayer, bestMove); // Generowanie stanu po wykonaniu wcześniej wylosowanego ruchu
-        //     currentPlayer = currentPlayer === "player1" ? "player2" : "player1"; // Zmiana gracza
-        // }
 
         return currentPlayer === node.player ? 1 : -1; // Wynikiem będzie zawsze 1 lub -1, ponieważ w grze Quoridor nie jest możliwe osiągnięcie remisu
     },
@@ -336,38 +314,18 @@ const logicOfGame = {
      * Funkcja przyjmuje na wejście węzeł drzewa MCTS i wybiera najlepszy ruch (kolejny węzeł) wg obranej strategii (np. najwięcej wizyt).
      */
     getBestMCTSNode(node) {
-        // Do wybrania najlepszego węzła przyjmujemy strategię Max-Robust Child (czyli kombinacja największej liczby wizyt z największą obliczoną wartością)
-        let bestNode = node.children[0]; // Ustaw najlepszy węzeł na pierwszy istniejący
-        let bestValue = this.computeMCTSNodeValue(bestNode); // Ustaw najlepszą wartość na wartość obliczoną z najlepszego węzła (potrzebne tylko do strategii MAX CHILD oraz MAX-ROBUST CHILD)
-        
-        // PONIŻEJ STRATEGIA ROBUST CHILD (największa ilość wizyt) - po zużyciu większości płotków czas na ruch oscyluje w granicach około 10-120ms
-        // for (let i = 1; i < node.children.length; ++i) { // Pętla przechodząca przez każdy istniejący węzeł
-        //     if (node.children[i].visits > bestNode.visits) { // Sprawdzenie czy obecnie odwiedzony węzeł miał więcej wizyt niż najlepszy węzeł
-        //         bestNode = node.children[i]; // Jeśli poprzedni warunek jest prawdziwy, zmień najlepszy węzeł na obecny węzeł
-        //     }
-        // }
+        let bestNode = node.children[0];
+        let bestValue = this.computeMCTSNodeValue(bestNode); 
 
-        // PONIŻEJ STRATEGIA MAX CHILD (najwyższa wartość)
-        for(let i = 1; i<node.children.length; i++){ // Pętla przechodząca przez każdy istniejący węzeł
-            let childValue = this.computeMCTSNodeValue(node.children[i]); // Ustaw wartość obecnie sprawdzanego węzła
-            if(childValue > bestValue){ // Sprawdź czy wartość obecnego węzła jest większa niż wartość najlepszego węzła
-                bestValue = childValue; // Jeśli poprzedni warunek okazał się prawdą, ustaw najlepszą wartość na wartość obecnego węzła
-                bestNode = node.children[i]; // Jeśli poprzedni warunek okazał się prawdą, zmień najlepszy węzeł na obecny węzeł
+        for(let i = 1; i < node.children.length; ++i){ 
+            let childValue = this.computeMCTSNodeValue(node.children[i]); 
+            let maxRobustValue = node.children[i].visits + childValue; 
+            if(maxRobustValue > (bestNode.visits + this.computeMCTSNodeValue(bestNode))){ 
+                bestNode = node.children[i]; 
             }
         }
 
-        // PONIŻEJ STRATEGIA MAX-ROBUST CHILD (kombinacja najwyższej wartości z największą liczbą wizyt)
-        // for(let i = 1; i < node.children.length; ++i){ // Pętla przechodząca przez każdy istniejący węzeł
-        //     let childValue = this.computeMCTSNodeValue(node.children[i]); // Ustaw wartość obecnie sprawdzanego węzła
-        //     let maxRobustValue = node.children[i].visits + childValue; // Określ sumę liczby wizyt danego węzła i jego wartości
-        //     if(maxRobustValue > (bestNode.visits + this.computeMCTSNodeValue(bestNode))){ // Sprawdź, czy wcześniej obliczona suma jest większa niż suma obliczona dla najlepszego węzła
-        //         bestNode = node.children[i]; // Jeśli poprzedni warunek jest spełniony, zmień najlepszy węzeł na obecny węzeł
-        //     }
-        // }
-
-        // Trzeba będzie wybrać jedną z tych strategii (choć póki co żadna nie robi różnicy co do długości wykonywania obliczeń)
-
-        return bestNode; // Zwróć najlepszy węzeł
+        return bestNode; 
     }, 
 };
 
@@ -375,8 +333,7 @@ const players = [
     { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (łatwy)" , maxDepth: 1, printTree: true },
     { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (średni)", maxDepth: 2, printTree: false },
     { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (trudny)", maxDepth: 3, printTree: false },
-    { type: PlayerTypes.MCTS, label: "MCTS (łatwy)", iterations: 50 }, // liczba iteracji = 50 = około 6-7 sekund na ruch na początku rozgrywki
-    { type: PlayerTypes.MCTS, label: "MCTS (średni)", iterations: 100 }, // dwa razy dłużej niż łatwy
-    { type: PlayerTypes.MCTS, label: "MCTS (trudny)", iterations: 150 }, // dwa razy dłużej niż średni
-    // Ilość iteracji dla każdego poziomu również trzeba będzie dostosować
+    { type: PlayerTypes.MCTS, label: "MCTS (łatwy)", iterations: 25 },
+    { type: PlayerTypes.MCTS, label: "MCTS (średni)", iterations: 50 },
+    { type: PlayerTypes.MCTS, label: "MCTS (trudny)", iterations: 100 },
 ];
