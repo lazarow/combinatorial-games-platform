@@ -1,15 +1,17 @@
 {
-  "name": "combinatorial-games-platform",
-  "version": "1.0.0",
-  "description": "A platform for testing different AI approaches to combinatorial games.",
-  "author": "Arkadiusz Nowakowski (arkadiusz.nowakowski@us.edu.pl)",
-  "license": "ECL-2.0",
-  "dependencies": {
-    "alphabeta": "^1.0.2",
-    "concat-files": "^0.1.1",
-    "eta": "^3.1.1",
-    "gulp": "^4.0.2",
-    "marked": "^9.1.2",
-    "node-http-server": "^8.1.5"
-  }
+    "name": "combinatorial-games-platform",
+    "version": "1.0.0",
+    "description": "A platform for testing different AI approaches to combinatorial games.",
+    "author": "Arkadiusz Nowakowski (arkadiusz.nowakowski@us.edu.pl)",
+    "license": "ECL-2.0",
+    "dependencies": {
+        "@tensorflow/tfjs": "^4.15.0",
+        "alphabeta": "^1.0.2",
+        "cli-progress": "^3.12.0",
+        "concat-files": "^0.1.1",
+        "eta": "^3.1.1",
+        "gulp": "^4.0.2",
+        "marked": "^9.1.2",
+        "node-http-server": "^8.1.5"
+    }
 }

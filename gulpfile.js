@@ -120,6 +120,16 @@ function concatScripts(cb) {
                 ]),
             outputDir + "/js/" + game.name + "/mcts.js"
         );
+        // Tworzenie skryptu do generowania modeli DQL
+        concat(
+            [
+                sourceDir + "/deep-q-learning.pre.js",
+                sourceDir + "/game.pre.js",
+                gamesDir + "/" + game.name + "/js/game.logic.js",
+                sourceDir + "/deep-q-learning.post.js",
+            ],
+            gamesDir + "/" + game.name + "/js/dql.model.generator.mjs"
+        );
     }
 
     // Gulp.
