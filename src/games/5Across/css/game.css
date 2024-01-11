@@ -1,10 +1,3 @@
-body {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    font-family: Arial, sans-serif;
-}
-
 #game-board {
     display: grid;
     grid-template-columns: repeat(7, 80px);
@@ -41,9 +34,9 @@ input {
 
 button {
     padding: 12px 12px; /* Increase padding for both vertical and horizontal space */
-    font-size: 18px;   /* Increase font size */
+    font-size: 18px; /* Increase font size */
     cursor: pointer;
-    display: flex;     /* Use flexbox to center content */
+    display: flex; /* Use flexbox to center content */
     align-items: center; /* Center content vertically */
     justify-content: center; /* Center content horizontally */
 }
@@ -70,7 +63,7 @@ button {
     width: 80px; /* Adjust the width of each button to match the column width */
     height: 80px; /* Adjust the height of each button */
     padding: 12px 12px; /* Adjust padding for both vertical and horizontal space */
-    font-size: 18px;   /* Adjust font size */
+    font-size: 18px; /* Adjust font size */
     cursor: pointer;
     border: 1px solid #333; /* Add border to each button */
 }
