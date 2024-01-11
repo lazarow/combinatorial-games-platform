@@ -1,22 +1,22 @@
 const visualizationOfGame = {
     drawState(state, player, move, container, cb) {
-        const gameBoard = document.createElement('div');
-        gameBoard.id = 'game-board';
+        const gameBoard = document.createElement("div");
+        gameBoard.id = "game-board";
 
         for (let row = 0; row < state.length; row++) {
             for (let col = 0; col < state[row].length; col++) {
-                const cell = document.createElement('div');
-                cell.className = 'cell';
+                const cell = document.createElement("div");
+                cell.className = "cell";
                 cell.dataset.row = row;
                 cell.dataset.col = col;
 
                 const playerTile = state[row][col];
                 if (playerTile !== null) {
-                    cell.textContent = playerTile === 'player1' ? 'X' : 'O';
-                    cell.style.backgroundColor = playerTile === 'player1' ? '#ffcccb' : '#add8e6';
+                    cell.textContent = playerTile === "player1" ? "X" : "O";
+                    cell.style.backgroundColor = playerTile === "player1" ? "#ffcccb" : "#add8e6";
                 }
 
-                cell.addEventListener('click', () => {
+                cell.addEventListener("click", () => {
                     const clickedCell = event.target;
                     const row = parseInt(clickedCell.dataset.row, 10);
                     const col = parseInt(clickedCell.dataset.col, 10);
@@ -27,45 +27,44 @@ const visualizationOfGame = {
             }
         }
 
-        container.innerHTML = '';
+        container.innerHTML = "";
         container.appendChild(gameBoard);
-
-        // Execute the callback function
         cb();
     },
 
     handleHumanTurn(state, player, cb) {
-        const gameBoard = document.getElementById('game-board');
+        // Check if buttons row already exists
+        let buttonRow = document.getElementById("column-buttons");
 
-        if (gameBoard) {
-            // Create input elements for the user to enter the move
-            const input = document.createElement('input');
-            input.type = 'number';
-            input.min = '1';
-            input.max = state[0].length.toString();
-            input.placeholder = `Enter your move (1-${state[0].length})`;
+        if (!buttonRow) {
+            // Create buttons for each column
+            buttonRow = document.createElement("div");
+            buttonRow.id = "column-buttons";
+            buttonRow.className = "column-buttons";
 
-            const button = document.createElement('button');
-            button.textContent = 'Make Move';
-            button.addEventListener('click', () => {
-                const selectedMove = parseInt(input.value, 10) - 1;
+            for (let col = 0; col < state[0].length; col++) {
+                const button = document.createElement("button");
+                button.textContent = `${col + 1}`;
+                button.addEventListener("click", () => {
+                    // Check if the selected column is not full
+                    if (state[0][col] === null) {
+                        cb(col);
+                    } else {
+                        alert("Column is full. Please choose another column.");
+                    }
+                });
 
-                // Check if the input is valid
-                if (!isNaN(selectedMove) && selectedMove >= 0 && selectedMove < state[0].length) {
-                    cb(selectedMove);
-                } else {
-                    alert('Invalid move. Please enter a valid column number.');
-                }
-            });
+                buttonRow.appendChild(button);
+            }
 
-            // Append input elements to the game board container
-            gameBoard.appendChild(input);
-            gameBoard.appendChild(button);
+            // Append buttons below the game board
+            const gameBoard = document.getElementById("game-board");
+            gameBoard.insertAdjacentElement("afterend", buttonRow);
         }
     },
 
     getTruePlayerName(player) {
-        return player === 'player1' ? 'X' : 'O';
+        return player === "player1" ? "X" : "O";
     },
 
     getReadableMoveDescription(state, player, move) {
@@ -76,12 +75,11 @@ const visualizationOfGame = {
         const winnerScore = logicOfGame.evaluateState(state, player);
 
         if (winnerScore === 100) {
-            return `Player ${player === 'player1' ? 'X' : 'O'} wins!`;
+            return `Player ${player === "player1" ? "X" : "O"} wins!`;
         } else if (winnerScore === -100) {
-            return `Player ${player === 'player1' ? 'O' : 'X'} wins!`;
+            return `Player ${player === "player1" ? "O" : "X"} wins!`;
         } else {
-            return 'It\'s a draw!';
+            return "It's a draw!";
         }
     },
 };
-
