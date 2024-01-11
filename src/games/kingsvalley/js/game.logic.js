@@ -260,13 +260,16 @@ const logicOfGame = {
             || (player === "player1" && kingMoves === 0 && state.player1FirstTurn === false)
             || (player === "player2" && kingMoves === 0);
     },
-    generateUniqueKey: undefined,
     computeMCTSNodeValue(node) {
-        return node.reward / node.visits + 0.4 * Math.sqrt(Math.log(node.parent.visits) / node.visits);
+        const explorationConstant = 0.1;
+        const exploitationTerm = node.reward / node.visits;
+        const explorationTerm = explorationConstant * Math.sqrt(Math.log(node.parent.visits) / node.visits);
+
+        return exploitationTerm + explorationTerm;
     },
     MCTSPlayOut(node) {
-        state = node.state;
-        player = node.player;
+        let state = node.state;
+        let player = node.player;
         while (this.isStateTerminal(state, player) === false) {
             const moves = this.generateMoves(state, player);
             const move = moves[Math.floor(Math.random() * moves.length)];
@@ -277,13 +280,17 @@ const logicOfGame = {
     },
     getBestMCTSNode(node) {
         let bestNode = node.children[0];
-        for (let i = 1; i < node.children.length; i++) {
-            if (node.children[i].visits > bestNode.visits) {
+        let bestValue = this.computeMCTSNodeValue(bestNode);
+
+        for (let i = 1; i < node.children.length; ++i) {
+            let currentValue = this.computeMCTSNodeValue(node.children[i]);
+            if (currentValue >= bestValue && node.children[i].visits >= bestNode.visits) {
                 bestNode = node.children[i];
+                bestValue = currentValue;
             }
         }
         return bestNode;
-    },
+    }
 };
 const players = [
     { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (łatwy)", maxDepth: 3, printTree: true },
@@ -291,5 +298,5 @@ const players = [
     { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (trudny)", maxDepth: 6, printTree: true },
     { type: PlayerTypes.MCTS, label: "MCTS (łatwy)", iterations: 1000 },
     { type: PlayerTypes.MCTS, label: "MCTS (średni)", iterations: 3000 },
-    { type: PlayerTypes.MCTS, label: "MCTS (trudny)", iterations: 7000 },
+    { type: PlayerTypes.MCTS, label: "MCTS (trudny)", iterations: 5000 },
 ];
