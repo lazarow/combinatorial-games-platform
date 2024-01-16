@@ -2,7 +2,7 @@ const gameId = "YINSH";
 
 const logicOfGame = {
     /**
-     * Generuje stan poczπtkowy gry.
+     * Generuje stan poczÔøΩtkowy gry.
      */
     generateInitialState() {
         return {
@@ -42,7 +42,7 @@ const logicOfGame = {
         }
     },
     /**
-     * Funkcja oceny, ktÛra ocenia z punktu widzenia wskazanego gracza.
+     * Funkcja oceny, ktÔøΩra ocenia z punktu widzenia wskazanego gracza.
      */
     evaluateState(state, player) {
         const opponent = player === "player1" ? "player2" : "player1";
@@ -81,9 +81,6 @@ const logicOfGame = {
             pointsForMove[player] += state[player].points * 100
             pointsForMove[opponent] += state[player].points * 100
 
-            console.log(pointsForMove)
-            console.log(pointsForMove[player] - pointsForMove[opponent])
-
             return pointsForMove[player] - pointsForMove[opponent]
         }
         else
@@ -92,7 +89,7 @@ const logicOfGame = {
         }
     },
     /**
-     * Funkcja generujπca moøliwe ruchy z wskazanego stanu dla gracza.
+     * Funkcja generujÔøΩca moÔøΩliwe ruchy z wskazanego stanu dla gracza.
      */
     generateMoves(state, player) {
         const moves = []
@@ -288,7 +285,7 @@ const logicOfGame = {
         return state[player].points === 3;
     },
     /**
-     * Funkcja generujπca unikalny klucz dla wskazanego stanu.
+     * Funkcja generujÔøΩca unikalny klucz dla wskazanego stanu.
      */
     isVectorOnList(vector, list) {
         return list.some(otherVector => otherVector[0] === vector[0] && otherVector[1] === vector[1])
@@ -434,9 +431,14 @@ const logicOfGame = {
         return player === node.player ? 1 : -1;
     },
     /**
-     * Funkcja przyjmuje na wejúcie wÍze≥ drzewa MCTS i wybiera najlepszy ruch wg obranej strategii (np. najwiÍcej wizyt).
+     * Funkcja przyjmuje na wejÔøΩcie wÔøΩzeÔøΩ drzewa MCTS i wybiera najlepszy ruch wg obranej strategii (np. najwiÔøΩcej wizyt).
      */
     getBestMCTSNode(node) {
+        if (node.children.length === 0)
+        {
+            return node
+        }
+
         let bestNode = node.children[0];
         for (let i = 1; i < node.children.length; ++i) {
             if (node.children[i].visits > bestNode.visits) {
@@ -444,18 +446,15 @@ const logicOfGame = {
             }
         }
         return bestNode;
-        
     },
-
-
 };
 
 
 const players = [
-    { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (≥atwy)", maxDepth: 2, printTree: true },
-    { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (úredni)", maxDepth: 3, printTree: false },
+    { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (≈Åatwy)", maxDepth: 2, printTree: true },
+    { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (≈öredni)", maxDepth: 3, printTree: false },
     { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (trudny)", maxDepth: 4, printTree: false },
-    { type: PlayerTypes.MCTS, label: "MCTS (≥atwy)", iterations: 200 },
-    { type: PlayerTypes.MCTS, label: "MCTS (úredni)", iterations: 500 },
+    { type: PlayerTypes.MCTS, label: "MCTS (≈Åatwy)", iterations: 200 },
+    { type: PlayerTypes.MCTS, label: "MCTS (≈öredni)", iterations: 500 },
     { type: PlayerTypes.MCTS, label: "MCTS (trudny)", iterations: 700 },
 ];
