@@ -1,3 +1,5 @@
+const gameId = "YINSH";
+
 const logicOfGame = {
     /**
      * Generuje stan początkowy gry.
@@ -43,6 +45,51 @@ const logicOfGame = {
      * Funkcja oceny, która ocenia z punktu widzenia wskazanego gracza.
      */
     evaluateState(state, player) {
+        const opponent = player === "player1" ? "player2" : "player1";
+        if (this.isStateTerminal(state, player))
+            return 99999
+        else if (this.isStateTerminal(state, opponent))
+            return -99999
+
+        if (state.placement_done)
+        {
+            let pointsForMove =
+            {
+                "player1": 0,
+                "player2": 0,
+            }
+
+            for (let playerX of ["player1", "player2"])
+            {
+                for (let pawn of state[playerX].pawns)
+                {
+                    const longestChain = this.getPawnLongestChain(pawn, state, playerX).length
+                    switch (longestChain)
+                    {
+                        case 3:
+                            pointsForMove[playerX] += longestChain + 5
+                            break
+                        case 4:
+                            pointsForMove[playerX] += longestChain + 10
+                            break
+                        default:
+                            pointsForMove[playerX] += longestChain
+                    }
+                }
+            }
+
+            pointsForMove[player] += state[player].points * 100
+            pointsForMove[opponent] += state[player].points * 100
+
+            console.log(pointsForMove)
+            console.log(pointsForMove[player] - pointsForMove[opponent])
+
+            return pointsForMove[player] - pointsForMove[opponent]
+        }
+        else
+        {
+            return Math.floor(Math.random() * (0 - 100 + 1));
+        }
     },
     /**
      * Funkcja generująca możliwe ruchy z wskazanego stanu dla gracza.
@@ -226,7 +273,7 @@ const logicOfGame = {
                 state[player].rings.push(move)
             }
 
-            if (state.player1.rings.length === 5 && state.player2.rings.length === 5)
+            if (state.player1.rings.length >= 5 && state.player2.rings.length >= 5)
             {
                 state.placement_done = true
             }
@@ -301,7 +348,6 @@ const logicOfGame = {
         return result
     },
     getPawnLongestChain(pawn, state, player) {
-        let chain = []
         const boardStart = [0, 0]
         const boardEnd = [10, 18]
         const isPositionOnBoard = (pos) => { return pos[0] >= boardStart[0] && pos[1] >= boardStart[1] && pos[0] <= boardEnd[0] && pos[1] <= boardEnd[1] }
@@ -368,4 +414,8 @@ const logicOfGame = {
     generateUniqueKey: undefined,
 };
 
-const players = [];
+const players = [
+    { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (łatwy)", maxDepth: 2, printTree: true },
+    { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (średni)", maxDepth: 3, printTree: false },
+    { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (trudny)", maxDepth: 4, printTree: false },
+];

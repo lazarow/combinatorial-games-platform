@@ -37,6 +37,10 @@ function alphaBetaNegamax(node, player, depth, alpha, beta, sign = 1, textTreePr
         );
         score = -score;
         textTreeData.push(textTreePrefix + move.toString() + "/" + score);
+        if (bestMove == null)
+        {
+            bestMove = move
+        }
         if (score > alpha) {
             bestMove = move;
             alpha = score;
