@@ -1,3 +1,4 @@
+const gameId = "YINSH";
 const logicOfGame = {
     /**
      * Generuje stan początkowy gry.
@@ -43,6 +44,7 @@ const logicOfGame = {
      * Funkcja oceny, która ocenia z punktu widzenia wskazanego gracza.
      */
     evaluateState(state, player) {
+
     },
     /**
      * Funkcja generująca możliwe ruchy z wskazanego stanu dla gracza.
@@ -83,18 +85,21 @@ const logicOfGame = {
 
         return moves
     },
-    /**
-     * Funkcja generuje stan po wykonaniu wskazanego ruchu.
-     */
+
+
+    
+
+
     generateStateAfterMove(previousState, player, move) {
         const state = structuredClone(previousState)
 
-        if (state.placement_done)
+        if (state.placement_done)   
         {
             if (state.choosing_ring_to_remove !== "none")
             {
                 if (state.choosing_ring_to_remove === player)
                 {
+                    console.log(move);
                     state[player].rings = state[player].rings.filter(ring => !(ring[0] === move[0] && ring[1] === move[1]))
 
                     let filteredPawn = []
@@ -117,11 +122,12 @@ const logicOfGame = {
                     state.choosing_ring_to_remove = "none"
                     state.pawn_chain_to_remove = []
                     state[player].points += 1
-                    console.log(player, " punkty: ", state[player].points)
+                    
                 }
             }
             else
             {
+                    
                 const moveStart = state[player].rings[move[0]]
                 const moveEnd = move[1]
                 const direction = [0, 0]
@@ -238,7 +244,8 @@ const logicOfGame = {
      * Funkcja sprawdza czy stan jest terminalny, tzn. koniec gry.
      */
     isStateTerminal(state, player) {
-        return state[player].points === 3;
+        
+        return this.generateMoves(state, player).lenght == 0 || state[player].points === 3;
     },
     /**
      * Funkcja generująca unikalny klucz dla wskazanego stanu.
@@ -366,6 +373,48 @@ const logicOfGame = {
         }
     },
     generateUniqueKey: undefined,
+
+
+    computeMCTSNodeValue(node) {
+        console.log(node)
+        return node.reward / node.visits + 0.4 * Math.sqrt(Math.log(node.parent.visits) / node.visits);
+    },
+    MCTSPlayOut(node) {
+        state = node.state;
+        player = node.player;
+        while (this.isStateTerminal(state, player) === false) {
+            const moves = this.generateMoves(state, player);
+           
+            if (moves.length==0) break;
+            const move = moves[Math.floor(Math.random() * moves.length)];
+           
+            state = this.generateStateAfterMove(state, player, move);
+            
+            player = player === "player1" ? "player2" : "player1";
+
+        }
+        return player === node.player ? 1 : -1;
+    },
+    /**
+     * Funkcja przyjmuje na wejście węzeł drzewa MCTS i wybiera najlepszy ruch wg obranej strategii (np. najwięcej wizyt).
+     */
+    getBestMCTSNode(node) {
+        let bestNode = node.children[0];
+        for (let i = 1; i < node.children.length; ++i) {
+            if (node.children[i].visits > bestNode.visits) {
+                bestNode = node.children[i];
+            }
+        }
+        return bestNode;
+        
+    },
+
+
 };
 
-const players = [];
+
+const players = [
+    { type: PlayerTypes.MCTS, label: "MCTS (łatwy)", iterations: 200 },
+    { type: PlayerTypes.MCTS, label: "MCTS (średni)", iterations: 3000 },
+    { type: PlayerTypes.MCTS, label: "MCTS (trudny)", iterations: 7000 },
+];

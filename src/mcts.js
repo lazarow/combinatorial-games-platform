@@ -69,6 +69,7 @@ this.addEventListener(
         }
         let bestNode = logicOfGame.getBestMCTSNode(root);
         this.postMessage([bestNode.move]);
+        
     },
     false
 );
