@@ -140,9 +140,25 @@ function startCurrentTurn() {
                 maxDepth: allPlayers[playerIndex].maxDepth,
             });
             break;
-        case PlayerTypes.MCS:
-            break;
         case PlayerTypes.MCTS:
+            workers[currentPlayer] = new Worker("js/" + gameId + "/mcts.js");
+            workers[currentPlayer].addEventListener(
+                "message",
+                function (e) {
+                    const [move] = e.data;
+                    workers[currentPlayer].terminate();
+                    console.timeEnd("MCTS");
+                    workers[currentPlayer] = null;
+                    makeMove(move);
+                },
+                false
+            );
+            console.time("MCTS");
+            workers[currentPlayer].postMessage({
+                state: currentState,
+                player: currentPlayer,
+                iterations: allPlayers[playerIndex].iterations,
+            });
             break;
     }
 }
