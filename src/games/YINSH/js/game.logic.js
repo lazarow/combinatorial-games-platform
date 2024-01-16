@@ -99,7 +99,6 @@ const logicOfGame = {
             {
                 if (state.choosing_ring_to_remove === player)
                 {
-                    console.log(move);
                     state[player].rings = state[player].rings.filter(ring => !(ring[0] === move[0] && ring[1] === move[1]))
 
                     let filteredPawn = []
@@ -376,7 +375,6 @@ const logicOfGame = {
 
 
     computeMCTSNodeValue(node) {
-        console.log(node)
         return node.reward / node.visits + 0.4 * Math.sqrt(Math.log(node.parent.visits) / node.visits);
     },
     MCTSPlayOut(node) {
@@ -385,11 +383,11 @@ const logicOfGame = {
         while (this.isStateTerminal(state, player) === false) {
             const moves = this.generateMoves(state, player);
            
-            if (moves.length==0) break;
+            if (moves.length===0)
+                break;
             const move = moves[Math.floor(Math.random() * moves.length)];
            
             state = this.generateStateAfterMove(state, player, move);
-            
             player = player === "player1" ? "player2" : "player1";
 
         }
@@ -415,6 +413,6 @@ const logicOfGame = {
 
 const players = [
     { type: PlayerTypes.MCTS, label: "MCTS (łatwy)", iterations: 200 },
-    { type: PlayerTypes.MCTS, label: "MCTS (średni)", iterations: 3000 },
-    { type: PlayerTypes.MCTS, label: "MCTS (trudny)", iterations: 7000 },
+    { type: PlayerTypes.MCTS, label: "MCTS (średni)", iterations: 500 },
+    { type: PlayerTypes.MCTS, label: "MCTS (trudny)", iterations: 700 },
 ];
