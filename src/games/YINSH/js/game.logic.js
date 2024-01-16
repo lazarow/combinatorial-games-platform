@@ -72,6 +72,9 @@ const logicOfGame = {
                         case 4:
                             pointsForMove[playerX] += longestChain + 10
                             break
+                        case 5:
+                            pointsForMove[playerX] += longestChain + 25
+                            break
                         default:
                             pointsForMove[playerX] += longestChain
                     }
