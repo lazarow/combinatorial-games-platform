@@ -2,7 +2,7 @@ const gameId = "YINSH";
 
 const logicOfGame = {
     /**
-     * Generuje stan poczÄ…tkowy gry.
+     * Generuje stan pocz¹tkowy gry.
      */
     generateInitialState() {
         return {
@@ -42,7 +42,7 @@ const logicOfGame = {
         }
     },
     /**
-     * Funkcja oceny, ktÃ³ra ocenia z punktu widzenia wskazanego gracza.
+     * Funkcja oceny, która ocenia z punktu widzenia wskazanego gracza.
      */
     evaluateState(state, player) {
         const opponent = player === "player1" ? "player2" : "player1";
@@ -92,7 +92,7 @@ const logicOfGame = {
         }
     },
     /**
-     * Funkcja generujÄ…ca moÅ¼liwe ruchy z wskazanego stanu dla gracza.
+     * Funkcja generuj¹ca mo¿liwe ruchy z wskazanego stanu dla gracza.
      */
     generateMoves(state, player) {
         const moves = []
@@ -164,11 +164,11 @@ const logicOfGame = {
                     state.choosing_ring_to_remove = "none"
                     state.pawn_chain_to_remove = []
                     state[player].points += 1
-                    console.log(player, " punkty: ", state[player].points)
                 }
             }
             else
             {
+                    
                 const moveStart = state[player].rings[move[0]]
                 const moveEnd = move[1]
                 const direction = [0, 0]
@@ -288,7 +288,7 @@ const logicOfGame = {
         return state[player].points === 3;
     },
     /**
-     * Funkcja generujÄ…ca unikalny klucz dla wskazanego stanu.
+     * Funkcja generuj¹ca unikalny klucz dla wskazanego stanu.
      */
     isVectorOnList(vector, list) {
         return list.some(otherVector => otherVector[0] === vector[0] && otherVector[1] === vector[1])
@@ -412,10 +412,50 @@ const logicOfGame = {
         }
     },
     generateUniqueKey: undefined,
+
+
+    computeMCTSNodeValue(node) {
+        return node.reward / node.visits + 0.4 * Math.sqrt(Math.log(node.parent.visits) / node.visits);
+    },
+    MCTSPlayOut(node) {
+        state = node.state;
+        player = node.player;
+        while (this.isStateTerminal(state, player) === false) {
+            const moves = this.generateMoves(state, player);
+           
+            if (moves.length===0)
+                break;
+            const move = moves[Math.floor(Math.random() * moves.length)];
+           
+            state = this.generateStateAfterMove(state, player, move);
+            player = player === "player1" ? "player2" : "player1";
+
+        }
+        return player === node.player ? 1 : -1;
+    },
+    /**
+     * Funkcja przyjmuje na wejœcie wêze³ drzewa MCTS i wybiera najlepszy ruch wg obranej strategii (np. najwiêcej wizyt).
+     */
+    getBestMCTSNode(node) {
+        let bestNode = node.children[0];
+        for (let i = 1; i < node.children.length; ++i) {
+            if (node.children[i].visits > bestNode.visits) {
+                bestNode = node.children[i];
+            }
+        }
+        return bestNode;
+        
+    },
+
+
 };
 
+
 const players = [
-    { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (Å‚atwy)", maxDepth: 2, printTree: true },
-    { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (Å›redni)", maxDepth: 3, printTree: false },
+    { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (³atwy)", maxDepth: 2, printTree: true },
+    { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (œredni)", maxDepth: 3, printTree: false },
     { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (trudny)", maxDepth: 4, printTree: false },
+    { type: PlayerTypes.MCTS, label: "MCTS (³atwy)", iterations: 200 },
+    { type: PlayerTypes.MCTS, label: "MCTS (œredni)", iterations: 500 },
+    { type: PlayerTypes.MCTS, label: "MCTS (trudny)", iterations: 700 },
 ];
