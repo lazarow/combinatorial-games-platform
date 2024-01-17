@@ -1,2 +1,2 @@
-import * as tf from "@tensorflow/tfjs";
-import cliProgress from "cli-progress";
+import Neataptic from "neataptic";
+import seedrandom from "seedrandom";

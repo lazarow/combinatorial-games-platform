@@ -1,40 +1,78 @@
-const metricModel = tf.sequential();
-metricModel.add(tf.layers.dense({ units: 32, activation: "relu", inputShape: [1] }));
-metricModel.add(tf.layers.dense({ units: 16, activation: "relu", kernelRegularizer: tf.regularizers.l2({ l2: 0.1 }) }));
-metricModel.add(tf.layers.dense({ units: 1, activation: "relu", kernelRegularizer: tf.regularizers.l2({ l2: 0.1 }) }));
-metricModel.compile({ optimizer: "adam", loss: "binaryCrossentropy", metrics: ["accuracy"] });
+let initialState = logicOfGame.generateInitialState();
+let inputFromInitialState = logicOfGame.getBoardAsNeuralNetworkInput(initialState);
 
-const positions = [[logicOfGame.generateInitialState(), "player1"]];
-let branchingPosition = 0;
-const numberOfPositions = 10000;
-const positionsBar = new cliProgress.SingleBar(
-    {
-        format: "Positions generating | {bar} | {value}",
-    },
-    cliProgress.Presets.shades_classic
-);
-positionsBar.start(numberOfPositions, 0);
-while (positions.length < numberOfPositions) {
-    let len = positions.length;
-    for (let i = branchingPosition; i < len; ++i) {
-        const moves = logicOfGame.generateMoves(positions[i][0], positions[i][1]);
-        for (let move of moves) {
-            positions.push([
-                logicOfGame.generateStateAfterMove(positions[i][0], positions[i][1], move),
-                positions[i][1] === "player1" ? "player2" : "player1",
-            ]);
+const neat = new Neataptic.Neat(inputFromInitialState.length, 1, null, {
+    mutation: Neataptic.methods.mutation.ALL,
+    popsize: 30,
+    mutationRate: 0.1,
+    elitism: 3,
+    network: new Neataptic.architect.Random(inputFromInitialState.length, 4, 1),
+});
+
+const fitnessFunctionNofGames = logicOfGame.getFitnessFunctionNofGames();
+const nofGenerations = 1000;
+
+console.log("[NEAT vs Random]");
+for (let generation = 0; generation < nofGenerations; generation++) {
+    for (let genome of neat.population) {
+        let genomePlayerWins = 0;
+        const rng = seedrandom(4338193);
+        for (let i = 0; i < fitnessFunctionNofGames; i++) {
+            const genomePlayer = i % 2 === 0 ? "player1" : "player2";
+            let state = logicOfGame.generateInitialState();
+            let player = "player1";
+            while (logicOfGame.isStateTerminal(state, player) === false) {
+                const moves = logicOfGame.generateMoves(state, player);
+                if (player === genomePlayer) {
+                    let bestMove = moves[0];
+                    let stateAfterMove = logicOfGame.generateStateAfterMove(state, player, moves[0]);
+                    let score = genome.activate(logicOfGame.getBoardAsNeuralNetworkInput(stateAfterMove));
+                    let bestScore = score;
+                    for (let j = 0; j < moves.length; j++) {
+                        stateAfterMove = logicOfGame.generateStateAfterMove(state, player, moves[j]);
+                        score =
+                            (genomePlayer === "player2" ? -1 : 1) *
+                            genome.activate(logicOfGame.getBoardAsNeuralNetworkInput(stateAfterMove));
+                        if (score > bestScore) {
+                            bestMove = moves[j];
+                            bestScore = score;
+                        }
+                    }
+                    state = logicOfGame.generateStateAfterMove(state, player, bestMove);
+                } else {
+                    let move = moves[Math.floor(rng() * moves.length)];
+                    state = logicOfGame.generateStateAfterMove(state, player, move);
+                }
+                player = player === "player1" ? "player2" : "player1";
+            }
+            if (player !== genomePlayer) {
+                genomePlayerWins++;
+            }
         }
+        genome.score = genomePlayerWins / fitnessFunctionNofGames;
     }
-    branchingPosition = len - 1;
-    positionsBar.update(positions.length);
+    let nextPopulation = [];
+    neat.sort();
+    console.log(`Generation #${generation + 1}, the best score is: ${(neat.population[0].score * 100).toFixed(2)}%.`);
+    for (let i = 0; i < neat.elitism; i++) {
+        nextPopulation.push(neat.population[i]);
+    }
+    for (let i = 0; i < neat.popsize - neat.elitism; i++) {
+        nextPopulation.push(neat.getOffspring());
+    }
+    neat.population = nextPopulation;
+    neat.mutate();
+    neat.generation++;
 }
-positionsBar.stop();
 
-const metrics = [];
-const winning = [];
+/*
+let output = neat.population[0].activate([...Array(64).fill(0)]);
+console.log(output);
 
-for (let [state, player] of positions) {
-    const score = logicOfGame.evaluateState(state, player);
-    metrics.push([score]);
-    metrics.push([score]);
+while (logicOfGame.isStateTerminal(state, player) === false) {
+    const moves = logicOfGame.generateMoves(state, player);
+    const move = moves[Math.floor(Math.random() * moves.length)];
+    state = logicOfGame.generateStateAfterMove(state, player, move);
+    player = player === "player1" ? "player2" : "player1";
 }
+*/
