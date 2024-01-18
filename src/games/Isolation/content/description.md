@@ -1,0 +1,1 @@
+Gra "Isolation" rozgrywa się na planszy o wielkości 6x8 usuwalnych pól. W trakcie swojej tury gracz rusza pionkiem o jedno pole w dowolną stronę, a następnie usuwa jedno z pól. Celem gry jest odizolowanie przeciwnika. Gracz, który nie ma dostępnego kolejnego ruchu, przegrywa.
