@@ -2,7 +2,7 @@ const gameId = "YINSH";
 
 const logicOfGame = {
     /**
-     * Generuje stan pocz�tkowy gry.
+     * Generuje stan początkowy gry.
      */
     generateInitialState() {
         return {
@@ -42,7 +42,7 @@ const logicOfGame = {
         }
     },
     /**
-     * Funkcja oceny, kt�ra ocenia z punktu widzenia wskazanego gracza.
+     * Funkcja oceny, która ocenia z punktu widzenia wskazanego gracza.
      */
     evaluateState(state, player) {
         const opponent = player === "player1" ? "player2" : "player1";
@@ -92,7 +92,7 @@ const logicOfGame = {
         }
     },
     /**
-     * Funkcja generuj�ca mo�liwe ruchy z wskazanego stanu dla gracza.
+     * Funkcja generująca możliwe ruchy z wskazanego stanu dla gracza.
      */
     generateMoves(state, player) {
         const moves = []
@@ -288,7 +288,7 @@ const logicOfGame = {
         return state[player].points === 3;
     },
     /**
-     * Funkcja generuj�ca unikalny klucz dla wskazanego stanu.
+     * Funkcja generująca unikalny klucz dla wskazanego stanu.
      */
     isVectorOnList(vector, list) {
         return list.some(otherVector => otherVector[0] === vector[0] && otherVector[1] === vector[1])
@@ -434,7 +434,7 @@ const logicOfGame = {
         return player === node.player ? 1 : -1;
     },
     /**
-     * Funkcja przyjmuje na wej�cie w�ze� drzewa MCTS i wybiera najlepszy ruch wg obranej strategii (np. najwi�cej wizyt).
+     * Funkcja przyjmuje na wejście węzeł drzewa MCTS i wybiera najlepszy ruch wg obranej strategii (np. najwięcej wizyt).
      */
     getBestMCTSNode(node) {
         if (node.children.length === 0)
