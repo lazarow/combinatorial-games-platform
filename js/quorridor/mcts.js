@@ -14,8 +14,7 @@ const gameId = "quorridor";
 //plansza
 const boardWidth = 9 * 2;
 const boardHeight = 9 * 2;
-//flaga czy jest przeskok
-var jumpoverAv=false;
+
 //flaga czy jest to bezużyteczne postawienie płotka
 var uselessfence=false;
 const logicOfGame = {
@@ -59,28 +58,21 @@ const logicOfGame = {
         const enemy = (player === "player1" ? "player2" : "player1");
         //stan przegranej/wygranej
         if (this.isStateTerminal(state, player)) 
-            return 999;
-        else if (this.isStateTerminal(state, enemy)) 
             return -999;
-        
+        else if (this.isStateTerminal(state, enemy)) 
+            return 999;
+
+
 
         let score =this.getDistanceToEndGoal(enemy,state) - this.getDistanceToEndGoal(player,state);
+
+        //if(uselessfence)
+        //score-=20;
         //potrojenie wagi dystansu
         score *=3
         //sprawdzenie czy przeskok jest wartościowy
-        if(jumpoverAv){
-            if(state[player+"WinRow"]===0){
-                if(state[player][1]-state[enemy][1]>=0)
-                    score+=2
-            }else{
-                if(state[player][1]-state[enemy][1]<=0)
-                    score+=2
-            }
-        }
-        score += state[enemy+"fences"]-state[player+"fences"];
-        if(uselessfence)
-            score-=20;
-        //console.log(score)
+
+        score += 2*(state[enemy+"fences"]-state[player+"fences"]);
         return score;
     },
 
@@ -99,7 +91,6 @@ const logicOfGame = {
         if (state[player + "fences"] > 0) {
             for (i = 0; i < state["fences"].length; i++){
                     //pominięcie sprawdzenia blokowania jeżelinie jest ich wystarczająco
-                    if(state.occupied.length>2){
                         
                         //sprawdzenie czy płotek nie zablokuje kompletnie gracza
                         //symulacja postawienia
@@ -108,9 +99,7 @@ const logicOfGame = {
                             if(!(this.getDistanceToEndGoal(enemy,state)===-1))
                                 placebleFences.push(state["fences"][i]);
                         state.occupied.pop(state["fences"][i]);
-                    }else{
-                        placebleFences.push(state["fences"][i]);
-                    }
+                    
                     
                 }
 
@@ -120,14 +109,12 @@ const logicOfGame = {
         let moves =this.getPossibleMoves(state[player][0],state[player][1],player,state)
         //dodanie przeskoku nad przeciwnikiem
         if(this.doesItHasCoords(moves,[state[enemy][0],state[enemy][1]])){
-            jumpoverAv = true;
             let tmp =this.getPossibleMoves(state[enemy][0],state[enemy][1],enemy,state)
             moves = moves.concat(tmp)
             moves = moves.filter(([x,y])=>!(
                 (x===state[enemy][0]&&y===state[enemy][1])||
                 (x===state[player][0]&&y===state[player][1])))
-        }else
-            jumpoverAv = false;
+        }
         
         //złączenie możliwych ruchów
         if (state[player + "fences"] > 0)
@@ -201,7 +188,6 @@ const logicOfGame = {
      * zwraca -1 gdy nie może znaleźć drogi do celu
      */
     getDistanceToEndGoal(player,state){
-        //console.count("lol")
         //odwiedzone już miejsca
         const explored=[];
         explored.push([state[player][0],state[player][1]]);
@@ -251,6 +237,7 @@ const logicOfGame = {
      */
     
     generateStateAfterMove(previousState, player, move) {
+        
         //nowy stan gry
         const state = {
             player1: [...previousState.player1],
@@ -263,14 +250,18 @@ const logicOfGame = {
             fences: [...previousState.fences]
 
         };
+        uselessfence=false;
         //czy to jest położenie płotka
         if (move[0] % 2 === 1 || move[1] % 2 === 1) {
             
+
+            
+
+                
             const enemy = (player === "player1" ? "player2" : "player1");
+
             if(this.getDistanceToEndGoal(enemy,previousState)===this.getDistanceToEndGoal(enemy,state))
                 uselessfence=true;
-            else
-                uselessfence=false;
             //dodanie zajętych płotków DO DOKOŃCZENIA
             state.occupied.push(move);
             state[player + "fences"]--
@@ -279,7 +270,6 @@ const logicOfGame = {
             //aktualizacja pozycji gracza
             state[player] = move;
         }
-        //console.log(state)
         return state;
     },
     /**
@@ -287,7 +277,7 @@ const logicOfGame = {
      */
     isStateTerminal(state, player) {
         // Sprawdzenie czy pionek przeciwnika jest po drugiej stronie
-        return state[player][1] === state[player +"WinRow"];
+        return state[player==="player1"?"player2":"player1"][1] === state[(player==="player1"?"player2":"player1") +"WinRow"];
     },
     /**
      * Funkcja generująca unikalny klucz dla wskazanego stanu.
@@ -299,7 +289,8 @@ const logicOfGame = {
      */
     computeMCTSNodeValue(node) {
         // Obliczenia według wzoru UCT = AVG(Xj) + 2*Cp*SQRT[ (2*ln(n)) / nj ]. Wartość Cp może wynosić Cp = 1/SQRT(2), lub być dostosowana według (ale zawsze większa od 0)
-        return (node.reward + 2 * (1/(Math.sqrt(2))) * (Math.sqrt((2 * Math.log(node.parent.visits))/(node.visits))));
+        
+        return node.reward / node.visits + 0.1 * Math.sqrt(Math.log(node.parent.visits) / node.visits);
     },
 
     /**
@@ -311,14 +302,16 @@ const logicOfGame = {
         let currentState = node.state; 
         let currentPlayer = node.player;
 
+
+
+
         while(!this.isStateTerminal(currentState, currentPlayer)){ 
             let availableMoves = this.generateMoves(currentState, currentPlayer); 
             let randomMove = availableMoves[Math.floor(Math.random()*availableMoves.length)]; 
             currentState = this.generateStateAfterMove(currentState, currentPlayer, randomMove); 
             currentPlayer = currentPlayer === "player1" ? "player2" : "player1"; 
         }
-
-        return currentPlayer === node.player ? 1 : -1; // Wynikiem będzie zawsze 1 lub -1, ponieważ w grze Quoridor nie jest możliwe osiągnięcie remisu
+        return currentPlayer === node.player ? 1 : -1;
     },
 
     /**
@@ -328,14 +321,16 @@ const logicOfGame = {
         let bestNode = node.children[0];
         let bestValue = this.computeMCTSNodeValue(bestNode); 
 
-        for(let i = 1; i < node.children.length; ++i){ 
+        for(let i = 1; i<node.children.length; i++){ 
             let childValue = this.computeMCTSNodeValue(node.children[i]); 
-            let maxRobustValue = node.children[i].visits + childValue; 
-            if(maxRobustValue > (bestNode.visits + this.computeMCTSNodeValue(bestNode))){ 
+            
+            if(childValue > bestValue){ 
+                bestValue = childValue; 
                 bestNode = node.children[i]; 
             }
+            
         }
-
+        
         return bestNode; 
     }, 
 };
@@ -344,9 +339,9 @@ const players = [
     { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (łatwy)" , maxDepth: 1, printTree: true },
     { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (średni)", maxDepth: 2, printTree: false },
     { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (trudny)", maxDepth: 3, printTree: false },
-    { type: PlayerTypes.MCTS, label: "MCTS (łatwy)", iterations: 25 },
-    { type: PlayerTypes.MCTS, label: "MCTS (średni)", iterations: 50 },
-    { type: PlayerTypes.MCTS, label: "MCTS (trudny)", iterations: 100 },
+    { type: PlayerTypes.MCTS, label: "MCTS (łatwy)", iterations: 256 },
+    { type: PlayerTypes.MCTS, label: "MCTS (średni)", iterations: 512 },
+    { type: PlayerTypes.MCTS, label: "MCTS (trudny)", iterations: 1024 },
 ];class Node {
     constructor(state, player) {
         this.state = state;
