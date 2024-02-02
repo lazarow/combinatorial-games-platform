@@ -111,8 +111,6 @@ const logicOfGame = {
     },
 };
 
-
-
 const players = [
     { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (łatwy)", maxDepth: 1, printTree: true },
     { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (średni)", maxDepth: 2, printTree: false },

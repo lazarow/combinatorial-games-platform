@@ -45,10 +45,10 @@
 #red-pawn {
     width: 72px;
     height: 72px;
-    background: url(../../images/isolation/pawn_red.png) no-repeat center center transparent;
+    background: url(../../images/Isolation/pawn_red.png) no-repeat center center transparent;
 }
 #blue-pawn {
     width: 72px;
     height: 72px;
-    background: url(../../images/isolation/pawn_blue.png) no-repeat center center transparent;
+    background: url(../../images/Isolation/pawn_blue.png) no-repeat center center transparent;
 }
