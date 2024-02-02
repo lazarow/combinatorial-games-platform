@@ -1,6 +1,8 @@
 const boardWidth = 8;
 const boardHeight = 6;
 
+const gameId = "isolation";
+
 const logicOfGame = {
     generateInitialState() {
         return {
@@ -9,18 +11,28 @@ const logicOfGame = {
             removed: [],
         };
     },
-    evaluateState(state, player) {
-        //const playerMoves = this.generateMoves(state, player);
-        //const opponentMoves = this.generateMoves(state, player==="player1" ? "player2" : "player1");
-
-        //const weightMoves = 0.3;
-        //const weightIsolation = 0.7;
-
-        // Funkcja oceny uwzględniająca dostępne ruchy i izolację przeciwnika
-       // const evaluation = weightMoves * playerMoves + weightIsolation * opponentMoves;
-
-       // return evaluation;
-
+    evaluateState(state, player) {     
+        const opponent = player === "player1" ? "player2" : "player1";
+        if (this.isStateTerminal(state, player)) {
+            return -9999;
+        } else if (this.isStateTerminal(state, opponent)) {
+            return 9999;
+        }
+        let totalPlayerMoves = 0;
+        let opIsolationPoints = 0;
+        const playerMoves = this.generateMoves(state, player);
+        const opponentMoves = this.generateMoves(state, opponent);
+        for (let move of playerMoves) {
+            for (let opmove of opponentMoves) {
+                if (move[2]===opmove[0]&&move[3]===opmove[1])
+                    opIsolationPoints -= 10;
+            }
+            let afterState = this.generateStateAfterMove(state, player, move);
+            const afterMoves = this.generateMoves(afterState, player);
+            totalPlayerMoves += 1 + afterMoves.length;
+        }
+        const score = totalPlayerMoves * 0.3 + opIsolationPoints * 0.7;
+        return score;
     },
     generateMoves(state, player) {
         const offsets = [
@@ -74,8 +86,36 @@ const logicOfGame = {
         return availableMoves.length === 0;
     },
     generateUniqueKey: undefined,
+    computeMCTSNodeValue(node) {
+        return node.reward / node.visits + 0.4 * Math.sqrt(Math.log(node.parent.visits) / node.visits);
+    },
+    MCTSPlayOut(node) {
+        state = node.state;
+        player = node.player;
+        while (this.isStateTerminal(state, player) === false) {
+            const moves = this.generateMoves(state, player);
+            const move = moves[Math.floor(Math.random() * moves.length)];
+            state = this.generateStateAfterMove(state, player, move);
+            player = player === "player1" ? "player2" : "player1";
+        }
+        return player === node.player ? 1 : -1;
+    },
+    getBestMCTSNode(node) {
+        let bestNode = node.children[0];
+        for (let i = 1; i < node.children.length; ++i) {
+            if (node.children[i].visits > bestNode.visits) {
+                bestNode = node.children[i];
+            }
+        }
+        return bestNode;
+    },
 };
 
-
-
-const players = [];
+const players = [
+    { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (łatwy)", maxDepth: 1, printTree: true },
+    { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (średni)", maxDepth: 2, printTree: false },
+    { type: PlayerTypes.ALPHABETA, label: "AlphaBeta (trudny)", maxDepth: 3, printTree: false },
+    { type: PlayerTypes.MCTS, label: "MCTS (łatwy)", iterations: 1000 },
+    { type: PlayerTypes.MCTS, label: "MCTS (średni)", iterations: 3000 },
+    { type: PlayerTypes.MCTS, label: "MCTS (trudny)", iterations: 7000 },
+];
